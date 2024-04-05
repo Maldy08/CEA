@@ -14,7 +14,7 @@ namespace CEA.Application.Extensions
 
         private static void AddMediator(this IServiceCollection services)
         {
-            services.AddMediatR( cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
+            services.AddMediatR( cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
         }
 
         private static void AddValidators(this IServiceCollection services)
