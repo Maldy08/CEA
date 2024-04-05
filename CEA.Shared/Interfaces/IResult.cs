@@ -10,7 +10,7 @@ namespace CEA.Shared.Interfaces
     {
         List<string> Messages { get; set; }
 
-        bool Success { get; set; }
+        bool Succeeded { get; set; }
 
         T Data { get; set; }
         Exception Exception { get; set; }

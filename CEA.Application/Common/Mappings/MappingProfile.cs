@@ -50,3 +50,4 @@ namespace CEA.Application.Common.Mappings
             }
         }
 }
+    }

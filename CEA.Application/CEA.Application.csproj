@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CEA.Domain\CEA.Domain.csproj" />
+    <ProjectReference Include="..\CEA.Shared\CEA.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
