@@ -1,0 +1,12 @@
+﻿
+namespace CEA.Domain.Entities.Transparencia
+{
+    public class UsuariosNivele
+    {
+        public int IdNivel { get; set; }
+
+        public string? Descripcion { get; set; }
+
+        public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+    }
+}
