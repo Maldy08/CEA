@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEA.Infrastructure", "CEA.Infrastructure\CEA.Infrastructure.csproj", "{64000134-E440-43B9-9723-5341CB138214}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEA.Persistence", "CEA.Persistence\CEA.Persistence.csproj", "{6AAA5AF2-EEAD-4E6A-B99B-A848A6E8744D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{64000134-E440-43B9-9723-5341CB138214}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64000134-E440-43B9-9723-5341CB138214}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64000134-E440-43B9-9723-5341CB138214}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AAA5AF2-EEAD-4E6A-B99B-A848A6E8744D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AAA5AF2-EEAD-4E6A-B99B-A848A6E8744D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AAA5AF2-EEAD-4E6A-B99B-A848A6E8744D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AAA5AF2-EEAD-4E6A-B99B-A848A6E8744D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 		{F0421E45-8A1D-43D4-859A-FAD7643B8FAB} = {5FBDCBC4-4F1C-437D-A1D9-EC14765F2487}
 		{41E6D215-887E-4F13-9435-DFB0B5E25776} = {099E8AFD-0CE5-4690-B05A-B0832C465CE1}
 		{64000134-E440-43B9-9723-5341CB138214} = {8262F5CE-E353-46B3-9FD0-D94DBFB4202F}
+		{6AAA5AF2-EEAD-4E6A-B99B-A848A6E8744D} = {8262F5CE-E353-46B3-9FD0-D94DBFB4202F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E3D96F7A-D284-4E63-99C7-E4880A7D0CCC}
