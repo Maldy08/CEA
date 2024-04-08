@@ -4,14 +4,14 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace CEA.Infrastructure.Services
+namespace CEA.Infrastructure.Extensions
 {
     public static class IServiceCollectionExtensions
     {
         public static void AddInfrastructureLayer(this IServiceCollection services)
         {
             services.AddServices();
-           
+
         }
 
         private static void AddServices(this IServiceCollection services)
