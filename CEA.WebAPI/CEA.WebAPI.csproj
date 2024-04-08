@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CEA.Application\CEA.Application.csproj" />
+    <ProjectReference Include="..\CEA.Infrastructure\CEA.Infrastructure.csproj" />
+    <ProjectReference Include="..\CEA.Persistence\CEA.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

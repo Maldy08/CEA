@@ -2,9 +2,9 @@
 using CEA.Domain.Entities.Viaticos;
 
 
-namespace CEA.Application.Features.Viaticos.Queries.GetAllViaticosByEjercicioAndOficina
+namespace CEA.Application.DTOs
 {
-    public class GetAllViaticosByEjercicioAndOficinaDto : IMapFrom<Viatico>
+    public class GetAllViaticosDto : IMapFrom<Viatico>
     {
         public int Oficina { get; set; }
         public int Ejercicio { get; set; }

@@ -30,6 +30,7 @@ namespace CEA.Persistence.Context
                 entity.HasKey(e => new { e.Oficina, e.Ejercicio, e.NoViat });
                 entity.ToTable("VIATICOS");
 
+                entity.Property(entity => entity.Id).HasColumnName("ID");
                 entity.Property(e => e.Oficina).HasPrecision(1).HasColumnName("OFICINA");
                 entity.Property(e => e.Ejercicio).HasPrecision(4).HasColumnName("EJERCICIO");
                 entity.Property(e => e.NoViat).HasPrecision(5).HasColumnName("NOVIAT");

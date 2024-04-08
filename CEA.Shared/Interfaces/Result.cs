@@ -158,6 +158,7 @@ namespace CEA.Shared.Interfaces
                 return Task.FromResult(Success(data, message));
             }
 
+
             #endregion
 
             #region Failure Methods 

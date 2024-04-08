@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CEA.Application.DTOs;
 using CEA.Application.Interfaces.Repositories;
 using CEA.Shared.Interfaces;
 using MediatR;
@@ -6,7 +7,7 @@ using MediatR;
 namespace CEA.Application.Features.Viaticos.Queries.GetAllViaticosByEjercicioAndOficina
 {
 
-    public record GetAllViaticosByEjercicioAndOficinaQuery: IRequest<Result<List<GetAllViaticosByEjercicioAndOficinaDto>>>
+    public record GetAllViaticosByEjercicioAndOficinaQuery: IRequest<Result<List<GetAllViaticosDto>>>
     {
         public int Ejercicio { get; set; }
         public int Oficina { get; set; }
@@ -19,7 +20,7 @@ namespace CEA.Application.Features.Viaticos.Queries.GetAllViaticosByEjercicioAnd
     }
 
 
-    internal class GetAllViaticosByEjercicioAndOficinaHandler : IRequestHandler<GetAllViaticosByEjercicioAndOficinaQuery, Result<List<GetAllViaticosByEjercicioAndOficinaDto>>>
+    internal class GetAllViaticosByEjercicioAndOficinaHandler : IRequestHandler<GetAllViaticosByEjercicioAndOficinaQuery, Result<List<GetAllViaticosDto>>>
     {
         private readonly IViaticoRepository _viaticoRepository;
         private readonly IMapper _mapper;
@@ -29,11 +30,11 @@ namespace CEA.Application.Features.Viaticos.Queries.GetAllViaticosByEjercicioAnd
             _viaticoRepository = viaticoRepository;
             _mapper = mapper;
         }
-        public async Task<Result<List<GetAllViaticosByEjercicioAndOficinaDto>>> Handle(GetAllViaticosByEjercicioAndOficinaQuery query, CancellationToken cancellationToken)
+        public async Task<Result<List<GetAllViaticosDto>>> Handle(GetAllViaticosByEjercicioAndOficinaQuery query, CancellationToken cancellationToken)
         {
             var entities = await _viaticoRepository.GetAllViaticosByEjercicioAndOficina(query.Ejercicio, query.Oficina);
-            var viaticos = _mapper.Map<List<GetAllViaticosByEjercicioAndOficinaDto>>(entities);
-            return await Result<List<GetAllViaticosByEjercicioAndOficinaDto>>.SuccessAsync(viaticos);
+            var viaticos = _mapper.Map<List<GetAllViaticosDto>>(entities);
+            return await Result<List<GetAllViaticosDto>>.SuccessAsync(viaticos);
         }
     }
 }
