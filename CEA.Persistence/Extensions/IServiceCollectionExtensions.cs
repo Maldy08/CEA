@@ -4,11 +4,6 @@ using CEA.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CEA.Persistence.Extensions
 {
@@ -26,9 +21,13 @@ namespace CEA.Persistence.Extensions
             var connectionString = configuration.GetConnectionString("OracleConnection");
 
             services.AddDbContext<ApplicationDbContext>(options =>
+                
                  options.UseOracle(connectionString,
-                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-
+                     builder =>
+                     {
+                         builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                         builder.UseOracleSQLCompatibility("11");
+                     }));
         }
 
         private static void AddRepositories(this IServiceCollection services)
@@ -36,7 +35,9 @@ namespace CEA.Persistence.Extensions
             services
                 .AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork))
                 .AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>))
-                .AddTransient<IViaticoRepository, ViaticoRepository>();
+                .AddTransient<IViaticoRepository, ViaticoRepository>()
+                .AddTransient<IViaticoPorEmpleadoDto, ViaticosPorEmpleado>();
+               
         }
     }
 }

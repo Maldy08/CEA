@@ -15,14 +15,15 @@ namespace CEA.Persistence.Repositories
             _repository = repository;
         }
 
-        public Task<List<Viatico>> GetAllByEjercicioDepto(int ejercicio, int empleado)
+        public async Task<List<Viatico>> GetAllByEjercicioDepto(int ejercicio, int empleado)
         {
-           return _repository.Entities.Where(x => x.Ejercicio == ejercicio && x.NoEmp == empleado).ToListAsync();
+           return await _repository.Entities.Where(x => x.Ejercicio == ejercicio && x.NoEmp == empleado).ToListAsync();
         }
 
-        public Task<List<Viatico>> GetAllByEjercicioOficinaNoviat(int ejercicio, int oficina, int noviat)
+        public async Task<Viatico> GetAllByEjercicioOficinaNoviat(int ejercicio, int oficina, int noviat)
         {
-            throw new NotImplementedException();
+            var result = await _repository.Entities.Where(x => x.Ejercicio == ejercicio && x.Oficina == oficina && x.NoViat == noviat).FirstOrDefaultAsync();
+            return result;
         }
 
         public async Task<List<Viatico>> GetAllViaticosByEjercicioAndOficina(int ejercicio, int oficina)

@@ -1,11 +1,12 @@
 ﻿using CEA.Application.DTOs;
 using CEA.Application.Features.Viaticos.Commands.CreateViatico;
 using CEA.Application.Features.Viaticos.Queries.GetAllByEjercicioDepto;
+using CEA.Application.Features.Viaticos.Queries.GetAllByEjercicioOficinaNoviat;
 using CEA.Application.Features.Viaticos.Queries.GetAllViaticosByEjercicioAndOficina;
 using CEA.Application.Features.Viaticos.Queries.GetNoViat;
+using CEA.Application.Features.Viaticos.Queries.ListaViaticosPorEmpleado;
 using CEA.Shared.Interfaces;
 using MediatR;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers
@@ -40,11 +41,22 @@ namespace CEA.WebAPI.Controllers
         }
 
         [HttpGet("GetAllByEjercicioDepto")]
-        public async Task<ActionResult<Result<List<GetAllViaticosDto>>>> GetAllByEjercicioDepto(int ejercicio, int departamento)
+        public async Task<ActionResult<Result<List<GetAllViaticosDto>>>> GetAllByEjercicioDepto(int ejercicio, int empleado)
         {
-            return await _mediator.Send(new GetAllByEjercicioDeptoQuery(ejercicio, departamento));
+            return await _mediator.Send(new GetAllByEjercicioDeptoQuery(ejercicio, empleado));
         }
 
+        [HttpGet("ListaViaticosPorEmpleado")]
+        public async Task<ActionResult<Result<List<ViaticosPorEmpleadoDto>>>> ListaViaticosPorEmpleado(int ejercicio, int empleado)
+        {
+            return await _mediator.Send(new ListaViatosPorEmpleadoQuery(ejercicio, empleado));
+        }
+
+        [HttpGet("GetAllByEjercicioOficinaNoviat")]
+        public async Task<ActionResult<Result<GetAllViaticosDto>>> GetAllByEjercicioOficinaNoviat(int ejercicio, int oficina, int noviat)
+        {
+            return await _mediator.Send(new GetAllByEjercicioOficinaNoviatQuery(ejercicio, oficina, noviat));
+        }
 
     }
 }

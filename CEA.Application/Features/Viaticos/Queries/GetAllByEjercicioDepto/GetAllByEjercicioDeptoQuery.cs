@@ -11,12 +11,12 @@ namespace CEA.Application.Features.Viaticos.Queries.GetAllByEjercicioDepto
     public record GetAllByEjercicioDeptoQuery: IRequest<Result<List<GetAllViaticosDto>>>
     {
         public int Ejercicio { get; set; }
-        public int Departamento { get; set; }
+        public int Empleado { get; set; }
 
-        public GetAllByEjercicioDeptoQuery(int ejercicio, int departamento)
+        public GetAllByEjercicioDeptoQuery(int ejercicio, int empleado)
         {
             Ejercicio = ejercicio;
-            Departamento = departamento;
+            Empleado = empleado;
         }
     }
 
@@ -32,7 +32,7 @@ namespace CEA.Application.Features.Viaticos.Queries.GetAllByEjercicioDepto
         }
         public async Task<Result<List<GetAllViaticosDto>>> Handle(GetAllByEjercicioDeptoQuery query, CancellationToken cancellationToken)
         {
-            var entities = await _viaticoRepository.GetAllByEjercicioDepto(query.Ejercicio, query.Departamento);
+            var entities = await _viaticoRepository.GetAllByEjercicioDepto(query.Ejercicio, query.Empleado);
             var viaticos = _mapper.Map<List<GetAllViaticosDto>>(entities);
             return await Result<List<GetAllViaticosDto>>.SuccessAsync(viaticos);
         }

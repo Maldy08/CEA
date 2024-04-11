@@ -18,6 +18,8 @@ namespace CEA.Persistence.Repositories
 
         public IQueryable<T> Entities => _dbContext.Set<T>();
 
+
+
         public async Task<T> AddAsync(T entity)
         {
             await _dbContext.Set<T>().AddAsync(entity);
@@ -41,6 +43,7 @@ namespace CEA.Persistence.Repositories
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
+
 
         public  Task UpdateAsync(T entity)
         {
