@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CEA.Application.Common.Mappings;
 using CEA.Application.Interfaces.Repositories;
+using CEA.Domain.Constants;
 using CEA.Domain.Entities.Viaticos;
 using CEA.Shared.Interfaces;
 using MediatR;
@@ -39,20 +40,23 @@ namespace CEA.Application.Features.Viaticos.Commands.CreateViatico
     internal class CreateViaticoCommandHandler : IRequestHandler<CreateViaticoCommand, Result<int>>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IViaticoRepository _viaticoRepository;
         private readonly IMapper _mapper;
 
-        public CreateViaticoCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateViaticoCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IViaticoRepository viaticoRepository)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _viaticoRepository = viaticoRepository;
         }
         public async Task<Result<int>> Handle(CreateViaticoCommand request, CancellationToken cancellationToken)
         {
+            var numviatico = await _viaticoRepository.GetNoViat(request.Ejercicio, request.Oficina);
             var viatico = new Viatico()
             {
                 Oficina = request.Oficina,
                 Ejercicio = request.Ejercicio,
-                NoViat = request.NoViat,
+                NoViat = numviatico,
                 Fecha = request.Fecha,
                 NoEmp = request.NoEmp,
                 OrigenId = request.OrigenId,
@@ -73,6 +77,17 @@ namespace CEA.Application.Features.Viaticos.Commands.CreateViatico
                 CajaRepo = request.CajaRepo,
                 NoEmpCrea = request.NoEmpCrea,
                 InforResul = request.InforResul
+            };
+
+            //var importe = ViaticoImporte.ImporteViaticoDirectorDentroEstado(viatico.Dias);
+
+            var viaticoPart =  new ViaticoPart()
+            {
+                Oficina = request.Oficina,
+                Ejercicio = request.Ejercicio,
+                NoViat = numviatico,
+                Partida = 1,
+                Importe = 0
             };
 
             await _unitOfWork.Repository<Viatico>().AddAsync(viatico);

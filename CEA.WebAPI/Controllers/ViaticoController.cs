@@ -1,5 +1,6 @@
 ﻿using CEA.Application.DTOs;
 using CEA.Application.Features.Viaticos.Commands.CreateViatico;
+using CEA.Application.Features.Viaticos.Commands.UpdateViatico;
 using CEA.Application.Features.Viaticos.Queries.GetAllByEjercicioDepto;
 using CEA.Application.Features.Viaticos.Queries.GetAllByEjercicioOficinaNoviat;
 using CEA.Application.Features.Viaticos.Queries.GetAllViaticosByEjercicioAndOficina;
@@ -56,6 +57,12 @@ namespace CEA.WebAPI.Controllers
         public async Task<ActionResult<Result<GetAllViaticosDto>>> GetAllByEjercicioOficinaNoviat(int ejercicio, int oficina, int noviat)
         {
             return await _mediator.Send(new GetAllByEjercicioOficinaNoviatQuery(ejercicio, oficina, noviat));
+        }
+
+        [HttpPut("UpdateViatico")]
+        public async Task<ActionResult<Result<int>>> UpdateViatico(UpdateViaticoCommand command)
+        {
+            return await _mediator.Send(command);
         }
 
     }
