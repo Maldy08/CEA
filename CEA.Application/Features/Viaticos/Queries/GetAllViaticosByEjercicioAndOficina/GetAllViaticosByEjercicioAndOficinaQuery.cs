@@ -19,7 +19,6 @@ namespace CEA.Application.Features.Viaticos.Queries.GetAllViaticosByEjercicioAnd
         }
     }
 
-
     internal class GetAllViaticosByEjercicioAndOficinaHandler : IRequestHandler<GetAllViaticosByEjercicioAndOficinaQuery, Result<List<GetAllViaticosDto>>>
     {
         private readonly IViaticoRepository _viaticoRepository;

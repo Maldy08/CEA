@@ -36,7 +36,8 @@ namespace CEA.Persistence.Extensions
                 .AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork))
                 .AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>))
                 .AddTransient<IViaticoRepository, ViaticoRepository>()
-                .AddTransient<IViaticoPorEmpleadoDto, ViaticosPorEmpleado>();
+                .AddTransient<IViaticoPorEmpleadoDto, ViaticosPorEmpleado>()
+                .AddTransient<IViaticoPartRepository, ViaticoPartRepository>();
                
         }
     }

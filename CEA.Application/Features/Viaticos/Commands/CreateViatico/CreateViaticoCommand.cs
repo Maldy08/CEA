@@ -80,18 +80,19 @@ namespace CEA.Application.Features.Viaticos.Commands.CreateViatico
                 InforResul = request.InforResul
             };
 
-            bool fueraEstado = request.OrigenId != request.DestinoId;
 
-            var importe = ViaticoImportePorDias.CalcularImportePorDias(request.Dias, ViaticoImporte.ImporteViaticoEmpleadoDentroEstado);
+            //bool fueraEstado = request.OrigenId != request.DestinoId;
 
-            var viaticoPart =  new ViaticoPart()
-            {
-                Oficina = request.Oficina,
-                Ejercicio = request.Ejercicio,
-                NoViat = numviatico,
-                Partida = fueraEstado ? 37502 : 37501,
-                Importe =  importe
-            };
+            //var importe = ViaticoImportePorDias.CalcularImportePorDias(request.Dias, ViaticoImporte.ImporteViaticoEmpleadoDentroEstado);
+
+            //var viaticoPart =  new ViaticoPart()
+            //{
+            //    Oficina = request.Oficina,
+            //    Ejercicio = request.Ejercicio,
+            //    NoViat = numviatico,
+            //    Partida = fueraEstado ? 37502 : 37501,
+            //    Importe =  importe
+            //};
 
             await _unitOfWork.Repository<Viatico>().AddAsync(viatico);
             //await _unitOfWork.Repository<ViaticoPart>().AddAsync(viaticoPart);
