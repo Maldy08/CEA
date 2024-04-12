@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CEA.Application.Common.Helpers;
 using CEA.Application.Common.Mappings;
 using CEA.Application.Interfaces.Repositories;
 using CEA.Domain.Constants;
@@ -79,18 +80,21 @@ namespace CEA.Application.Features.Viaticos.Commands.CreateViatico
                 InforResul = request.InforResul
             };
 
-            //var importe = ViaticoImporte.ImporteViaticoDirectorDentroEstado(viatico.Dias);
+            bool fueraEstado = request.OrigenId != request.DestinoId;
+
+            var importe = ViaticoImportePorDias.CalcularImportePorDias(request.Dias, ViaticoImporte.ImporteViaticoEmpleadoDentroEstado);
 
             var viaticoPart =  new ViaticoPart()
             {
                 Oficina = request.Oficina,
                 Ejercicio = request.Ejercicio,
                 NoViat = numviatico,
-                Partida = 1,
-                Importe = 0
+                Partida = fueraEstado ? 37502 : 37501,
+                Importe =  importe
             };
 
             await _unitOfWork.Repository<Viatico>().AddAsync(viatico);
+            //await _unitOfWork.Repository<ViaticoPart>().AddAsync(viaticoPart);
             viatico.AddDomainEvent(new ViaticoCreatedEvent(viatico));
 
             await _unitOfWork.Save(cancellationToken);
