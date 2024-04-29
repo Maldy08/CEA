@@ -1,9 +1,5 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CEA.Application.DTOs.Viaticos;
 
 namespace CEA.Application.Common.Mappings
 {
@@ -11,7 +7,7 @@ namespace CEA.Application.Common.Mappings
     {
         public EmpleadoMapping()
         {
-            CreateMap<Domain.Entities.RecursosHumanos.Empleado, Application.DTOs.EmpleadoDto>()
+            CreateMap<Domain.Entities.RecursosHumanos.Empleado, EmpleadoDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.IdEmpleado));
         }
     }

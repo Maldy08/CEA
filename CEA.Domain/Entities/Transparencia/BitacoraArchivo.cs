@@ -1,8 +1,10 @@
 ﻿
 
+using CEA.Domain.Common;
+
 namespace CEA.Domain.Entities.Transparencia
 {
-    public class BitacoraArchivo
+    public class BitacoraArchivo: BaseAuditableEntity
     {
         public int IdBitacora { get; set; }
 

@@ -2,6 +2,7 @@
 using CEA.Application.Common.Helpers;
 using CEA.Application.Common.Mappings;
 using CEA.Application.Interfaces.Repositories;
+using CEA.Application.Interfaces.Repositories.Viaticos;
 using CEA.Domain.Constants;
 using CEA.Domain.Entities.Viaticos;
 using CEA.Shared.Interfaces;

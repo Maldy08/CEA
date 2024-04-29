@@ -1,11 +1,6 @@
-﻿using CEA.Application.Interfaces.Repositories;
+﻿using CEA.Application.Interfaces.Repositories.Viaticos;
 using CEA.Shared.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CEA.Application.Features.Viaticos.Queries.GetNoViat
 {

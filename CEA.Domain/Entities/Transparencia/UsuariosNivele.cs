@@ -1,7 +1,9 @@
 ﻿
+using CEA.Domain.Common;
+
 namespace CEA.Domain.Entities.Transparencia
 {
-    public class UsuariosNivele
+    public class UsuariosNivele : BaseAuditableEntity
     {
         public int IdNivel { get; set; }
 

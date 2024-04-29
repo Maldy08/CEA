@@ -1,4 +1,4 @@
-﻿using CEA.Application.DTOs;
+﻿using CEA.Application.DTOs.Viaticos;
 using CEA.Domain.Common;
 using CEA.Domain.Common.Interfaces;
 using CEA.Domain.Entities.Viaticos;
@@ -20,6 +20,8 @@ namespace CEA.Persistence.Context
 
         public DbSet<Viatico> Viatico => Set<Viatico>();
         public DbSet<ViaticosPorEmpleadoDto> ViaticosPorEmpleadosDto => Set<ViaticosPorEmpleadoDto>();
+
+        public DbSet<FormatoComisionDto> FormatoComisionDto => Set<FormatoComisionDto>();
   
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

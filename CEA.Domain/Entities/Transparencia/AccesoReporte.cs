@@ -1,9 +1,11 @@
 ﻿
+using CEA.Domain.Common;
+
 namespace CEA.Domain.Entities.Transparencia
 {
-    public class AccesoReporte
+    public class AccesoReporte : BaseAuditableEntity
     {
-        public int Id { get; set; }
+       //ublic int Id { get; set; }
 
         public int IdDepto { get; set; }
 

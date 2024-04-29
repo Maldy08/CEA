@@ -1,7 +1,7 @@
 ﻿
 using AutoMapper;
-using CEA.Application.DTOs;
-using CEA.Application.Interfaces.Repositories;
+using CEA.Application.DTOs.Viaticos;
+using CEA.Application.Interfaces.Repositories.Viaticos;
 using CEA.Shared.Interfaces;
 using MediatR;
 

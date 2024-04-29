@@ -1,8 +1,10 @@
 ﻿
 
+using CEA.Domain.Common;
+
 namespace CEA.Domain.Entities.Transparencia
 {
-    public class Departamento
+    public class Departamento: BaseAuditableEntity
     {
         public int IdDepto { get; set; }
 

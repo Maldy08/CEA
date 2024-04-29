@@ -1,8 +1,10 @@
 ﻿
 
+using CEA.Domain.Common;
+
 namespace CEA.Domain.Entities.Transparencia
 {
-    public class Reporte
+    public class Reporte : BaseAuditableEntity
     {
         public int IdArticulo { get; set; }
 
