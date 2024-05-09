@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Viaticos
 {
-    public class ViaticoPartController : ApiControllerBase
+    public class ViaticoPartController : ApiControllerBaseViaticos
     {
 
         private readonly IMediator _mediator;

@@ -23,7 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Transparencia\Commands\" />
+    <Folder Include="Features\Transparencia\Commands\DeleteBitacora\" />
+    <Folder Include="Features\Transparencia\Commands\UpdateBitacora\" />
   </ItemGroup>
 
 </Project>

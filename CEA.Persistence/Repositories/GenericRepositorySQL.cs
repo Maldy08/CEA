@@ -1,21 +1,24 @@
-﻿using CEA.Application.Interfaces.Repositories;
+﻿
+
+using CEA.Application.Interfaces.Repositories;
 using CEA.Domain.Common;
 using CEA.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace CEA.Persistence.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseAuditableEntity
+    public class GenericRepositorySQL<T> : IGenericRepositorySQL<T> where T : BaseAuditableEntity
     {
-        private readonly ApplicationDbContext _dbContext;
 
-        public GenericRepository(ApplicationDbContext dbContext)
+        private readonly ApplicationDbContextSQL _dbContext;
+
+        public GenericRepositorySQL(ApplicationDbContextSQL dbContext)
         {
             _dbContext = dbContext;
         }
 
         public IQueryable<T> Entities => _dbContext.Set<T>();
+
 
 
         public async Task<T> AddAsync(T entity)
@@ -43,7 +46,7 @@ namespace CEA.Persistence.Repositories
         }
 
 
-        public  Task UpdateAsync(T entity)
+        public Task UpdateAsync(T entity)
         {
             T exist = _dbContext.Set<T>().Find(entity.Id);
             _dbContext.Entry(exist).CurrentValues.SetValues(entity);

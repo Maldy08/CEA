@@ -1,4 +1,6 @@
-﻿using CEA.Application.DTOs.Transparencia;
+﻿
+using CEA.Application.DTOs.Transparencia;
+using CEA.Application.Features.Transparencia.Commands.CreateBitacora;
 using CEA.Application.Features.Transparencia.Queries.GetBitacorasByUserId;
 using CEA.Application.Features.Transparencia.Queries.GetBitacorasByUserIdAndFormato;
 using CEA.Shared.Interfaces;
@@ -8,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CEA.WebAPI.Controllers.Transparencia
 {
   
-    public class BitacoraController : ApiControllerBase
+    public class BitacoraController : ApiControllerBaseTransparencia
     {
         private readonly IMediator _mediator;
 
@@ -29,6 +31,24 @@ namespace CEA.WebAPI.Controllers.Transparencia
         {
             var result = await _mediator.Send(new GetBitacorasByUserIdAndFormatoQuery(userId,formato));
             return new JsonResult(result);
+        }
+
+        [HttpPost("CreateBitacora")]
+        public async Task<ActionResult<Result<int>>> CreateBitacora([FromForm] BitacoraArchivoDto bitacora)
+        {
+            var command = new CreateBitacoraCommand()
+            {
+                idBitacora = bitacora.idBitacora,
+                codigo = bitacora.codigo,
+                idUsuario = bitacora.idUsuario,
+                trimestre = bitacora.trimestre,
+                periodo = bitacora.periodo,
+                archivos = bitacora.archivos,
+            };
+
+            return new JsonResult(await _mediator.Send(command));
+            //CreateBitacoraCommand command
+            // return await _mediator.Send(command);
         }
     }
 }

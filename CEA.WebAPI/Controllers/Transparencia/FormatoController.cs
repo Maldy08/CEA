@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CEA.WebAPI.Controllers.Transparencia
 {
 
-    public class FormatoController : ApiControllerBase
+    public class FormatoController : ApiControllerBaseTransparencia
     {
         private readonly IMediator _mediator;
 

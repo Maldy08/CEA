@@ -1,5 +1,4 @@
-﻿
-using CEA.Domain.Entities.Transparencia;
+﻿using CEA.Domain.Entities.Transparencia;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,10 +8,10 @@ namespace CEA.Persistence.Configurations.Transparencia
     {
         public void Configure(EntityTypeBuilder<BitacoraArchivo> builder)
         {
-            
+
             builder.ToTable("BitacoraArchivos");
             builder.HasKey(e => e.IdBitacora);
-
+           
             builder.Property(e => e.FechaModificado).HasColumnType("datetime");
             builder.Property(e => e.FechaSubido).HasColumnType("datetime");
             builder.Property(e => e.Hipervinculo).IsUnicode(false);

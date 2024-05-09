@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CEA.WebAPI.Controllers.Viaticos
 {
 
-    public class ViaticoEstadoController : ApiControllerBase
+    public class ViaticoEstadoController : ApiControllerBaseViaticos
     {
 
         private readonly IGenericRepository<ViaticoEstado> _repository;

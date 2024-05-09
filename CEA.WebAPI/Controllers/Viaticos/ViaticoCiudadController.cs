@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Viaticos
 {
-    public class ViaticoCiudadController : ApiControllerBase
+    public class ViaticoCiudadController : ApiControllerBaseViaticos
     {
 
         private readonly IGenericRepository<ViaticoCiudad> _viaticoCiudadRepository;

@@ -1,6 +1,7 @@
 ﻿using CEA.Application.Interfaces.Repositories;
 using CEA.Application.Interfaces.Repositories.Transparencia;
 using CEA.Application.Interfaces.Repositories.Viaticos;
+using CEA.Application.Services;
 using CEA.Persistence.Context;
 using CEA.Persistence.Repositories;
 using CEA.Persistence.Repositories.Transparencia;
@@ -46,7 +47,9 @@ namespace CEA.Persistence.Extensions
         {
             services
                 .AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork))
+                .AddTransient(typeof(IUnitOfWorkSQL), typeof(UnitOfWorkSQL))
                 .AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>))
+                .AddTransient(typeof(IGenericRepositorySQL<>), typeof(GenericRepositorySQL<>))
                 .AddTransient<IViaticoRepository, ViaticoRepository>()
                 .AddTransient<IViaticoPorEmpleadoDto, ViaticosPorEmpleado>()
                 .AddTransient<IViaticoPartRepository, ViaticoPartRepository>()
