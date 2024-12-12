@@ -1,10 +1,14 @@
 ﻿using CEA.Application.Interfaces.Repositories;
+using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Interfaces.Repositories.Transparencia;
+using CEA.Application.Interfaces.Repositories.Vehiculos;
 using CEA.Application.Interfaces.Repositories.Viaticos;
 using CEA.Application.Services;
 using CEA.Persistence.Context;
 using CEA.Persistence.Repositories;
+using CEA.Persistence.Repositories.Oficios;
 using CEA.Persistence.Repositories.Transparencia;
+using CEA.Persistence.Repositories.Vehiculos;
 using CEA.Persistence.Repositories.Viaticos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -50,6 +54,10 @@ namespace CEA.Persistence.Extensions
                 .AddTransient(typeof(IUnitOfWorkSQL), typeof(UnitOfWorkSQL))
                 .AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>))
                 .AddTransient(typeof(IGenericRepositorySQL<>), typeof(GenericRepositorySQL<>))
+                .AddTransient<IEmpleadoRepository, EmpleadoRepository>()
+                .AddTransient<IDeptoRepository, DeptoRepository>()
+
+                //Viaticos
                 .AddTransient<IViaticoRepository, ViaticoRepository>()
                 .AddTransient<IViaticoPorEmpleadoDto, ViaticosPorEmpleado>()
                 .AddTransient<IViaticoPartRepository, ViaticoPartRepository>()
@@ -58,8 +66,27 @@ namespace CEA.Persistence.Extensions
                 .AddTransient<IViaticoEstadoRepository, ViaticoEstadoRepository>()
                 .AddTransient<IViaticoPaisRepository, ViaticoPaisRepository>()
                 .AddTransient<IViaticoOficinaRepository, ViaticoOficinaRepository>()
+                .AddTransient<IViaticoDetalleRepository, ViaticoDetalleRepository>()
+
+                //Transparencia
                 .AddTransient<ITransparenciaFormatoRepository, TransparenciaFormatoRepository>()
-                .AddTransient<ITransparenciaBitachoraArchivoRepository, TransparenciaBitachoraArchivoRepository>();
+                .AddTransient<ITransparenciaBitachoraArchivoRepository, TransparenciaBitachoraArchivoRepository>()
+                .AddTransient<IUserTransparenciaRepository, UserTransparenciaRepository>()
+                .AddTransient<IUserRepository, UserRepository>()
+                .AddTransient<IFormatoRepository, FormatoRepository>()
+
+                //Vehiculos
+                .AddTransient<IVsWtVehiculosRepository, VsWtVehiculosRepository>()
+                .AddTransient<IVsListaVehiculosRepository, VsListaVehiculosRepository>()
+
+
+                //Oficios
+                .AddTransient<IOficioRepository, OficioRepository>()
+                .AddTransient<IOficioBitacoraRepository, OficioBitacoraRepository>()
+                .AddTransient<IOficioEstatusRepository, OficioEstatusRepository>()
+                .AddTransient<IOficioUsuExtRepository, OficioUsuExtRepository>()
+                .AddTransient<IOficioResponsableRepository, OficioResponsableRepository>()
+                .AddTransient<IOficioParametroRepository, OficioParametroRepository>();
 
                
         }

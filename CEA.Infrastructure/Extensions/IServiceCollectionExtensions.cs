@@ -20,7 +20,10 @@ namespace CEA.Infrastructure.Extensions
         {
             services.AddTransient<IMediator, Mediator>()
                 .AddTransient<IDomainEventDispatcher, DomainEventDispatcher>()
-                .AddTransient<IFileService, FileService>();
+                .AddTransient<IFileService, FileService>()
+                .AddTransient<IEmailService, EmailService>()
+                .AddTransient<IAuthService, AuthService>()
+                .AddTransient<IAuthServiceTransparencia, AuthServiceTransparencia>();
         }
     }
 }

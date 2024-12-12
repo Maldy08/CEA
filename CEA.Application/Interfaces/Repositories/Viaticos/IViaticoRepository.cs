@@ -9,7 +9,5 @@ namespace CEA.Application.Interfaces.Repositories.Viaticos
         Task<List<Viatico>> GetAllByEjercicioDepto(int ejercicio, int empleado);
         Task<int> GetNoViat(int ejercicio, int oficina);
 
-
-
     }
 }

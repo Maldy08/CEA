@@ -9,9 +9,10 @@ namespace CEA.Persistence.Configurations.Viaticos
     {
         public void Configure(EntityTypeBuilder<ViaticoPart> builder)
         {
-            builder.HasKey(e => new { e.Oficina, e.Ejercicio, e.NoViat, e.Partida });
+            builder.HasKey(e => e.Id );
             builder.ToTable("VIATICOS_PART");
 
+            builder.Property(e => e.Id).HasColumnName("ID");
             builder.Property(e => e.Oficina).HasPrecision(1).HasColumnName("OFICINA");
             builder.Property(e => e.Ejercicio).HasPrecision(4).HasColumnName("EJERCICIO");
             builder.Property(e => e.NoViat).HasPrecision(5).HasColumnName("NOVIAT");

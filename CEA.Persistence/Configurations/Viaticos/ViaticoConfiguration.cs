@@ -8,7 +8,7 @@ namespace CEA.Persistence.Configurations.Viaticos
     {
         public void Configure(EntityTypeBuilder<Viatico> builder)
         {
-            builder.HasKey(e => new { e.Oficina, e.Ejercicio, e.NoViat });
+            builder.HasKey(e => e.Id);
 
             builder.ToTable("VIATICOS");
             builder.Property(e => e.Id).HasColumnName("ID");

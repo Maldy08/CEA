@@ -1,6 +1,7 @@
 
 
 using CEA.Application.Extensions;
+using CEA.Domain.Settings;
 using CEA.Infrastructure.Extensions;
 using CEA.Persistence.Extensions;
 
@@ -15,6 +16,7 @@ builder.Services.AddPersistenceLayer(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
 builder.Services.AddCors(options =>
 {
@@ -22,17 +24,19 @@ builder.Services.AddCors(options =>
     {
         builder.AllowAnyOrigin()
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .Build();
     });
 });
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 //app.UseAuthorization();
+app.UseCors("CorsPolicy");
 app.MapControllers();
 app.Run();

@@ -65,9 +65,16 @@ namespace CEA.Persistence.Repositories
         public async Task<int> Save(CancellationToken cancellationToken)
         {
             return await _dbContext.SaveChangesAsync(cancellationToken);
+            
         }
 
         public Task<int> SaveAndRemoveCache(CancellationToken cancellationToken, params string[] cacheKeys)
+        {
+
+            throw new NotImplementedException();
+        }
+
+        public Task<int> Delete(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

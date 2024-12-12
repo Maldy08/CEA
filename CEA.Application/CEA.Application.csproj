@@ -22,9 +22,4 @@
     <PackageReference Include="PDFsharp" Version="1.50.5147" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Transparencia\Commands\DeleteBitacora\" />
-    <Folder Include="Features\Transparencia\Commands\UpdateBitacora\" />
-  </ItemGroup>
-
 </Project>

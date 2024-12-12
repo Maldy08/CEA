@@ -18,7 +18,26 @@ namespace CEA.Persistence.Repositories.Transparencia
 
         public async Task<List<GetFormatoByUserIdDto>> GetFormatoByUserId(int id)
         {
-            var result = await _context.Usuarios
+            var result = new List<GetFormatoByUserIdDto>();
+
+            if (id == 16) { 
+                 result = await _context.Reporte
+                  .Select(a => new GetFormatoByUserIdDto
+                  {
+                      IdDepto = 99,
+                      Reporte = new List<ReporteDto>
+                      {
+                          new ReporteDto
+                          {
+                              Nombre = a.Nombre,
+                              Codigo = a.Codigo
+                          }
+                      }
+                  }).ToListAsync();
+            
+            }
+
+             result = await _context.Usuarios
                   .Where(x => x.IdUsuario == id)
                   .Include(dep => dep.IdDeptoNavigation.AccesoReportes)
                   .ThenInclude(rep => rep.Reporte)
@@ -58,6 +77,12 @@ namespace CEA.Persistence.Repositories.Transparencia
                      Hipervinculo = a.Hipervinculo != null ? a.Hipervinculo : "",
                  }).OrderBy(a => a.Nombre)
                  .ToListAsync();
+        }
+
+        public async Task<string> GetCodigoByFormato(string nombreFormato)
+        {
+           return await _context.Reporte.Where(x => x.Nombre == nombreFormato)
+                .Select(a => a.Codigo).FirstOrDefaultAsync();
         }
     }
 }

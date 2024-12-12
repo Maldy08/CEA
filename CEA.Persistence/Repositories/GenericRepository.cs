@@ -20,7 +20,14 @@ namespace CEA.Persistence.Repositories
 
         public async Task<T> AddAsync(T entity)
         {
-            await _dbContext.Set<T>().AddAsync(entity);
+           try
+            {
+                await _dbContext.Set<T>().AddAsync(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
             return entity;
         }
 
@@ -46,7 +53,14 @@ namespace CEA.Persistence.Repositories
         public  Task UpdateAsync(T entity)
         {
             T exist = _dbContext.Set<T>().Find(entity.Id);
-            _dbContext.Entry(exist).CurrentValues.SetValues(entity);
+            try
+            {
+                _dbContext.Entry(exist).CurrentValues.SetValues(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
             return Task.CompletedTask;
         }
     }

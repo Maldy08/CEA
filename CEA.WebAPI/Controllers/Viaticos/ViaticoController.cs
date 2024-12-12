@@ -5,6 +5,7 @@ using CEA.Application.Features.Viaticos.Generates;
 using CEA.Application.Features.Viaticos.Queries.GetAllByEjercicioDepto;
 using CEA.Application.Features.Viaticos.Queries.GetAllByEjercicioOficinaNoviat;
 using CEA.Application.Features.Viaticos.Queries.GetAllViaticosByEjercicioAndOficina;
+using CEA.Application.Features.Viaticos.Queries.GetDetalleViaticoByEjercicioNoviatOficina;
 using CEA.Application.Features.Viaticos.Queries.GetFormatoComisionByOficinaEjercicioNoviat;
 using CEA.Application.Features.Viaticos.Queries.GetNoViat;
 using CEA.Application.Features.Viaticos.Queries.ListaViaticosPorEmpleado;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CEA.WebAPI.Controllers.Viaticos
 {
 
+  
     public class ViaticoController : ApiControllerBaseViaticos
     {
         private readonly IMediator _mediator;
@@ -30,13 +32,7 @@ namespace CEA.WebAPI.Controllers.Viaticos
             return await _mediator.Send(new GetAllViaticosByEjercicioAndOficinaQuery(ejercicio, oficina));
         }
 
-        [HttpPost("CreateViatico")]
-        public async Task<ActionResult<Result<int>>> CreateViatico(CreateViaticoCommand command)
-        {
-            return await _mediator.Send(command);
-        }
-
-        [HttpGet("GetNoViat")]
+        [HttpGet("GetNoViat/{ejercicio}/{oficina}")]
         public async Task<ActionResult<Result<int>>> GetNoViat(int ejercicio, int oficina)
         {
             return await _mediator.Send(new GetNoViatQuery(ejercicio, oficina));
@@ -48,32 +44,26 @@ namespace CEA.WebAPI.Controllers.Viaticos
             return await _mediator.Send(new GetAllByEjercicioDeptoQuery(ejercicio, empleado));
         }
 
-        [HttpGet("ListaViaticosPorEmpleado")]
+        [HttpGet("ListaViaticosPorEmpleado/{ejercicio}/{empleado}")]
         public async Task<ActionResult<Result<List<ViaticosPorEmpleadoDto>>>> ListaViaticosPorEmpleado(int ejercicio, int empleado)
         {
             return await _mediator.Send(new ListaViatosPorEmpleadoQuery(ejercicio, empleado));
         }
 
-        [HttpGet("GetAllByEjercicioOficinaNoviat")]
+        [HttpGet("GetAllByEjercicioOficinaNoviat/{ejercicio}/{oficina}/{noviat}")]
         public async Task<ActionResult<Result<GetAllViaticosDto>>> GetAllByEjercicioOficinaNoviat(int ejercicio, int oficina, int noviat)
         {
             return await _mediator.Send(new GetAllByEjercicioOficinaNoviatQuery(ejercicio, oficina, noviat));
         }
 
         [HttpGet("GetFormatoComisionByOficinaEjercicioNoviat")]
-        public async Task<ActionResult<Result<FormatoComisionDto>>>
-            GetFormatoComisionByOficinaEjercicioNoviat(int oficina, int ejercicio, int noViat)
+        public async Task<ActionResult<Result<FormatoComisionDto>>> GetFormatoComisionByOficinaEjercicioNoviat(int oficina, int ejercicio, int noViat)
         {
             return await _mediator.Send(new GetFormatoComisionByOficinaEjercicioNoviatQuery(oficina, ejercicio, noViat));
         }
 
-        [HttpPut("UpdateViatico")]
-        public async Task<ActionResult<Result<int>>> UpdateViatico(UpdateViaticoCommand command)
-        {
-            return await _mediator.Send(command);
-        }
 
-        [HttpGet("FormatoComision")]
+        [HttpGet("FormatoComision/{oficina}/{ejercicio}/{noviat}")]
         public async Task<ActionResult> FormatoComision(int oficina, int ejercicio, int noviat)
         {
             var result = await _mediator.Send(new GenerateFormatoComisionPdf(oficina, ejercicio, noviat));
@@ -82,7 +72,7 @@ namespace CEA.WebAPI.Controllers.Viaticos
             // return await _mediator.Send(new GenerateFormatoComisionPdf(oficina, ejercicio,noviat));
         }
 
-        [HttpGet("ReciboViatico")]
+        [HttpGet("ReciboViatico/{ejercicio}/{oficina}/{noviat}")]
 
         public async Task<ActionResult> ReciboViatico(int ejercicio, int oficina, int noviat)
         {
@@ -90,7 +80,7 @@ namespace CEA.WebAPI.Controllers.Viaticos
             return new FileStreamResult(result, "application/pdf") { FileDownloadName = "ReciboViatico.pdf" };
         }
 
-        [HttpGet("InformeActividades")]
+        [HttpGet("InformeActividades/{ejercicio}/{oficina}/{noviat}")]
 
         public async Task<ActionResult> InformeActividades(int ejercicio, int oficina, int noviat)
         {
@@ -98,13 +88,33 @@ namespace CEA.WebAPI.Controllers.Viaticos
             return new FileStreamResult(result, "application/pdf") { FileDownloadName = "InformeActividades.pdf" };
         }
 
-        [HttpGet("TresFormatos")]
+        [HttpGet("TresFormatos/{ejercicio}/{oficina}/{noviat}")]
 
         public async Task<ActionResult> TresFormatos(int ejercicio, int oficina, int noviat)
         {
             var result = await _mediator.Send(new GenerateFormatosPdf(ejercicio, oficina, noviat));
-            return new FileStreamResult(result, "application/pdf") { FileDownloadName = "Formatos.pdf" };
+            return new FileStreamResult(result, "application/pdf") { FileDownloadName = $"V{oficina}-{noviat}-{ejercicio}.pdf" };
         }
+
+        [HttpPost]
+        public async Task<ActionResult<Result<int>>> CreateViatico(CreateViaticoCommand command)
+        {
+            return await _mediator.Send(command);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<Result<int>>> UpdateViatico(UpdateViaticoCommand command)
+        {
+            return await _mediator.Send(command);
+        }
+
+        [HttpGet("DetalleViatico/{ejercicio:int}/{noviat:int}/{oficina:int}")]
+
+        public async Task<ActionResult<Result<ViaticoDetalleDto>>> GetAllViaticosByEjercicioAndNoviatAndOficina(int ejercicio, int noviat, int oficina)
+        {
+            return await _mediator.Send(new GetDetalleViaticoByEjercicioNoviatOficinaQuery(ejercicio, noviat, oficina));
+        }
+
 
 
     }

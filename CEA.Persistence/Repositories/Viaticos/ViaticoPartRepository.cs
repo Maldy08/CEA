@@ -17,5 +17,16 @@ namespace CEA.Persistence.Repositories.Viaticos
         {
             return await _repository.Entities.Where(x => x.Oficina == oficina && x.Ejercicio == ejercicio && x.NoViat == noviat && x.Partida == partida).FirstOrDefaultAsync();
         }
+
+        public async Task<ViaticoPart> GetByOficinaEjercicioNoviat(int oficina, int ejercicio, int noviat)
+        {
+            return await _repository.Entities.Where(x => x.Oficina == oficina && x.Ejercicio == ejercicio && x.NoViat == noviat ).FirstOrDefaultAsync();
+        }
+
+        public async Task<int> InsertAsync(ViaticoPart viaticoPart)
+        {
+            await _repository.AddAsync(viaticoPart);
+            return viaticoPart.Id;
+        }
     }
 }

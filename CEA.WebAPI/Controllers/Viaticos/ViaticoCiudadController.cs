@@ -1,32 +1,40 @@
-﻿using CEA.Application.Interfaces.Repositories;
-using CEA.Domain.Entities.Viaticos;
-using Microsoft.AspNetCore.Http;
+﻿using CEA.Application.DTOs.Viaticos;
+using CEA.Application.Features.Viaticos.Queries.GetAllViaticoCiudades;
+using CEA.Application.Features.Viaticos.Queries.GetViaticoCiudadesByEstado;
+using CEA.Application.Features.Viaticos.Queries.GetViaticoCiudadesById;
+using CEA.Shared.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Viaticos
 {
+    [Route("api/Viaticos/Ciudades")]
     public class ViaticoCiudadController : ApiControllerBaseViaticos
     {
+        private readonly IMediator _mediator;
 
-        private readonly IGenericRepository<ViaticoCiudad> _viaticoCiudadRepository;
-
-        public ViaticoCiudadController(IGenericRepository<ViaticoCiudad> viaticoCiudadRepository)
+        public ViaticoCiudadController(IMediator mediator)
         {
-            _viaticoCiudadRepository = viaticoCiudadRepository;
+            _mediator = mediator;
         }
 
+
         [HttpGet]
-        public async Task<ActionResult<List<ViaticoCiudad>>> GetAll()
+        public async Task<ActionResult<Result<List<ViaticoCiudadDto>>>> GetAll()
         {
-            var viaticoCiudades = await _viaticoCiudadRepository.GetAllAsync();
-            return Ok(viaticoCiudades);
+            return await _mediator.Send(new GetAllViaticoCiudadesQuery());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ViaticoCiudad>> GetById(int id)
+        public async Task<ActionResult<Result<ViaticoCiudadDto>>> GetById(int id)
         {
-            var viaticoCiudad = await _viaticoCiudadRepository.GetByIdAsync(id);
-            return Ok(viaticoCiudad);
+            return await _mediator.Send(new GetViaticoCiudadesByIdQuery(id));
+        }
+
+        [HttpGet("Estado/{idEstado}")]
+        public async Task<ActionResult<Result<List<ViaticoCiudadDto>>>> GetByIdEstado(int idEstado)
+        {
+            return await _mediator.Send(new GetViaticoCiudadesByEstadoQuery(idEstado));
         }
     }
 }

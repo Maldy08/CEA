@@ -1,5 +1,6 @@
 ﻿using CEA.Application.DTOs;
 using CEA.Application.Services;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CEA.Infrastructure.Services
 {
@@ -7,10 +8,19 @@ namespace CEA.Infrastructure.Services
     {
 
         protected readonly string rutaPredeterminada = "C:\\ceatransparencia\\";
+        protected readonly string rutaPredeterminadaOficios = "C:\\ceatransparencia\\oficios\\";
+
         public Task DownloadFileById(int fileName)
         {
            
             throw new NotImplementedException();
+        }
+
+        public async Task PostFileAsync(FileUploadDto fileData)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), rutaPredeterminadaOficios, fileData.FolderName, fileData.FileName);
+            await using var fileStream = new FileStream(filePath, FileMode.Create);
+            await fileData.File.CopyToAsync(fileStream);
         }
 
         public async Task PostMultiFileAsync(List<FileUploadDto> fileData)

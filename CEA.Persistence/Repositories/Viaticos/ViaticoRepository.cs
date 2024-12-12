@@ -38,7 +38,7 @@ namespace CEA.Persistence.Repositories.Viaticos
             var conteo = await _repository.Entities.Where(x => x.Ejercicio == ejercicio && x.Oficina == oficina).CountAsync();
             if (conteo > 0)
             {
-                result = _repository.Entities.Where(x => x.Ejercicio == ejercicio && x.Oficina == oficina).Max(x => x.NoViat) + 1;
+                result = _repository.Entities.Where(x => x.Ejercicio == ejercicio && x.Oficina == oficina).Max(x => x.NoViat) ;
             }
             else
             {

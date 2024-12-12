@@ -12,5 +12,6 @@ namespace CEA.Application.DTOs.Transparencia
         public int trimestre { get; set; }
         public int periodo { get; set; }
         public List<IFormFile> archivos { get; set; } = new List<IFormFile>();
+        public string Hipervinculo { get; set; } = string.Empty;
     }
 }

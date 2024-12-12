@@ -7,5 +7,6 @@ namespace CEA.Application.Interfaces.Repositories.Transparencia
     {
         Task<List<GetFormatoByUserIdDto>> GetFormatoByUserId(int id);
         Task<GetNombreFormatoDto> GetNombreFormatoByUserId(string nombreFormato);
+        Task<string> GetCodigoByFormato(string nombreFormato);
     }
 }

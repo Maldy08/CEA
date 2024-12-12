@@ -1,6 +1,11 @@
-﻿using CEA.Application.DTOs.Viaticos;
+﻿using CEA.Application.DTOs.Oficios;
+using CEA.Application.DTOs.Vehiculos;
+using CEA.Application.DTOs.Viaticos;
 using CEA.Domain.Common;
 using CEA.Domain.Common.Interfaces;
+using CEA.Domain.Entities;
+using CEA.Domain.Entities.Oficios;
+using CEA.Domain.Entities.RecursosHumanos;
 using CEA.Domain.Entities.Viaticos;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -18,11 +23,40 @@ namespace CEA.Persistence.Context
             _dispatcher = dispatcher;
         }
 
-        public DbSet<Viatico> Viatico => Set<Viatico>();
-        public DbSet<ViaticosPorEmpleadoDto> ViaticosPorEmpleadosDto => Set<ViaticosPorEmpleadoDto>();
+        //General
+        public DbSet<User> Usuarios => Set<User>();
 
+        //Viaticos
+        public DbSet<Viatico> Viatico => Set<Viatico>();
+        public DbSet<ViaticoCiudad> ViaticoCiudad => Set<ViaticoCiudad>();
+        public DbSet<ViaticosPorEmpleadoDto> ViaticosPorEmpleadosDto => Set<ViaticosPorEmpleadoDto>();
+        public DbSet<ViaticoPais> ViaticoPais => Set<ViaticoPais>();
+        public DbSet<ViaticoOfi> ViaticoOficina => Set<ViaticoOfi>();
+        public DbSet<ViaticoPart> ViaticoPart => Set<ViaticoPart>();
+        public DbSet<ViaticoDetalleDto> ViaticoDetalleDto => Set<ViaticoDetalleDto>();
+
+        //Transparencia
         public DbSet<FormatoComisionDto> FormatoComisionDto => Set<FormatoComisionDto>();
-  
+
+        //Recursos Humanos
+        public DbSet<Empleado> Empleado => Set<Empleado>();
+        public DbSet<DeptoUe> DeptoUe => Set<DeptoUe>();
+
+        //Vehiculos
+        public DbSet<VsWtVehiculosDto> VsWtVehiculos => Set<VsWtVehiculosDto>();
+        public DbSet<VsListaVehiculosDto> VsListaVehiculos => Set<VsListaVehiculosDto>();
+
+        //Oficios
+        public DbSet<Oficio> Oficio => Set<Oficio>();
+        public DbSet<OficioDto> OficioDto => Set<OficioDto>();
+        public DbSet<OficioEstatus> OficioEstatus => Set<OficioEstatus>();
+        public DbSet<OficioBitacora> OficioBitacora => Set<OficioBitacora>();
+        public DbSet<OficioResponsable> OficioResponsable => Set<OficioResponsable>();
+        public DbSet<OficioUsuExt> OficioUsuExt => Set<OficioUsuExt>();
+        public DbSet<OficioXexpedir> OficioXexpedir => Set<OficioXexpedir>();
+        public DbSet<OficioParametro> OficioParametro => Set<OficioParametro>();
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
