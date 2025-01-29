@@ -86,7 +86,8 @@ namespace CEA.Persistence.Extensions
                 .AddTransient<IOficioEstatusRepository, OficioEstatusRepository>()
                 .AddTransient<IOficioUsuExtRepository, OficioUsuExtRepository>()
                 .AddTransient<IOficioResponsableRepository, OficioResponsableRepository>()
-                .AddTransient<IOficioParametroRepository, OficioParametroRepository>();
+                .AddTransient<IOficioParametroRepository, OficioParametroRepository>()
+                .AddTransient<IOficioFunctions, OficioFunctions>();
 
                
         }

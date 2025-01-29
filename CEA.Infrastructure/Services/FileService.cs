@@ -12,8 +12,16 @@ namespace CEA.Infrastructure.Services
 
         public Task DownloadFileById(int fileName)
         {
-           
+
             throw new NotImplementedException();
+        }
+
+        public async Task<MemoryStream> DownloadPdf(string path)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), rutaPredeterminadaOficios, path);
+            var pdfBytes = await File.ReadAllBytesAsync(filePath);
+            var memoryStream = new MemoryStream(pdfBytes);
+            return memoryStream;
         }
 
         public async Task PostFileAsync(FileUploadDto fileData)

@@ -20,10 +20,13 @@ namespace CEA.Persistence.Repositories.Oficios
         {
             return await _context.OficioParametro.Select(x => new OficioParametroDto
             {
+             
+                Id = x.Id,
                 Ejercicio = x.Ejercicio,
                 NextFRec = x.NextFRec,
                 NextFEnv = x.NextFEnv,
                 NextFXexp = x.NextFXexp,
+                
             }).FirstOrDefaultAsync(x => x.Ejercicio == ejercicio);
         }
     }

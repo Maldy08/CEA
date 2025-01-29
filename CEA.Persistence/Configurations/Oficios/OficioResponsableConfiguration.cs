@@ -13,7 +13,7 @@ namespace CEA.Persistence.Configurations.Oficios
     {
         public void Configure(EntityTypeBuilder<OficioResponsable> entity)
         {
-            entity.HasKey(e => new { e.Ejercicio, e.Folio, e.Eor })
+            entity.HasKey(e => e.Id)
               .HasName("OFICIOS_RESPONSABLE_PK");
 
             entity.ToTable("OFICIOS_RESPONSABLE");

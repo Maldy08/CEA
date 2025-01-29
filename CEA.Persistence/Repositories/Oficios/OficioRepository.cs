@@ -23,6 +23,7 @@ namespace CEA.Persistence.Repositories.Oficios
 
         public async Task<OficioDto> GetOficioByFolio(int ejercicio, int eor, int folio)
         {
+            var oficio = await _context.OficioDto.Where(x => x.Eor == eor && x.Folio == folio && x.Ejercicio == ejercicio).FirstOrDefaultAsync();
             return await _context.OficioDto.Where(x => x.Eor == eor && x.Folio == folio && x.Ejercicio == ejercicio ).FirstOrDefaultAsync();
         }
 
@@ -32,20 +33,24 @@ namespace CEA.Persistence.Repositories.Oficios
         }
 
 
-
         public async Task<List<OficioDto>> GetOficiosUsuarios(int ejercicio, int eor, int idEmpleado, int idDepto)
         {
            return await _context.OficioDto.Where(x => x.Ejercicio == ejercicio && x.Eor == eor && x.IdEmpleado == idEmpleado && x.Depto == idDepto).ToListAsync();
         }
 
-        public  async Task<List<Oficio>> GetOficiosMCByEjercicio(int eor, int ejercicio)
+        public  async Task<List<OficioDto>> GetOficiosMCByEjercicio(int eor, int ejercicio)
         {
-            return await _context.Oficio.Where(x => x.Eor == eor && x.Ejercicio == ejercicio).ToListAsync();
+            return await _context.OficioDto.Where(x => x.Eor == eor && x.Ejercicio == ejercicio).ToListAsync();
         }
 
         public async Task<Oficio> GetOficio(int ejercicio, int folio, int eor)
         {
            return await _context.Oficio.Where(x => x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<OficioDtoFunction>> GetListadoOficioFunction(int ejercicio, int eor, int idEmpleado)
+        {
+            return await _context.OficioDtoFunction.FromSqlInterpolated($"SELECT * FROM TABLE (F_LISTADOOFICIOS({ejercicio},{eor},{idEmpleado}))").ToListAsync();
         }
     }
 }

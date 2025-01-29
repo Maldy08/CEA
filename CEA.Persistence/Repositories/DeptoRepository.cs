@@ -1,7 +1,9 @@
 ﻿
 
 using CEA.Application.DTOs;
+using CEA.Application.DTOs.Oficios;
 using CEA.Application.Interfaces.Repositories;
+using CEA.Domain.Entities.RecursosHumanos;
 using CEA.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +17,12 @@ namespace CEA.Persistence.Repositories
         {
             _context = context;
         }
+
+        public async Task<List<OficioListaDepartamentosDto>> GetDepartamentosAsync(int depto, int ejercicio)
+        {
+            return await _context.oficioListaDepartamentosDtos.FromSqlInterpolated($"SELECT * FROM TABLE (LISTA_DEPARTAMENTOS({depto},{ejercicio}))").ToListAsync();
+        }
+
         public  async Task<DeptoUeDto> GetDeptoByIdAsync(int id)
         {
 

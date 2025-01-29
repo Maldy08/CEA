@@ -44,7 +44,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficioFolio
                 NextFEnv = request.NextFEnv,
                 NextFXexp = request.NextFXexp,
                 NextFRec = request.NextFRec,
-                Id = 1
+                Id = parametros.Id,
             };
 
             await _unitOfWork.Repository<OficioParametro>().UpdateAsync(oficioParametro);

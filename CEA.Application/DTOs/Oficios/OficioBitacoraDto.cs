@@ -17,6 +17,6 @@ namespace CEA.Application.DTOs.Oficios
         public string Comentarios { get; set; } = string.Empty;
 
         [NotMapped]
-        public string Usuario { get; set; } = string.Empty;
+        public string? Usuario { get; set; } = string.Empty;
     }
 }

@@ -21,9 +21,10 @@ namespace CEA.Persistence.Repositories.Oficios
         public async Task<List<OficioResponsableDto>> GetOficioReponsableByEjercicioFolioEor(int ejercicio, int folio, int eor)
         {
 
-            var oficios = await _context.OficioResponsable.Where(x =>  x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor)
+            var oficios = await _context.OficioResponsable.Where(x => x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor)
                 .Select(x => new OficioResponsableDto
                 {
+                    Id = x.Id,
                     Ejercicio = x.Ejercicio,
                     Folio = x.Folio,
                     Eor = x.Eor,
@@ -35,6 +36,7 @@ namespace CEA.Persistence.Repositories.Oficios
             return await _context.OficioResponsable.Where(x => x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor)
                 .Select(x => new OficioResponsableDto
                 {
+                    Id = x.Id,
                     Ejercicio = x.Ejercicio,
                     Folio = x.Folio,
                     Eor = x.Eor,
@@ -42,6 +44,49 @@ namespace CEA.Persistence.Repositories.Oficios
                     Rol = x.Rol,
 
                 }).OrderBy(x => x.Ejercicio).ThenBy(x => x.Folio).ThenBy(x => x.Eor).ToListAsync();
+        }
+
+        public async Task<List<OficioResponsableDto>> GetOficioReponsableByEjercicioFolioEor(int ejercicio, int folio, int eor, int rol)
+        {
+            var entities = await _context.OficioResponsable.Where(x => x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor && x.Rol == rol)
+                .Select(x => new OficioResponsableDto
+                {
+                    Id = x.Id,
+                    Ejercicio = x.Ejercicio,
+                    Folio = x.Folio,
+                    Eor = x.Eor,
+                    IdEmpleado = x.IdEmpleado,
+                    Rol = x.Rol,
+                }).OrderBy(x => x.Ejercicio).ThenBy(x => x.Folio).ThenBy(x => x.Eor).ToListAsync(); 
+
+
+            return await _context.OficioResponsable.Where(x => x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor && x.Rol == rol)
+                .Select(x => new OficioResponsableDto
+                {
+                    Id = x.Id,
+                    Ejercicio = x.Ejercicio,
+                    Folio = x.Folio,
+                    Eor = x.Eor,
+                    IdEmpleado = x.IdEmpleado,
+                    Rol = x.Rol,
+
+                }).OrderBy(x => x.Ejercicio).ThenBy(x => x.Folio).ThenBy(x => x.Eor).ToListAsync();
+        }
+
+        public async Task<OficioResponsableDto> GetOficioResponsableByEjercicioFolioEorIdEmpleadoRol(int ejercicio, int folio, int eor, int idEmpleado, int rol)
+        {
+            return await _context.OficioResponsable.Where(x => x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor && x.IdEmpleado == idEmpleado && x.Rol == rol)
+                .Select(x => new OficioResponsableDto
+                {
+
+                    Ejercicio = x.Ejercicio,
+                    Folio = x.Folio,
+                    Eor = x.Eor,
+                    IdEmpleado = x.IdEmpleado,
+                    Rol = x.Rol,
+                    Id = x.Id,
+
+                }).FirstOrDefaultAsync();
         }
     }
 }

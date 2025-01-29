@@ -17,10 +17,9 @@ namespace CEA.Persistence.Repositories
 
         public IQueryable<T> Entities => _dbContext.Set<T>();
 
-
         public async Task<T> AddAsync(T entity)
         {
-           try
+            try
             {
                 await _dbContext.Set<T>().AddAsync(entity);
             }
@@ -33,24 +32,46 @@ namespace CEA.Persistence.Repositories
 
         public Task DeleteAsync(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
+
+            try
+            {
+                T exist = _dbContext.Set<T>().Find(entity.Id);
+                _dbContext.Entry(exist).State = EntityState.Deleted;
+                _dbContext.Set<T>().Remove(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
             return Task.CompletedTask;
         }
 
         public async Task<List<T>> GetAllAsync()
         {
-            return await _dbContext
-                 .Set<T>()
-                 .ToListAsync();
+            try
+            {
+                return await _dbContext.Set<T>().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _dbContext.Set<T>().FindAsync(id);
+            try
+            {
+                return await _dbContext.Set<T>().FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
 
-        public  Task UpdateAsync(T entity)
+        public Task UpdateAsync(T entity)
         {
             T exist = _dbContext.Set<T>().Find(entity.Id);
             try

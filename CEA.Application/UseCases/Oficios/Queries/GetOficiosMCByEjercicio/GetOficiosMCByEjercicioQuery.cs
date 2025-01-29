@@ -7,7 +7,7 @@ using MediatR;
 
 namespace CEA.Application.UseCases.Oficios.Queries.GetOficiosMCByEjercicio
 {
-    public record GetOficiosMCByEjercicioQuery : IRequest<Result<List<Oficio>>>
+    public record GetOficiosMCByEjercicioQuery : IRequest<Result<List<OficioDto>>>
     {
         public int Eor { get; set; }
         public int Ejercicio { get; set; }
@@ -18,7 +18,7 @@ namespace CEA.Application.UseCases.Oficios.Queries.GetOficiosMCByEjercicio
             Ejercicio = ejercicio;
         }
 
-        internal class GetOficiosMCByEjercicioQueryHandler : IRequestHandler<GetOficiosMCByEjercicioQuery, Result<List<Oficio>>>
+        internal class GetOficiosMCByEjercicioQueryHandler : IRequestHandler<GetOficiosMCByEjercicioQuery, Result<List<OficioDto>>>
         {
 
             private readonly IMediator _mediator;
@@ -30,14 +30,14 @@ namespace CEA.Application.UseCases.Oficios.Queries.GetOficiosMCByEjercicio
                 _oficioRepository = oficioRepository;
             }
 
-            public async Task<Result<List<Oficio>>> Handle(GetOficiosMCByEjercicioQuery request, CancellationToken cancellationToken)
+            public async Task<Result<List<OficioDto>>> Handle(GetOficiosMCByEjercicioQuery request, CancellationToken cancellationToken)
             {
                var oficios = await _oficioRepository.GetOficiosMCByEjercicio(request.Eor, request.Ejercicio);
                 foreach (var oficio in oficios)
                 {
-                    oficio.OficiosResponsables.Add(new OficioResponsable { Ejercicio = 2024, Eor = 2, Folio = 1, IdEmpleado = 7148, Rol = 1 });
+                    oficio.OficiosResponsables.Add(new OficioResponsableDto { Ejercicio = 2024, Eor = 2, Folio = 1, IdEmpleado = 7148, Rol = 1 });
                 }
-                return await Result<List<Oficio>>.SuccessAsync(oficios);
+                return await Result<List<OficioDto>>.SuccessAsync();
             }
         }
     }

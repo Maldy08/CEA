@@ -7,6 +7,7 @@ namespace CEA.Application.DTOs.Oficios
 {
     public class OficioParametroDto : IMapFrom<OficioParametro>
     {
+        public int Id { get; set; }
         public int Ejercicio { get; set; }
         public int NextFRec { get; set; }
         public int NextFEnv { get; set; }

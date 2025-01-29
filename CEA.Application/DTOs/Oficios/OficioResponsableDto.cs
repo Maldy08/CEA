@@ -10,6 +10,7 @@ namespace CEA.Application.DTOs.Oficios
 {
     public class OficioResponsableDto : IMapFrom<OficioResponsable>
     {
+        public int Id { get; set; }
         public int Ejercicio { get; set; }
         public int Folio { get; set; }
         public int Eor { get; set; }

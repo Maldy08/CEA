@@ -1,6 +1,7 @@
 ﻿using CEA.Application.Common.Mappings;
 using CEA.Application.DTOs.Oficios;
 using CEA.Application.Interfaces.Repositories;
+using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Domain.Entities.Oficios;
 using CEA.Shared.Interfaces;
 using MediatR;
@@ -23,13 +24,18 @@ namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioBitacora
     internal class CreateOficioBitacoraCommandHandler: IRequestHandler<CreateOficioBitacoraCommand, Result<int>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CreateOficioBitacoraCommandHandler(IUnitOfWork unitOfWork)
+        private readonly IOficioRepository _oficioRepository;
+
+        public CreateOficioBitacoraCommandHandler(IUnitOfWork unitOfWork, IOficioRepository oficioRepository)
         {
             _unitOfWork = unitOfWork;
+            _oficioRepository = oficioRepository;
         }
 
         public async Task<Result<int>> Handle(CreateOficioBitacoraCommand request, CancellationToken cancellationToken)
         {
+            //var oficio = await _oficioRepository.GetOficioByFolio(request.Ejercicio, request.Folio, request.Eor);
+
             var entity = new OficioBitacora()
             {
                 Ejercicio = request.Ejercicio,

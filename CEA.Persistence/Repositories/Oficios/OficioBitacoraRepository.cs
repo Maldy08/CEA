@@ -30,7 +30,8 @@ namespace CEA.Persistence.Repositories.Oficios
                     FechaCaptura = x.FechaCaptura,
                     IdEmpleado = x.IdEmpleado,
                     Estatus = x.Estatus,
-                    Comentarios = x.Comentarios
+                    Comentarios = x.Comentarios,
+                    
                 })
                 .ToListAsync();
         }

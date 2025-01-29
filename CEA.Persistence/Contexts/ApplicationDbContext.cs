@@ -57,6 +57,13 @@ namespace CEA.Persistence.Context
         public DbSet<OficioParametro> OficioParametro => Set<OficioParametro>();
 
 
+        //Oficios Functions
+        public DbSet<OficioDtoFunction> OficioDtoFunction => Set<OficioDtoFunction>();
+        public DbSet<OficioListaDashboardDto> oficioListaDashboardDtos => Set<OficioListaDashboardDto>();
+        public DbSet<OficioContadoresDashboardDto> oficioContadoresDashboardDtos => Set<OficioContadoresDashboardDto>();
+        public DbSet<OficioListaDepartamentosDto> oficioListaDepartamentosDtos => Set<OficioListaDepartamentosDto>();
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

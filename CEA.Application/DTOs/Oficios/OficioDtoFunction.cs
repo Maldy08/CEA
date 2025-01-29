@@ -1,19 +1,20 @@
-﻿using CEA.Application.Common.Mappings;
+﻿
+
+using CEA.Application.Common.Mappings;
 using CEA.Domain.Entities.Oficios;
-using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
 
 namespace CEA.Application.DTOs.Oficios
 {
-    public class OficioDto : IMapFrom<Oficio>
+    public class OficioDtoFunction : IMapFrom<OficioDtoFunction>
     {
 
+        public string Ren {  get; set; } = string.Empty;
         public int Id { get; set; }
         public int Ejercicio { get; set; }
         public int Folio { get; set; }
         public int Eor { get; set; }
-        public int Tipo { get; set; }
+        public string Tipo { get; set; } = string.Empty;
         public string NoOficio { get; set; } = null!;
         public string? Pdfpath { get; set; } = string.Empty;
         public DateTime Fecha { get; set; } //Fecha del documento
@@ -29,18 +30,13 @@ namespace CEA.Application.DTOs.Oficios
         public string DestNombre { get; set; } = string.Empty;
         public string DestCargo { get; set; } = string.Empty;
         public string Tema { get; set; } = string.Empty;
-        public int Estatus { get; set; }
+        public string Estatus { get; set; } = string.Empty;
         public int? Empqentrega { get; set; }
         public string? Relacionoficio { get; set; }
         public int Depto { get; set; }
         public int DeptoRespon { get; set; }
+        public string? Observaciones { get; set; } = string.Empty;
 
-        public int IdEmpleado { get; set; }
-        public string NombreResponsable { get; set; } = string.Empty;
-        public int Rol { get; set; }
-
-        [NotMapped]
-        public IFormFile? archivo { get; set; }
 
         [NotMapped]
         public List<OficioBitacoraDto> OficioBitacora { get; set; } = new();
