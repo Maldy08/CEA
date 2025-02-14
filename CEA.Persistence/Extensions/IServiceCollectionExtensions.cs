@@ -3,7 +3,6 @@ using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Interfaces.Repositories.Transparencia;
 using CEA.Application.Interfaces.Repositories.Vehiculos;
 using CEA.Application.Interfaces.Repositories.Viaticos;
-using CEA.Application.Services;
 using CEA.Persistence.Context;
 using CEA.Persistence.Repositories;
 using CEA.Persistence.Repositories.Oficios;
@@ -31,7 +30,7 @@ namespace CEA.Persistence.Extensions
             var connectionStringSQL = configuration.GetConnectionString("SQLConnection");
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                
+
                  options.UseOracle(connectionString,
                      builder =>
                      {
@@ -79,7 +78,6 @@ namespace CEA.Persistence.Extensions
                 .AddTransient<IVsWtVehiculosRepository, VsWtVehiculosRepository>()
                 .AddTransient<IVsListaVehiculosRepository, VsListaVehiculosRepository>()
 
-
                 //Oficios
                 .AddTransient<IOficioRepository, OficioRepository>()
                 .AddTransient<IOficioBitacoraRepository, OficioBitacoraRepository>()
@@ -87,9 +85,11 @@ namespace CEA.Persistence.Extensions
                 .AddTransient<IOficioUsuExtRepository, OficioUsuExtRepository>()
                 .AddTransient<IOficioResponsableRepository, OficioResponsableRepository>()
                 .AddTransient<IOficioParametroRepository, OficioParametroRepository>()
-                .AddTransient<IOficioFunctions, OficioFunctions>();
+                .AddTransient<IOficioFunctions, OficioFunctions>()
+                .AddTransient<IOficioGpiRepository, OficioGpiRepository>();
 
-               
+
+
         }
     }
 }

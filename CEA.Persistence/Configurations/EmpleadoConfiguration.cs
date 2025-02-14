@@ -13,6 +13,7 @@ namespace CEA.Persistence.Configurations
             builder.ToView("VS_EMPLEADOS");
 
             builder.Property(e => e.Activo).HasMaxLength(2).IsUnicode(false).HasColumnName("ACTIVO");
+            builder.Property(e => e.Frecuencia).HasPrecision(2).HasColumnName("FRECUENCIA");
             builder.Property(e => e.IdEmpleado).HasPrecision(4).HasColumnName("EMPLEADO");
             builder.Property(e => e.Paterno).HasMaxLength(50).IsUnicode(false).HasColumnName("PATERNO");
             builder.Property(e => e.Materno).HasMaxLength(50).IsUnicode(false).HasColumnName("MATERNO");

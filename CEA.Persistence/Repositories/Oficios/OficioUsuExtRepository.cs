@@ -18,16 +18,16 @@ namespace CEA.Persistence.Repositories.Oficios
 
         public async Task<List<OficioUsuExtDto>> GetOficiosUsuariosExternos()
         {
-            return await _context.OficioUsuExt
+            return await _context.OficioUsuExtDto
                 .Select(o => new OficioUsuExtDto
                 {
                     IdExterno = o.IdExterno,
+                    Frecuencia = o.Frecuencia,
                     Empresa = o.Empresa,
                     Siglas = o.Siglas,
                     Nombre = o.Nombre,
                     Cargo = o.Cargo,
-                    FechaCaptura = o.FechaCaptura,
-                    Activo = o.Activo
+       
                 })
                 .ToListAsync();
         }

@@ -6,6 +6,7 @@ namespace CEA.Domain.Entities.RecursosHumanos
     {
 
         public string Activo { get; set; } = string.Empty;
+        public int Frecuencia { get; set; }
         public int IdEmpleado { get; set; }
         public string Nombre { get; set; } = string.Empty;
         public string Materno { get; set; } = string.Empty;

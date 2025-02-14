@@ -17,7 +17,7 @@ namespace CEA.Persistence.Context
     {
         private readonly IDomainEventDispatcher _dispatcher;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,
             IDomainEventDispatcher dispatcher) : base(options)
         {
             _dispatcher = dispatcher;
@@ -53,8 +53,10 @@ namespace CEA.Persistence.Context
         public DbSet<OficioBitacora> OficioBitacora => Set<OficioBitacora>();
         public DbSet<OficioResponsable> OficioResponsable => Set<OficioResponsable>();
         public DbSet<OficioUsuExt> OficioUsuExt => Set<OficioUsuExt>();
+        public DbSet<OficioUsuExtDto> OficioUsuExtDto => Set<OficioUsuExtDto>();
         public DbSet<OficioXexpedir> OficioXexpedir => Set<OficioXexpedir>();
         public DbSet<OficioParametro> OficioParametro => Set<OficioParametro>();
+        public DbSet<OficioGpi> OficioGpi => Set<OficioGpi>();
 
 
         //Oficios Functions

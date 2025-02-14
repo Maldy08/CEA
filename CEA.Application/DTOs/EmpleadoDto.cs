@@ -7,6 +7,7 @@ namespace CEA.Application.DTOs
     public class EmpleadoDto : IMapFrom<Empleado>
     {
         public string Activo { get; set; } = string.Empty;
+        public int Frecuecia { get; set; }
         public int Empleado { get; set; }
         public string Nombre { get; set; } = string.Empty;
         public string Materno { get; set; } = string.Empty;

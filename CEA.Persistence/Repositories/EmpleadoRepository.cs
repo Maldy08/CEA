@@ -103,6 +103,7 @@ namespace CEA.Persistence.Repositories
                 .Select(a => new EmpleadoDto
                 {
                     Empleado = a.IdEmpleado,
+                    Frecuecia = a.Frecuencia,
                     Nombre = a.Nombre,
                     Paterno = a.Paterno,
                     Materno = a.Materno,
@@ -120,7 +121,7 @@ namespace CEA.Persistence.Repositories
                     Correo = a.Correo,
                     DeptoPpto = a.DeptoPpto,
                     Obra = a.Obra
-                }).Where(a => a.Activo == "V" || a.Activo == "C").OrderBy(a => a.Empleado).ToListAsync();
+                }).Where(a => a.Activo == "V" || a.Activo == "C").ToListAsync();
         }
     }
 }
