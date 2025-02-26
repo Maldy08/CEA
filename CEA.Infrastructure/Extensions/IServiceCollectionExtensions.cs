@@ -23,7 +23,8 @@ namespace CEA.Infrastructure.Extensions
                 .AddTransient<IFileService, FileService>()
                 .AddTransient<IEmailService, EmailService>()
                 .AddTransient<IAuthService, AuthService>()
-                .AddTransient<IAuthServiceTransparencia, AuthServiceTransparencia>();
+                .AddTransient<IAuthServiceTransparencia, AuthServiceTransparencia>()
+                .AddTransient<IGoogleCloudService, GoogleCloudService>();
         }
     }
 }

@@ -7,6 +7,7 @@ using CEA.Application.Features.Oficios.Queries.GetOficiosByEjercicioEorIdEmplead
 using CEA.Application.Features.Oficios.Queries.GetOficiosMcByEor;
 using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Services;
+using CEA.Application.UseCases.Google;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficio;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficioFolio;
 using CEA.Application.UseCases.Oficios.Queries.GetOficioParametroByEjercicio;
@@ -153,6 +154,13 @@ namespace CEA.WebAPI.Controllers.Oficios
             }
             var file = await _fileService.DownloadPdf(oficio.Pdfpath!);
             return File(file, "application/pdf");
+        }
+
+        [HttpGet("Pruebas/{ejercicio}/{folio}/{eor}")]
+        public async Task<IActionResult> Pruebas(int ejercicio, int folio, int eor)
+        {
+            var file =  await _mediator.Send(new GetDocumentCommand(ejercicio, folio, eor));
+            return File(file.FileStream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document","Oficio.docx");
         }
 
     }

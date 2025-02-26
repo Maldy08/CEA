@@ -36,6 +36,7 @@ namespace CEA.Application.DTOs.Oficios
         public int Depto { get; set; }
         public int DeptoRespon { get; set; }
         public string? Observaciones { get; set; } = string.Empty;
+        public int Rol { get; set; }
 
 
         [NotMapped]

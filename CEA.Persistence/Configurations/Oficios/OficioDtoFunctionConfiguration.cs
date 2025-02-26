@@ -38,8 +38,7 @@ namespace CEA.Persistence.Configurations.Oficios
             entity.Property(e => e.Depto).HasColumnName("DEPTO");
             entity.Property(e => e.DeptoRespon).HasColumnName("DEPTO_RESPON");
             entity.Property(e => e.Observaciones).HasColumnName("OBSERVACIONES");
-
-
+            entity.Property(e => e.Rol).HasColumnName("ROL");
         }
     }
 }
