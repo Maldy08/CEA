@@ -51,10 +51,10 @@ namespace CEA.Application.Features.Oficios.Commands.CreateOficio
         private readonly IMediator _mediator;
 
         public CreateOficioCommandHandler(
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
             IOficioRepository oficioRepository,
-            IMapper mapper, 
-            IFileService fileService, 
+            IMapper mapper,
+            IFileService fileService,
             IOficioParametroRepository parametroRepository,
             IMediator mediator)
         {
@@ -98,9 +98,10 @@ namespace CEA.Application.Features.Oficios.Commands.CreateOficio
                 DeptoRespon = request.DeptoRespon
             };
 
-         
-            
-            if (request.archivo != null) {
+
+
+            if (request.archivo != null)
+            {
 
                 var fileDto = new FileUploadDto()
                 {
@@ -113,27 +114,27 @@ namespace CEA.Application.Features.Oficios.Commands.CreateOficio
                 oficio.Pdfpath = fileDto.FolderName + "/" + fileDto.FileName;
                 await _fileService.PostFileAsync(fileDto);
             }
-           
+
             await _unitOfWork.Repository<Oficio>().AddAsync(oficio);
 
             var command = new UpdateOficioFolioCommand()
             {
                 Ejercicio = request.Ejercicio,
                 NextFEnv = request.Eor == 1 ? oficioParamtro.NextFEnv + 1 : oficioParamtro.NextFEnv,
-                NextFRec = request.Eor == 2 ?  oficioParamtro.NextFRec + 1 : oficioParamtro.NextFRec,
-                NextFXexp = oficioParamtro.NextFXexp,
+                NextFRec = request.Eor == 2 ? oficioParamtro.NextFRec + 1 : oficioParamtro.NextFRec,
+                NextFXexp = request.Eor == 3 ? oficioParamtro.NextFXexp + 1 : oficioParamtro.NextFXexp,
             };
 
             await _mediator.Send(command);
 
-            
-  
- 
+
+
+
             oficio.AddDomainEvent(new OficioCreatedEvent(oficio));
             await _unitOfWork.Save(cancellationToken);
             return await Result<int>.SuccessAsync(oficio.Folio);
         }
-    
-    
+
+
     }
 }

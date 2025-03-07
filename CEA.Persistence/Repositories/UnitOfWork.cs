@@ -74,9 +74,10 @@ namespace CEA.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<int> Delete(CancellationToken cancellationToken)
+        public async Task Delete<T>(T entity) where T : BaseAuditableEntity
         {
-            throw new NotImplementedException();
+            var repository = Repository<T>();
+            await repository.DeleteAsync(entity);
         }
     }
 }

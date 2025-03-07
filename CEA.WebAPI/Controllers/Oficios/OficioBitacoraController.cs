@@ -31,5 +31,12 @@ namespace CEA.WebAPI.Controllers.Oficios
         {
             return new JsonResult(await _mediator.Send(command));
         }
+
+        [HttpPost("CreateBitacoraSP")]
+        public async Task<ActionResult<Result<int>>> CreateOficioBitacoraSP([FromBody] CreateOficioBitacoraSPCommand command)
+        {
+            return new JsonResult(await _mediator.Send(command));
+        }
+
     }
 }

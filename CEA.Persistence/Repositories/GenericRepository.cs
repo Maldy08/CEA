@@ -16,6 +16,7 @@ namespace CEA.Persistence.Repositories
         }
 
         public IQueryable<T> Entities => _dbContext.Set<T>();
+        
 
         public async Task<T> AddAsync(T entity)
         {
@@ -29,6 +30,7 @@ namespace CEA.Persistence.Repositories
             }
             return entity;
         }
+
 
         public Task DeleteAsync(T entity)
         {

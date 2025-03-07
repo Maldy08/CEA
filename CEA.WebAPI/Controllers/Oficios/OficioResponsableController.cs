@@ -3,6 +3,7 @@ using CEA.Application.UseCases.Oficios.Commands.CreateOficioResponsable;
 using CEA.Application.UseCases.Oficios.Commands.DeleteOficioResponsable;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficioResponsable;
 using CEA.Application.UseCases.Oficios.Queries.GetOficioResponsableByEjercicioFolioEor;
+using CEA.Application.UseCases.Oficios.Queries.GetOficiosResponsableByEjercicioFolioEor;
 using CEA.Shared.Interfaces;
 using MediatR;
 
@@ -27,6 +28,14 @@ namespace CEA.WebAPI.Controllers.Oficios
         {
             return await _mediator.Send(new GetOficioResponsableByEjercicioFolioEorQuery(ejercicio, folio, eor, rol));
         }
+
+        [HttpGet("GetOficioResponsablesByEjercicioFolioEorNew/{ejercicio}/{folio}/{eor}")]
+        public async Task<ActionResult<Result<IEnumerable<OficioResponsableDto>>>>
+            GetOficioResponsablesByEjercicioFolioEor(int ejercicio, int folio, int eor)
+        {
+            return await _mediator.Send(new GetOficiosResponsableByEjercicioFolioEorQuery(ejercicio, folio, eor));
+        }
+
 
         [HttpPost]
         public async Task<ActionResult<Result<int>>> CreateOficioResponsable([FromBody] CreateOficioResponsableCommand command)

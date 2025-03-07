@@ -12,13 +12,13 @@ namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioResponsable
     public record CreateOficioResponsableCommand : IRequest<Result<int>> , IMapFrom<OficioResponsableDto>
     {
 
-        //public List<OficioResponsableDto> oficioResponsables { get; set; } = new List<OficioResponsableDto>();
+        public List<OficioResponsableDto> oficioResponsables { get; set; } = new List<OficioResponsableDto>();
 
-        public int Ejercicio { get; set; }
-        public int Folio { get; set; }
-        public int Eor { get; set; }
-        public int IdEmpleado { get; set; }
-        public int Rol { get; set; }
+        //public int Ejercicio { get; set; }
+        //public int Folio { get; set; }
+        //public int Eor { get; set; }
+        //public int IdEmpleado { get; set; }
+        //public int Rol { get; set; }
 
 
     }
@@ -34,20 +34,22 @@ namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioResponsable
         public async Task<Result<int>> Handle(CreateOficioResponsableCommand request, CancellationToken cancellationToken)
         {
 
+            var x = "xxxx";
 
-            var entity = new OficioResponsable()
+            foreach (var oficioResponsable in request.oficioResponsables)
+            {
+                var entity = new OficioResponsable
                 {
-                    Ejercicio = request.Ejercicio,
-                    Folio = request.Folio,
-                    Eor = request.Eor,
-                    IdEmpleado = request.IdEmpleado,
-                    Rol = request.Rol,
-                    Id = 0 ,
-                    Iox = 0,
-          
+                    Ejercicio = oficioResponsable.Ejercicio,
+                    Folio = oficioResponsable.Folio,
+                    Eor = oficioResponsable.Eor,
+                    IdEmpleado = oficioResponsable.IdEmpleado,
+                    Rol = oficioResponsable.Rol
                 };
-            
-            await _unitOfWork.Repository<OficioResponsable>().AddAsync(entity);
+                await _unitOfWork.Repository<OficioResponsable>().AddAsync(entity);
+            }
+
+           // await _unitOfWork.Repository<OficioResponsable>().AddAsync(entity);
             await _unitOfWork.Save(cancellationToken);
             return await Task.FromResult(Result<int>.Success(1));
         }

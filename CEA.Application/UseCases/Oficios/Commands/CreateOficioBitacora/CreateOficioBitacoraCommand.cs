@@ -10,7 +10,7 @@ using MediatR;
 namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioBitacora
 {
 
-    public record  CreateOficioBitacoraCommand : IRequest<Result<int>> , IMapFrom<OficioBitacoraDto>
+    public record CreateOficioBitacoraCommand : IRequest<Result<int>>, IMapFrom<OficioBitacoraDto>
     {
         public int Ejercicio { get; set; }
         public int Folio { get; set; }
@@ -21,7 +21,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioBitacora
         public string Comentarios { get; set; } = string.Empty;
 
     }
-    internal class CreateOficioBitacoraCommandHandler: IRequestHandler<CreateOficioBitacoraCommand, Result<int>>
+    internal class CreateOficioBitacoraCommandHandler : IRequestHandler<CreateOficioBitacoraCommand, Result<int>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOficioRepository _oficioRepository;
@@ -48,7 +48,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioBitacora
             };
             await _unitOfWork.Repository<OficioBitacora>().AddAsync(entity);
             try
-                {
+            {
                 await _unitOfWork.Save(cancellationToken);
             }
             catch (Exception ex)
@@ -57,7 +57,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioBitacora
             }
             return await Task.FromResult(Result<int>.Success("Bitacora guardada exitosamente!"));
         }
-    
-    
+
+
     }
 }

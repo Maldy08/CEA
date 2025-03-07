@@ -7,5 +7,12 @@ namespace CEA.Application.Interfaces.Repositories.Oficios
         Task<List<OficioDtoFunction>> GetListadoOficioFunction(int ejercicio, int eor, int idEmpleado);
         Task<List<OficioContadoresDashboardDto>> GetContadoresDashboard(int ejercicio, int idEmpleado);
         Task<List<OficioListaDashboardDto>> GetListaDashboard(int ejercicio, int idEmpleado);
+        Task SaveBitacoraOficio(List<OficioBitacoraDto> bitacoraOficio);
+        string ConvertOficioBitacoraDtoToXml(List<OficioBitacoraDto> datos);
+
+        Task SaveOficioSP(OficioDto oficioDto);
+
+        string ConvertOficioDtoToXml(OficioDto oficioDto);
+
     }
 }
