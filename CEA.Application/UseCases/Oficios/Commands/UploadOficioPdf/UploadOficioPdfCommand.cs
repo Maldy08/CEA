@@ -37,8 +37,8 @@ namespace CEA.Application.UseCases.Oficios.Commands.UploadOficioPdf
             {
                 File = request.FileUploadDto.File!,
                 FileName = request.FileUploadDto.Ejercicio + "-" + request.FileUploadDto.Eor + "-" + request.FileUploadDto.Folio + ".pdf",
-                FolderName = request.FileUploadDto.Eor == 1 ? "oficios-expedidos" : "oficios-recibidos",
-                FilePath = request.FileUploadDto.Eor == 1 ? "oficios-expedidos" : "oficios-recibidos"
+                FolderName = request.FileUploadDto.Eor == 1 ? "OFICIOS-EXPEDIDOS" : "OFICIOS-RECIBIDOS",
+                FilePath = request.FileUploadDto.Eor == 1 ? "OFICIOS-EXPEDIDOS" : "OFICIOS-RECIBIDOS"
 
             };
 

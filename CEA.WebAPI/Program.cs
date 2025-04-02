@@ -2,6 +2,7 @@
 
 using CEA.Application.Extensions;
 using CEA.Domain.Settings;
+using CEA.Infrastructure;
 using CEA.Infrastructure.Extensions;
 using CEA.Persistence.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplicationLayer();
 builder.Services.AddInfrastructureLayer();
 builder.Services.AddPersistenceLayer(builder.Configuration);
+builder.Services.Configure<FileServiceOptions>(builder.Configuration.GetSection("FileServiceOptions"));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
