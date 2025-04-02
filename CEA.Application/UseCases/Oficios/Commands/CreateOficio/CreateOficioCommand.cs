@@ -69,11 +69,25 @@ namespace CEA.Application.Features.Oficios.Commands.CreateOficio
         public async Task<Result<int>> Handle(CreateOficioCommand request, CancellationToken cancellationToken)
         {
             var oficioParamtro = await _parametroRepository.GetOficioParametroByEjercicio(request.Ejercicio);
+            int folio = 0;
+
+            switch (request.Eor)
+            {
+                case 1:
+                    folio = oficioParamtro.NextFEnv;
+                    break;
+                case 2:
+                    folio = oficioParamtro.NextFRec;
+                    break;
+                case 3:
+                    folio = oficioParamtro.NextFXexp;
+                    break;
+            }
 
             var oficio = new Oficio
             {
                 Ejercicio = request.Ejercicio,
-                Folio = request.Eor == 1 ? oficioParamtro.NextFEnv : oficioParamtro.NextFRec,
+                Folio = folio,
                 Eor = request.Eor,
                 Tipo = request.Tipo,
                 NoOficio = request.NoOficio,
@@ -127,14 +141,18 @@ namespace CEA.Application.Features.Oficios.Commands.CreateOficio
 
             await _mediator.Send(command);
 
-
-
-
             oficio.AddDomainEvent(new OficioCreatedEvent(oficio));
-            await _unitOfWork.Save(cancellationToken);
-            return await Result<int>.SuccessAsync(oficio.Folio);
-        }
+            try
+            {
+                await _unitOfWork.Save(cancellationToken);
+                return await Result<int>.SuccessAsync(oficio.Folio);
+            }
+            catch (Exception ex)
+            {
+                return await Result<int>.FailureAsync(ex.Message);
 
+            }
+        }
 
     }
 }

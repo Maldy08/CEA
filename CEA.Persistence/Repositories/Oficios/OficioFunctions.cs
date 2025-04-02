@@ -3,6 +3,7 @@ using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Oracle.ManagedDataAccess.Client;
+using System.Data;
 
 namespace CEA.Persistence.Repositories.Oficios
 {
@@ -60,7 +61,7 @@ namespace CEA.Persistence.Repositories.Oficios
                     new System.Xml.Linq.XElement("EMPQENTREGA", oficioDto.Empqentrega),
                     new System.Xml.Linq.XElement("RELACIONOFICIO", oficioDto.Relacionoficio),
                     new System.Xml.Linq.XElement("DEPTO", oficioDto.Depto),
-                    new System.Xml.Linq.XElement("DEPTORESPON", oficioDto.DeptoRespon),
+                    new System.Xml.Linq.XElement("DEPTO_RESPON", oficioDto.DeptoRespon),
                      //recorrer oficioDto.OficioBitacora y oficioDto.OficiosResponsables
                      new System.Xml.Linq.XElement("BITACORA_DATA",
                        oficioDto.OficioBitacora.Select(x => new System.Xml.Linq.XElement("BITACORA",
@@ -115,9 +116,37 @@ namespace CEA.Persistence.Repositories.Oficios
             return Task.CompletedTask;
         }
 
-        public Task SaveOficioSP(OficioDto oficioDto)
+        public Task<OficioSpInsertarResult> SaveOficioSP(OficioDto oficioDto)
         {
-            throw new NotImplementedException();
+            var xmlData = ConvertOficioDtoToXml(oficioDto);
+            var param = new OracleParameter("P_DATOS", OracleDbType.Clob)
+            {
+                Value = xmlData
+            };
+
+            var resultadoParam = new OracleParameter("P_RESULTADO", OracleDbType.Varchar2, 100)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var folioParam = new OracleParameter("P_FOLIO", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var noOficioParam = new OracleParameter("P_NO_OFICIO", OracleDbType.Varchar2, 50)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            _context.Database.ExecuteSqlRaw("BEGIN INSERT_OFICIOS_COMPLETO(:P_DATOS, :P_RESULTADO, :P_FOLIO, :P_NO_OFICIO); END;", param, resultadoParam, folioParam, noOficioParam);
+
+            var resultado = resultadoParam.Value.ToString();
+            var folio = folioParam.Value.ToString();
+            var noOficio = noOficioParam.Value.ToString();
+
+            return Task.FromResult(new OficioSpInsertarResult { Resultado = resultado!, Folio = Convert.ToInt32(folio), NoOficio = noOficio! });
+
         }
     }
 }

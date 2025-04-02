@@ -9,11 +9,11 @@ namespace CEA.Application.DTOs
 {
     public class EmailRequestDto
     {
-        public string To { get; set; }
-        public string Subject { get; set; }
-        public string Body { get; set; }
-        public string From { get; set; }
-        public string?[] Cc { get; set; }
-        public IFormFile? Attachment { get; set; }
+        public string To { get; set; } = string.Empty;
+        public string Subject { get; set; } = string.Empty;
+        public string Body { get; set; } = string.Empty;
+        public string From { get; set; } = string.Empty;
+        public string?[] Cc { get; set; } = Array.Empty<string>();
+        public IFormFile? Attachment { get; set; } = null;
     }
 }

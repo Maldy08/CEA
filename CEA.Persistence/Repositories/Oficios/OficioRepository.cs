@@ -3,6 +3,9 @@ using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Domain.Entities.Oficios;
 using CEA.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using Oracle.ManagedDataAccess.Client;
+using System.Data;
+using System.Reflection.Metadata.Ecma335;
 
 namespace CEA.Persistence.Repositories.Oficios
 {
@@ -51,6 +54,42 @@ namespace CEA.Persistence.Repositories.Oficios
         public async Task<List<OficioDtoFunction>> GetListadoOficioFunction(int ejercicio, int eor, int idEmpleado)
         {
             return await _context.OficioDtoFunction.FromSqlInterpolated($"SELECT * FROM TABLE (F_LISTADOOFICIOS({ejercicio},{eor},{idEmpleado}))").ToListAsync();
+        }
+
+        public async Task<int> UpdateOficioPdf(int ejercicio, int folio, int eor, string pdfPath)
+        {
+            var ejercicioParam = new OracleParameter("P_EJERCICIO", OracleDbType.Int32)
+            {
+                Value = ejercicio
+            };
+
+            var folioParam = new OracleParameter("P_FOLIO", OracleDbType.Int32)
+            {
+                Value = folio
+            };
+
+            var eorParam = new OracleParameter("P_EOR", OracleDbType.Int32)
+            {
+                Value = eor
+            };
+
+            var pdfPathParam = new OracleParameter("P_PDFPATH", OracleDbType.Varchar2, 100)
+            {
+                Value = pdfPath
+            };
+
+            var resultadoParam = new OracleParameter("P_RESULTADO", OracleDbType.Varchar2, 100)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var mensajeParam = new OracleParameter("P_MENSAJE", OracleDbType.Varchar2, 100)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+
+            return await _context.Database.ExecuteSqlRawAsync("BEGIN SP_ACTUALIZAR_OFICIO_PDFPATH( :P_EJERCICIO, :P_EOR, :P_FOLIO, :P_PDFPATH, :P_RESULTADO, :P_MENSAJE); END;", ejercicioParam, eorParam, folioParam,pdfPathParam, resultadoParam,mensajeParam);
         }
     }
 }

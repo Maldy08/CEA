@@ -39,7 +39,8 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficioFolio
                 return await Result<int>.FailureAsync("Error actualizando parametros");
             }
 
-            var oficioParametro = new OficioParametro { 
+            var oficioParametro = new OficioParametro
+            {
                 Ejercicio = request.Ejercicio,
                 NextFEnv = request.NextFEnv,
                 NextFXexp = request.NextFXexp,
@@ -48,12 +49,16 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficioFolio
             };
 
             await _unitOfWork.Repository<OficioParametro>().UpdateAsync(oficioParametro);
-            await _unitOfWork.Save(cancellationToken);
+            try
+            {
+                await _unitOfWork.Save(cancellationToken);
 
-            return await Result<int>.SuccessAsync("Actualizacion correcta");
-
-
-            
+                return await Result<int>.SuccessAsync("Actualizacion correcta");
+            }
+            catch (Exception ex)
+            {
+                return await Result<int>.FailureAsync(ex.Message);
+            }
         }
     }
 }

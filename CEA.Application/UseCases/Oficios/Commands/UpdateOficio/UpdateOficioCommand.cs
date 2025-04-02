@@ -38,7 +38,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficio
         public string? Relacionoficio { get; set; }
         public int Depto { get; set; }
         public int DeptoRespon { get; set; }
-        public IFormFile? archivo { get; set; }
+       // public IFormFile? archivo { get; set; }
     }
     internal class UpdateOficioCommandHandler : IRequestHandler<UpdateOficioCommand, Result<int>>
     {
@@ -83,22 +83,23 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficio
             oficioDto.Relacionoficio = request.Relacionoficio;
             oficioDto.Pdfpath = request.Pdfpath;
             oficioDto.Tipo = request.Tipo;
+            oficioDto.DeptoRespon = request.DeptoRespon;
 
 
-            if (request.archivo != null)
-            {
+            //if (request.archivo != null)
+            //{
 
-                var fileDto = new FileUploadDto()
-                {
-                    File = request.archivo!,
-                    FileName = request.Ejercicio + "-" + request.Eor + "-" + request.Folio + ".pdf",
-                    FolderName = request.Eor == 1 ? "oficios-expedidos" : "oficios-recibidos",
-                    FilePath = request.Eor == 1 ? "oficios-expedidos" : "oficios-recibidos"
-                };
+            //    var fileDto = new FileUploadDto()
+            //    {
+            //        File = request.archivo!,
+            //        FileName = request.Ejercicio + "-" + request.Eor + "-" + request.Folio + ".pdf",
+            //        FolderName = request.Eor == 1 ? "oficios-expedidos" : "oficios-recibidos",
+            //        FilePath = request.Eor == 1 ? "oficios-expedidos" : "oficios-recibidos"
+            //    };
 
-                oficioDto.Pdfpath = fileDto.FolderName + "/" + fileDto.FileName;
-                await _fileService.PostFileAsync(fileDto);
-            }
+            //    oficioDto.Pdfpath = fileDto.FolderName + "/" + fileDto.FileName;
+            //    await _fileService.PostFileAsync(fileDto);
+            //}
 
             try
             {

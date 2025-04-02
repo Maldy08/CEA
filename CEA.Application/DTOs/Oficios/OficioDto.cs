@@ -14,11 +14,11 @@ namespace CEA.Application.DTOs.Oficios
         public int Folio { get; set; }
         public int Eor { get; set; }
         public int Tipo { get; set; }
-        public string NoOficio { get; set; } = null!;
+        public string? NoOficio { get; set; } = string.Empty;
         public string? Pdfpath { get; set; } = string.Empty;
         public DateTime Fecha { get; set; } //Fecha del documento
         public DateTime FechaCaptura { get; set; } = DateTime.Now;
-        public DateTime FechaAcuse { get; set; } //Opcional, siempre y cuando el oficio pida una fecha de respuesta y unicamente aplica a eor = 1
+        public DateTime? FechaAcuse { get; set; } //Opcional, siempre y cuando el oficio pida una fecha de respuesta y unicamente aplica a eor = 1
         public DateTime? FechaLimite { get; set; }  //Opcional, siempre y cuando el oficio pida uan fecha limite
         public string RemDepen { get; set; } = string.Empty;
         public string RemSiglas { get; set; } = string.Empty;

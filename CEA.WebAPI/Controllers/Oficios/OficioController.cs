@@ -8,15 +8,17 @@ using CEA.Application.Features.Oficios.Queries.GetOficiosMcByEor;
 using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Services;
 using CEA.Application.UseCases.Google;
+using CEA.Application.UseCases.Oficios.Commands.CreateOficio;
+using CEA.Application.UseCases.Oficios.Commands.GetPdfOficio;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficio;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficioFolio;
+using CEA.Application.UseCases.Oficios.Commands.UploadOficioPdf;
 using CEA.Application.UseCases.Oficios.Queries.GetOficioParametroByEjercicio;
 using CEA.Application.UseCases.Oficios.Queries.GetOficiosMcByEorAndEjercicio;
 using CEA.Application.UseCases.Oficios.Queries.GetOficiosMcByEorAndEjercicioAndFolio;
 using CEA.Domain.Entities.Oficios;
 using CEA.Shared.Interfaces;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Oficios
@@ -61,11 +63,11 @@ namespace CEA.WebAPI.Controllers.Oficios
             return await _mediator.Send(new GetOficiosByEjercicioEorFolioQuery(ejercicio, eor, folio));
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult<Result<int>>> CreateOficio([FromBody] CreateOficioCommand command)
-        //{
-        //    return await _mediator.Send(command);
-        //}
+        [HttpPost("CreateOficioSP")]
+        public async Task<ActionResult<Result<OficioSpInsertarResult>>> CreateOficio([FromBody] CreateOficioCommandSP command)
+        {
+            return await _mediator.Send(command);
+        }
 
         [HttpPost]
         public async Task<ActionResult<Result<int>>> CreateOficio([FromForm] OficioDto oficioDto)
@@ -88,7 +90,7 @@ namespace CEA.WebAPI.Controllers.Oficios
                 FechaCaptura = oficioDto.FechaCaptura,
                 FechaLimite = oficioDto.FechaLimite,
                 Folio = oficioDto.Folio,
-                NoOficio = oficioDto.NoOficio,
+                NoOficio = oficioDto.NoOficio!,
                 Pdfpath = oficioDto.Pdfpath,
                 Relacionoficio = oficioDto.Relacionoficio,
                 RemCargo = oficioDto.RemCargo,
@@ -104,6 +106,12 @@ namespace CEA.WebAPI.Controllers.Oficios
             var result = await _mediator.Send(command);
 
             return new JsonResult(result.Data);
+        }
+
+        [HttpPost("CreateOficioPDF")]
+        public async Task<ActionResult<Result<int>>> CreateOficioPDF([FromForm] UploadOficioPdfCommand command)
+        {
+            return await _mediator.Send(command);
         }
 
         [HttpPut]
@@ -140,27 +148,21 @@ namespace CEA.WebAPI.Controllers.Oficios
             return await _mediator.Send(command);
         }
 
-
-
         //endpoint para solicitarle el pdf de un oficio
-        [Authorize]
-        [HttpGet("GetPdfOficio/{ejercicio}/{folio}/{eor}")]
-        public async Task<ActionResult> GetPdfOficio(int ejercicio, int folio, int eor)
+
+        [HttpPost("GetPdfOficio")]
+        public async Task<ActionResult> GetPdfOficio([FromBody] GetPdfOficioCommand command)
         {
-            var oficio = await _oficioRepository.GetOficio(ejercicio, folio, eor);
-            if (oficio == null)
-            {
-                return NotFound();
-            }
-            var file = await _fileService.DownloadPdf(oficio.Pdfpath!);
-            return File(file, "application/pdf");
+            var file = await _mediator.Send(new GetPdfOficioCommand(command.Ejercicio, command.Folio, command.Eor));
+            return File(file, "application/pdf", "Oficio.pdf");
+
         }
 
         [HttpGet("Pruebas/{ejercicio}/{folio}/{eor}")]
         public async Task<IActionResult> Pruebas(int ejercicio, int folio, int eor)
         {
-            var file =  await _mediator.Send(new GetDocumentCommand(ejercicio, folio, eor));
-            return File(file.FileStream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document","Oficio.docx");
+            var file = await _mediator.Send(new GetDocumentCommand(ejercicio, folio, eor));
+            return File(file.FileStream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Oficio.docx");
         }
 
     }

@@ -12,5 +12,8 @@ namespace CEA.Application.Services
         public Task PostFileAsync(FileUploadDto fileData);
         public Task DownloadFileById(int fileName);
         public Task<MemoryStream> DownloadPdf(string path);
+        
+        //metodo para regresar un archivo de word
+        public Task<MemoryStream> DownloadWord();
     }
 }

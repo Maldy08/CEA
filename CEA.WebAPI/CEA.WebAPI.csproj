@@ -17,4 +17,9 @@
     <ProjectReference Include="..\CEA.Persistence\CEA.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="oficios\oficios-expedidos\" />
+    <Folder Include="oficios\oficios-recibidos\" />
+  </ItemGroup>
+
 </Project>

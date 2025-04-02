@@ -47,7 +47,7 @@ namespace CEA.WebAPI.Controllers.Oficios
 
         [HttpPut]
 
-        public async Task<ActionResult<Result<int>>> UpdateOficioResponsable([FromBody] UpdateOficioResponsableCommand command)
+        public async Task<ActionResult<Result<int>>> UpdateOficioResponsable([FromBody] UpdateOficioResponsableArrayCommand command)
         {
             return await _mediator.Send(command);
         }

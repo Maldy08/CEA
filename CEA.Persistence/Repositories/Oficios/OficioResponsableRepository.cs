@@ -21,6 +21,9 @@ namespace CEA.Persistence.Repositories.Oficios
         public async Task<List<OficioResponsableDto>> GetOficioReponsableByEjercicioFolioEor(int ejercicio, int folio, int eor)
         {
 
+            var x = 1;
+
+
             var oficios = await _context.OficioResponsable.Where(x => x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor)
                 .Select(x => new OficioResponsableDto
                 {

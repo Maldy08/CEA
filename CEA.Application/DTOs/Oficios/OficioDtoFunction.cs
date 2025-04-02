@@ -19,7 +19,7 @@ namespace CEA.Application.DTOs.Oficios
         public string? Pdfpath { get; set; } = string.Empty;
         public DateTime Fecha { get; set; } //Fecha del documento
         public DateTime FechaCaptura { get; set; } = DateTime.Now;
-        public DateTime FechaAcuse { get; set; } //Opcional, siempre y cuando el oficio pida una fecha de respuesta y unicamente aplica a eor = 1
+        public DateTime? FechaAcuse { get; set; } //Opcional, siempre y cuando el oficio pida una fecha de respuesta y unicamente aplica a eor = 1
         public DateTime? FechaLimite { get; set; }  //Opcional, siempre y cuando el oficio pida uan fecha limite
         public string RemDepen { get; set; } = string.Empty;
         public string RemSiglas { get; set; } = string.Empty;
@@ -30,7 +30,7 @@ namespace CEA.Application.DTOs.Oficios
         public string DestNombre { get; set; } = string.Empty;
         public string DestCargo { get; set; } = string.Empty;
         public string Tema { get; set; } = string.Empty;
-        public string Estatus { get; set; } = string.Empty;
+        public string? Estatus { get; set; } = string.Empty;
         public int? Empqentrega { get; set; }
         public string? Relacionoficio { get; set; }
         public int Depto { get; set; }
