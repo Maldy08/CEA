@@ -11,6 +11,7 @@ namespace CEA.Application.Interfaces.Repositories.Oficios
         string ConvertOficioBitacoraDtoToXml(List<OficioBitacoraDto> datos);
         Task<OficioSpInsertarResult> SaveOficioSP(OficioDto oficioDto);
         string ConvertOficioDtoToXml(OficioDto oficioDto);
+        Task<OficioSpFoliarResult> OficioSPFoliar(int ejercicio, int folio, int eor, int idEmpleado);
 
     }
 }

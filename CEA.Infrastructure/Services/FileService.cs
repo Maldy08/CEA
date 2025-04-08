@@ -1,7 +1,9 @@
 ﻿using CEA.Application.DTOs;
+using CEA.Application.DTOs.Oficios;
 using CEA.Application.Services;
 using Microsoft.Extensions.Options;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using Xceed.Words.NET;
 
 namespace CEA.Infrastructure.Services
@@ -17,21 +19,46 @@ namespace CEA.Infrastructure.Services
             _rutaPredeterminadaOficios = options.Value.DefaultPath;
         }
 
+        public int ExtractYearFromPath(string path)
+        {
+            // Define una expresión regular para encontrar el año
+            var regex = new Regex(@"\b\d{4}\b");
+
+            // Encuentra la coincidencia en la cadena
+            var match = regex.Match(path);
+
+            if (match.Success)
+            {
+                // Convierte la coincidencia a entero
+                return int.Parse(match.Value);
+            }
+
+            throw new ArgumentException("No se encontró un año en la cadena proporcionada.");
+        }
+
         public Task DownloadFileById(int fileName)
         {
 
             throw new NotImplementedException();
         }
 
-        public async Task<MemoryStream> DownloadPdf(string path)
+        public async Task<MemoryStream> DownloadPdf(int ejercicio, int folio, int eor)
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), _rutaPredeterminadaOficios, path);
+            var defaultPath = _rutaPredeterminadaOficios.Replace("{EJERCICIO}", ejercicio.ToString());
+            string subFolder = eor switch
+            {
+                1 => "OFICIOS-EXPEDIDOS",
+                2 => "OFICIOS-RECIBIDOS",
+                _ => throw new ArgumentException("Valor de EOR no válido")
+            };
+            var path = Path.Combine(defaultPath, subFolder, $"{ejercicio}-{eor}-{folio}.pdf");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), path);
             var pdfBytes = await File.ReadAllBytesAsync(filePath);
             var memoryStream = new MemoryStream(pdfBytes);
             return memoryStream;
         }
 
-        public async Task<MemoryStream> DownloadWord()
+        public async Task<MemoryStream> DownloadWord(OficioDto oficio)
         {
             try
             {
@@ -50,12 +77,12 @@ namespace CEA.Infrastructure.Services
 
                     var reemplazos = new Dictionary<string, string>
                     {
-                        { "{{DEPENDENCIA}}", "CEA" },
+                        { "{{DEPENDENCIA}}", oficio.Tipo == 1 ? "CEA" : "SEPROA" },
                         { "{{SECCION}}", "NO SE " },
-                        { "{{OFICIO}}", "12.31-2025" },
-                        { "{{RESPONSABLE}}", "ALEJANDRO RAMOS" },
-                        { "{{PUESTO}}", "INFORMATICA" },
-                        { "{{ASUNTO}}", "TESTEAR DOCX" },
+                        { "{{OFICIO}}", oficio.NoOficio },
+                        { "{{RESPONSABLE}}", oficio.DestNombre },
+                        { "{{PUESTO}}", oficio.DestCargo },
+                        { "{{ASUNTO}}", oficio.Tema },
                         { "{{FECHA}}", DateTime.Now.ToString("dd 'de' MMMM 'del' yyyy", new CultureInfo("es-ES")) }
                     };
 
@@ -83,7 +110,10 @@ namespace CEA.Infrastructure.Services
 
         public async Task PostFileAsync(FileUploadDto fileData)
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), _rutaPredeterminadaOficios, fileData.FolderName, fileData.FileName);
+            var ejercicio = fileData.Ejercicio; // O el valor que corresponda
+            var defaultPath = _rutaPredeterminadaOficios.Replace("{EJERCICIO}", ejercicio.ToString());
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), defaultPath, fileData.FolderName, fileData.FileName);
             await using var fileStream = new FileStream(filePath, FileMode.Create);
             await fileData.File.CopyToAsync(fileStream);
         }

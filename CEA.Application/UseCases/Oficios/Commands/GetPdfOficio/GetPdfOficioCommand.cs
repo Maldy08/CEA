@@ -33,13 +33,13 @@ namespace CEA.Application.UseCases.Oficios.Commands.GetPdfOficio
 
         public async Task<MemoryStream> Handle(GetPdfOficioCommand request, CancellationToken cancellationToken)
         {
-            var oficio = await _oficioRepository.GetOficio(request.Ejercicio, request.Folio, request.Eor);
-            if (oficio == null)
-            {
-                throw new FileNotFoundException("No se encontró el oficio");
-            }
+            //var oficio = await _oficioRepository.GetOficio(request.Ejercicio, request.Folio, request.Eor);
+            //if (oficio == null)
+            //{
+            //    throw new FileNotFoundException("No se encontró el oficio");
+            //}
 
-            var memoryStream = await _fileService.DownloadPdf(oficio.Pdfpath!);
+            var memoryStream = await _fileService.DownloadPdf(request.Ejercicio,request.Folio,request.Eor);
             if (memoryStream == null)
             {
                 throw new FileNotFoundException("No se pudo descargar el PDF");

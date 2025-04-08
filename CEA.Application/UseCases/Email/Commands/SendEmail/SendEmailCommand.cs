@@ -16,7 +16,7 @@ namespace CEA.Application.Features.Email.Commands.SendEmail
         public string From { get; set; }
         public string?[] Cc
         {
-            get; set; }
+            get; set; }  = Array.Empty<string>();
         public IFormFile? Attachment { get; set; }
 
 

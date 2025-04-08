@@ -103,6 +103,8 @@ namespace CEA.Persistence.Repositories.Oficios
             return await _context.OficioDtoFunction.FromSqlInterpolated($"SELECT * FROM TABLE (F_LISTADOOFICIOS({ejercicio},{eor},{idEmpleado}))").ToListAsync();
         }
 
+
+
         public Task SaveBitacoraOficio(List<OficioBitacoraDto> bitacoraOficio)
         {
             var xmlData = ConvertOficioBitacoraDtoToXml(bitacoraOficio);
@@ -114,6 +116,45 @@ namespace CEA.Persistence.Repositories.Oficios
             _context.Database.ExecuteSqlRaw("BEGIN INSERT_OFICIOS_BITACORATEST(:p_data); END;", param);
             Console.WriteLine("Bitacora guardada");
             return Task.CompletedTask;
+        }
+
+        public Task<OficioSpFoliarResult> OficioSPFoliar(int ejercicio, int folio, int eor, int idEmpleado)
+        {
+            var ejercicioParam = new OracleParameter("P_EJERCICIO", OracleDbType.Int32)
+            {
+                Value = ejercicio
+            };
+
+            var folioParam = new OracleParameter("P_FOLIO", OracleDbType.Int32)
+            {
+                Value = folio
+            };
+
+            var eorParam = new OracleParameter("P_EOR", OracleDbType.Int32)
+            {
+                Value = eor
+            };
+
+            var idEmpleadoParam = new OracleParameter("P_EMPLEADO", OracleDbType.Int32)
+            {
+                Value = idEmpleado
+            };
+
+            var mensajeParam = new OracleParameter("P_MENSAJE", OracleDbType.Varchar2, 100)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var folioNuevo = new OracleParameter("P_FOLIO_NUEVO", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            _context.Database.ExecuteSqlRaw("BEGIN SP_ACTUALIZAR_OFICIO(:P_EJERCICIO, :P_EOR, :P_FOLIO, :P_EMPLEADO, :P_FOLIO_NUEVO,:P_MENSAJE ); END;", ejercicioParam, eorParam,folioParam, idEmpleadoParam, folioNuevo,mensajeParam);
+
+            var mensaje = mensajeParam.Value.ToString();
+            var folioNuevoInt = folioNuevo.Value.ToString();
+            return Task.FromResult(new OficioSpFoliarResult { MENSAJE = mensaje!, FOLIO_NUEVO = Convert.ToInt32(folioNuevoInt) });
         }
 
         public Task<OficioSpInsertarResult> SaveOficioSP(OficioDto oficioDto)

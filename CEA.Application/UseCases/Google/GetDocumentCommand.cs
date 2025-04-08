@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CEA.Application.UseCases.Google
 {
 
-    public record GetDocumentCommand : IRequest<FileStreamResult>
+    public record GetDocumentCommand : IRequest<MemoryStream>
     {
         public int Ejercicio { get; set; }
         public int Folio { get; set; }
@@ -23,27 +23,39 @@ namespace CEA.Application.UseCases.Google
 
 
     }
-    internal class GetDocumentCommandHandler : IRequestHandler<GetDocumentCommand, FileStreamResult>
+    internal class GetDocumentCommandHandler : IRequestHandler<GetDocumentCommand, MemoryStream>
     {
         private readonly IOficioRepository _oficioRepository;
-        private readonly IGoogleCloudService _googleCloudService;
+        private readonly IFileService _fileService;
+        // private readonly IGoogleCloudService _googleCloudService;
 
-        public GetDocumentCommandHandler(IOficioRepository oficioRepository, IGoogleCloudService googleCloudService)
+
+        public GetDocumentCommandHandler(IOficioRepository oficioRepository, IFileService fileService)
         {
             _oficioRepository = oficioRepository;
-            _googleCloudService = googleCloudService;
+            _fileService = fileService;
+            // _googleCloudService = googleCloudService;
         }
 
 
-        public async Task<FileStreamResult> Handle(GetDocumentCommand request, CancellationToken cancellationToken)
+
+        public async Task<MemoryStream> Handle(GetDocumentCommand request, CancellationToken cancellationToken)
         {
             var oficio = await _oficioRepository.GetOficioByFolio(request.Ejercicio, request.Eor, request.Folio);
+            if (oficio == null)
+            {
+                throw new Exception("No se encontró el oficio");
+            }
+
+            var file = await _fileService.DownloadWord(oficio);
+            if (file == null)
+            {
+                throw new Exception("No se encontró el archivo");
+            }
+            return file;
 
 
-            var ms = _googleCloudService.DriveExportWord(oficio);
-            ms.Position = 0;
-            var fsr = new FileStreamResult(ms, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-            return fsr;
+
 
 
         }

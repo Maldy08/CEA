@@ -9,6 +9,7 @@ using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Services;
 using CEA.Application.UseCases.Google;
 using CEA.Application.UseCases.Oficios.Commands.CreateOficio;
+using CEA.Application.UseCases.Oficios.Commands.FoliarOficioSp;
 using CEA.Application.UseCases.Oficios.Commands.GetPdfOficio;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficio;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficioFolio;
@@ -162,7 +163,30 @@ namespace CEA.WebAPI.Controllers.Oficios
         public async Task<IActionResult> Pruebas(int ejercicio, int folio, int eor)
         {
             var file = await _mediator.Send(new GetDocumentCommand(ejercicio, folio, eor));
-            return File(file.FileStream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Oficio.docx");
+            if (file == null)
+            {
+                return NotFound();
+            }
+            return new FileStreamResult(file, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+            {
+                FileDownloadName = "Oficio.docx"
+            };
+
+        }
+
+        [HttpPost("FoliarOficioSp")]
+        public async Task<ActionResult<Result<OficioSpFoliarResult>>> FoliarOficioSp([FromBody] FoliarOficioSpCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            var response = new
+            {
+                folio_nuevo = result.Data?.FOLIO_NUEVO ?? 0,
+                mensaje = result.Data?.MENSAJE ?? "Error desconocido"
+            };
+
+            return new JsonResult(response);
+
         }
 
     }
