@@ -25,10 +25,10 @@ namespace CEA.Application.Features.Transparencia.Commands.CreateBitacora
     internal class CreateBitacoraCommandHandler : IRequestHandler<CreateBitacoraCommand, Result<List<BitacoraArchivoDto>>>
     {
         private readonly IUnitOfWorkSQL _unitOfWork;
-        private readonly IFileService _fileService;
+        private readonly IFileServiceTransparencia _fileService;
         private readonly ITransparenciaFormatoRepository _transparenciaFormatoRepository;
 
-        public CreateBitacoraCommandHandler(IUnitOfWorkSQL unitOfWork, IFileService fileService, ITransparenciaFormatoRepository transparenciaFormatoRepository)
+        public CreateBitacoraCommandHandler(IUnitOfWorkSQL unitOfWork, IFileServiceTransparencia fileService, ITransparenciaFormatoRepository transparenciaFormatoRepository)
         {
             _unitOfWork = unitOfWork;
             _fileService = fileService;

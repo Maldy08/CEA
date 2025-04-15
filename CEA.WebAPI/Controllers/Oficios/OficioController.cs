@@ -159,7 +159,7 @@ namespace CEA.WebAPI.Controllers.Oficios
 
         }
 
-        [HttpGet("Pruebas/{ejercicio}/{folio}/{eor}")]
+        [HttpGet("DownloadWord/{ejercicio}/{folio}/{eor}")]
         public async Task<IActionResult> Pruebas(int ejercicio, int folio, int eor)
         {
             var file = await _mediator.Send(new GetDocumentCommand(ejercicio, folio, eor));
@@ -169,7 +169,8 @@ namespace CEA.WebAPI.Controllers.Oficios
             }
             return new FileStreamResult(file, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
             {
-                FileDownloadName = "Oficio.docx"
+                FileDownloadName = "Oficio.docx",
+                
             };
 
         }

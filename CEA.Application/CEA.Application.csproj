@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="UseCases\GetEmpleadoByName\" />
+    <Folder Include="UseCases\NewFolder\" />
   </ItemGroup>
 
 </Project>

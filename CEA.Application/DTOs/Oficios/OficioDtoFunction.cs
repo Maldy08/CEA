@@ -38,6 +38,8 @@ namespace CEA.Application.DTOs.Oficios
         public string? Observaciones { get; set; } = string.Empty;
         public int Rol { get; set; }
 
+        public int EstatusNum { get; set; } //Estatus numerico
+
 
         [NotMapped]
         public List<OficioBitacoraDto> OficioBitacora { get; set; } = new();

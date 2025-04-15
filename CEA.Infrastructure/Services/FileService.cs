@@ -1,6 +1,8 @@
 ﻿using CEA.Application.DTOs;
 using CEA.Application.DTOs.Oficios;
+using CEA.Application.Interfaces.Repositories;
 using CEA.Application.Services;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -13,10 +15,16 @@ namespace CEA.Infrastructure.Services
 
         //protected readonly string rutaPredeterminadaOficios = "C:\\ceatransparencia\\oficios\\";
         private readonly string _rutaPredeterminadaOficios;
+        private readonly string _rutaPredeterminadaOficiosPlantilla = "C:\\SISCO\\";
+        private readonly ILogger<FileService> _logger;
+        private readonly IDeptoRepository _deptoRepository;
 
-        public FileService(IOptions<FileServiceOptions> options)
+        public FileService(IOptions<FileServiceOptions> options, ILogger<FileService> logger, IDeptoRepository deptoRepository)
         {
             _rutaPredeterminadaOficios = options.Value.DefaultPath;
+            _logger = logger;
+            _deptoRepository = deptoRepository;
+
         }
 
         public int ExtractYearFromPath(string path)
@@ -49,6 +57,8 @@ namespace CEA.Infrastructure.Services
             {
                 1 => "OFICIOS-EXPEDIDOS",
                 2 => "OFICIOS-RECIBIDOS",
+                3 => "OFICIOS-EXPEDIDOS",
+                4 => "OFICIOS-RECIBIDOS",
                 _ => throw new ArgumentException("Valor de EOR no válido")
             };
             var path = Path.Combine(defaultPath, subFolder, $"{ejercicio}-{eor}-{folio}.pdf");
@@ -62,30 +72,35 @@ namespace CEA.Infrastructure.Services
         {
             try
             {
-                var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                var filePath = Path.Combine(desktopPath, "PlantillaCea.docx");
-
+                var depto = await _deptoRepository.GetDeptoByIdAsync(oficio.Depto);
+                var filePath = Path.Combine(_rutaPredeterminadaOficiosPlantilla, "PlantillaCea.docx");
+                _logger.LogInformation($"Ruta de la plantilla: {filePath}");
 
                 if (!File.Exists(filePath))
                 {
-                    return null;
+                    // Registra un mensaje de error si el archivo no existe
+                    _logger.LogError($"La plantilla no existe en la ruta: {filePath}");
+                    SystemException ex = new SystemException($"La plantilla no existe en la ruta: {filePath}");
+                    throw ex;
                 }
-
 
                 using (var document = DocX.Load(filePath))
                 {
-
                     var reemplazos = new Dictionary<string, string>
-                    {
-                        { "{{DEPENDENCIA}}", oficio.Tipo == 1 ? "CEA" : "SEPROA" },
-                        { "{{SECCION}}", "NO SE " },
-                        { "{{OFICIO}}", oficio.NoOficio },
-                        { "{{RESPONSABLE}}", oficio.DestNombre },
-                        { "{{PUESTO}}", oficio.DestCargo },
-                        { "{{ASUNTO}}", oficio.Tema },
-                        { "{{FECHA}}", DateTime.Now.ToString("dd 'de' MMMM 'del' yyyy", new CultureInfo("es-ES")) }
-                    };
+            {
+                { "{{DEPENDENCIA}}", oficio.Tipo == 1 ? "COMISION ESTATAL DEL AGUA DE BAJA CALIFORNIA" : "SEPROA" },
+                { "{{SECCION}}", depto.Descripcion },
+                { "{{OFICIO}}", oficio.NoOficio },
+                { "{{DEST_RESPONSABLE}}", oficio.DestNombre },
+                { "{{DEST_PUESTO}}", oficio.DestCargo },
+                { "{{DEST_SIGLAS}}", oficio.DestDepen },
+                { "{{ASUNTO}}", oficio.Tema },
+                { "{{FECHA}}", DateTime.Now.ToString("dd 'de' MMMM 'del' yyyy", new CultureInfo("es-ES")) },
+                { "{{REM_RESPONSABLE}}", oficio.RemNombre },
+                { "{{REM_PUESTO}}", oficio.RemCargo },
+                { "{{REM_SIGLAS}}", oficio.RemDepen },
 
+            };
 
                     foreach (var item in reemplazos)
                     {
@@ -101,9 +116,8 @@ namespace CEA.Infrastructure.Services
             }
             catch (Exception ex)
             {
-
-                Console.WriteLine($"Error: {ex.Message}");
-                return null;
+                _logger.LogError($"Error: {ex.Message}");
+                throw;
             }
         }
 
