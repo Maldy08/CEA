@@ -46,6 +46,10 @@ namespace CEA.Persistence.Configurations.Oficios
             entity.Property(e => e.Iox)
                 .HasPrecision(1)
                 .HasColumnName("IOX");
+
+            entity.Property(e => e.FAsignado)
+                .HasColumnType("DATE")
+                .HasColumnName("F_ASIGNADO"); 
         }
     }
 }

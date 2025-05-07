@@ -54,7 +54,8 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficioResponsable
                     Folio = request.oficioResponsableDtos[i].Folio,
                     Eor = request.oficioResponsableDtos[i].Eor,
                     IdEmpleado = request.oficioResponsableDtos[i].IdEmpleado,
-                    Rol = request.oficioResponsableDtos[i].Rol
+                    Rol = request.oficioResponsableDtos[i].Rol,
+                    FAsignado = DateTime.Now,
                 };
                 await _unitOfWork.Repository<OficioResponsable>().AddAsync(entity);
             }

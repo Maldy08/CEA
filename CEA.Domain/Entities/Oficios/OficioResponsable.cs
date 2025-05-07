@@ -12,5 +12,6 @@ namespace CEA.Domain.Entities.Oficios
         public int IdEmpleado { get; set; }
         public int Rol { get; set; }
         public int Iox { get; set; }
+        public DateTime? FAsignado { get; set; }
     }
 }

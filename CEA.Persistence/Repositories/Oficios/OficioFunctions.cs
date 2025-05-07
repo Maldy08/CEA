@@ -23,13 +23,13 @@ namespace CEA.Persistence.Repositories.Oficios
                     new System.Xml.Linq.XElement("EJERCICIO", x.Ejercicio),
                     new System.Xml.Linq.XElement("FOLIO", x.Folio),
                     new System.Xml.Linq.XElement("EOR", x.Eor),
-                    new System.Xml.Linq.XElement("FECHA_CAPTURA", x.FechaCaptura),
+                    new System.Xml.Linq.XElement("FECHA_CAPTURA", x.FechaCaptura.Date.Add(DateTime.Now.TimeOfDay),
                     new System.Xml.Linq.XElement("ID_EMPLEADO", x.IdEmpleado),
                     new System.Xml.Linq.XElement("ESTATUS", x.Estatus),
                     new System.Xml.Linq.XElement("COMENTARIOS", x.Comentarios)
 
                 ))
-                );
+                ));
             ;
             return xml.ToString();
         }
@@ -45,7 +45,7 @@ namespace CEA.Persistence.Repositories.Oficios
                     new System.Xml.Linq.XElement("NO_OFICIO", oficioDto.NoOficio),
                     new System.Xml.Linq.XElement("PDFPATH", oficioDto.Pdfpath),
                     new System.Xml.Linq.XElement("FECHA", oficioDto.Fecha),
-                    new System.Xml.Linq.XElement("FECHA_CAPTURA", oficioDto.FechaCaptura),
+                    new System.Xml.Linq.XElement("FECHA_CAPTURA", oficioDto.FechaCaptura.Date.Add(DateTime.Now.TimeOfDay)),
                     new System.Xml.Linq.XElement("FECHA_ACUSE", oficioDto.FechaAcuse),
                     new System.Xml.Linq.XElement("FECHA_LIMITE", oficioDto.FechaLimite),
                     new System.Xml.Linq.XElement("REM_DEPEN", oficioDto.RemDepen),

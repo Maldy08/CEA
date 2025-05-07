@@ -44,7 +44,8 @@ namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioResponsable
                     Folio = oficioResponsable.Folio,
                     Eor = oficioResponsable.Eor,
                     IdEmpleado = oficioResponsable.IdEmpleado,
-                    Rol = oficioResponsable.Rol
+                    Rol = oficioResponsable.Rol,
+                    FAsignado = DateTime.Now,
                 };
                 await _unitOfWork.Repository<OficioResponsable>().AddAsync(entity);
             }

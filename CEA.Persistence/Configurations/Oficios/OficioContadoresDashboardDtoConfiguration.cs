@@ -16,6 +16,8 @@ namespace CEA.Persistence.Configurations.Oficios
             entity.Property(e => e.TotRec).HasColumnName("TOT_REC");
             entity.Property(e => e.TotXExp).HasColumnName("TOT_XEXP");
             entity.Property(e => e.TotXExpTrans).HasColumnName("TOT_XEXPTRANS");
+            entity.Property(e => e.ProxFRec).HasColumnName("PROX_FREC");
+            entity.Property(e => e.ProxFEnv).HasColumnName("PROX_FENV");
         }
     }
 }

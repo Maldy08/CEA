@@ -28,7 +28,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficio
         public string RemSiglas { get; set; } = string.Empty;
         public string RemNombre { get; set; } = string.Empty;
         public string RemCargo { get; set; } = string.Empty;
-        public string DestDepen { get; set; } = string.Empty;
+        public string? DestDepen { get; set; } = string.Empty;
         public string DestSiglas { get; set; } = string.Empty;
         public string DestNombre { get; set; } = string.Empty;
         public string DestCargo { get; set; } = string.Empty;
@@ -73,7 +73,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficio
             oficioDto.RemSiglas = request.RemSiglas;
             oficioDto.RemNombre = request.RemNombre;
             oficioDto.RemCargo = request.RemCargo;
-            oficioDto.DestDepen = request.DestDepen;
+            oficioDto.DestDepen = string.IsNullOrWhiteSpace(request.DestDepen) ? "  " : request.DestDepen;
             oficioDto.DestSiglas = request.DestSiglas;
             oficioDto.DestNombre = request.DestNombre;
             oficioDto.DestCargo = request.DestCargo;
