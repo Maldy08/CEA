@@ -20,6 +20,7 @@ using CEA.Application.UseCases.Oficios.Queries.GetOficiosMcByEorAndEjercicioAndF
 using CEA.Domain.Entities.Oficios;
 using CEA.Shared.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Oficios
@@ -40,12 +41,14 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<Result<List<OficioDto>>>> GetAllOficios()
         {
             return await _mediator.Send(new GetAllOficiosQuery());
         }
 
         [HttpGet("GetOficiosMC/{eor}")]
+        [Authorize]
 
         public async Task<ActionResult<Result<List<OficioDto>>>> GetOficiosMC(int eor)
         {
@@ -53,24 +56,28 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet("GetOficiosByEjercicioEorIdEmpleadoIdDepto/{ejercicio}/{eor}/{idEmpleado}/{idDepto}")]
+        [Authorize]
         public async Task<ActionResult<Result<List<OficioDto>>>> GetOficiosByEjercicioEorIdEmpleadoIdDepto(int ejercicio, int eor, int idEmpleado, int idDepto)
         {
             return await _mediator.Send(new GetOficiosByEjercicioEorIdEmpleadoIdDeptoQuery(ejercicio, eor, idEmpleado, idDepto));
         }
 
         [HttpGet("GetOficioByEjercicioEorFolio/{ejercicio}/{eor}/{folio}")]
+        [Authorize]
         public async Task<ActionResult<Result<OficioDto>>> GetOficioByEjercicioEorFolio(int ejercicio, int eor, int folio)
         {
             return await _mediator.Send(new GetOficiosByEjercicioEorFolioQuery(ejercicio, eor, folio));
         }
 
         [HttpPost("CreateOficioSP")]
+        [Authorize]
         public async Task<ActionResult<Result<OficioSpInsertarResult>>> CreateOficio([FromBody] CreateOficioCommandSP command)
         {
             return await _mediator.Send(command);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Result<int>>> CreateOficio([FromForm] OficioDto oficioDto)
         {
             var command = new CreateOficioCommand()
@@ -110,18 +117,21 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpPost("CreateOficioPDF")]
+        [Authorize]
         public async Task<ActionResult<Result<int>>> CreateOficioPDF([FromForm] UploadOficioPdfCommand command)
         {
             return await _mediator.Send(command);
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<Result<int>>> UpdateOficio([FromForm] UpdateOficioCommand command)
         {
             return await _mediator.Send(command);
         }
 
         [HttpGet("GetOficiosMCByEorAndEjercicio/{eor}/{ejercicio}")]
+        [Authorize]
 
         public async Task<ActionResult<Result<List<OficioDto>>>> GetOficiosMCByEorAndEjercicio(int eor, int ejercicio)
         {
@@ -130,6 +140,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet("GetOficio/{ejercicio}/{folio}/{eor}")]
+        [Authorize]
 
         public async Task<ActionResult<Result<Oficio>>> GetOficio(int ejercicio, int folio, int eor)
         {
@@ -137,6 +148,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet("GetOficioFolio/{ejercicio}")]
+        [Authorize]
 
         public async Task<ActionResult<Result<OficioParametroDto>>> GetFolioOficio(int ejercicio)
         {
@@ -144,6 +156,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpPut("ActualizarFolios")]
+        [Authorize]
         public async Task<ActionResult<Result<int>>> ActualizarFolios([FromBody] UpdateOficioFolioCommand command)
         {
             return await _mediator.Send(command);
@@ -152,6 +165,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         //endpoint para solicitarle el pdf de un oficio
 
         [HttpPost("GetPdfOficio")]
+        [Authorize]
         public async Task<ActionResult> GetPdfOficio([FromBody] GetPdfOficioCommand command)
         {
             var file = await _mediator.Send(new GetPdfOficioCommand(command.Ejercicio, command.Folio, command.Eor));
@@ -160,6 +174,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet("DownloadWord/{ejercicio}/{folio}/{eor}")]
+        [Authorize]
         public async Task<IActionResult> Pruebas(int ejercicio, int folio, int eor)
         {
             var file = await _mediator.Send(new GetDocumentCommand(ejercicio, folio, eor));
@@ -176,6 +191,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpPost("FoliarOficioSp")]
+        [Authorize]
         public async Task<ActionResult<Result<OficioSpFoliarResult>>> FoliarOficioSp([FromBody] FoliarOficioSpCommand command)
         {
             var result = await _mediator.Send(command);

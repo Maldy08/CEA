@@ -16,5 +16,7 @@ namespace CEA.Application.DTOs.Oficios
         public int Eor { get; set; }
         public int IdEmpleado { get; set; }
         public int Rol { get; set; }
+        public int Iox { get; set; }
+
     }
 }

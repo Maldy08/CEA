@@ -5,6 +5,7 @@ using CEA.Application.UseCases.Oficios.Queries.GetListaDashboardByEjercicioEmple
 using CEA.Application.UseCases.Oficios.Queries.GetListadoOficiosFunction;
 using CEA.Shared.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Oficios
@@ -24,6 +25,7 @@ namespace CEA.WebAPI.Controllers.Oficios
 
 
         [HttpGet("GetListadoOficios/{ejercicio}/{eor}/{empleado}")]
+        [Authorize]
 
         public async Task<ActionResult<Result<List<OficioDtoFunction>>>> GetListadoOficios(int ejercicio, int eor, int empleado)
         {
@@ -32,12 +34,14 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet("GetListadoDashboard/{ejercicio}/{empleado}")]
+        [Authorize]
         public async Task<ActionResult<Result<List<OficioListaDashboardDto>>>> GetListadoDashboard(int ejercicio, int empleado)
         {
             return await _mediator.Send(new GetListaDashboardByEjercicioEmpleadoQuery(ejercicio, empleado));
         }
 
         [HttpGet("GetContadoresDashboard/{ejercicio}/{empleado}")]
+        [Authorize]
         public async Task<ActionResult<Result<List<OficioContadoresDashboardDto>>>> GetContadoresDashboard(int ejercicio, int empleado)
         {
             return await _mediator.Send(new GetContadoresDashboardByEjercicioEmpleadoQuery(ejercicio, empleado));

@@ -6,7 +6,7 @@ using CEA.Application.UseCases.Oficios.Queries.GetOficioResponsableByEjercicioFo
 using CEA.Application.UseCases.Oficios.Queries.GetOficiosResponsableByEjercicioFolioEor;
 using CEA.Shared.Interfaces;
 using MediatR;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Oficios
@@ -23,6 +23,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet("GetOficioResponsableByEjercicioFolioEor/{ejercicio}/{folio}/{eor}/{rol}")]
+        [Authorize]
 
         public async Task<ActionResult<Result<List<OficioResponsableDto>>>> GetOficioResponsableByEjercicioFolioEor(int ejercicio, int folio, int eor, int rol)
         {
@@ -30,6 +31,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet("GetOficioResponsablesByEjercicioFolioEorNew/{ejercicio}/{folio}/{eor}")]
+        [Authorize]
         public async Task<ActionResult<Result<IEnumerable<OficioResponsableDto>>>>
             GetOficioResponsablesByEjercicioFolioEor(int ejercicio, int folio, int eor)
         {
@@ -38,6 +40,7 @@ namespace CEA.WebAPI.Controllers.Oficios
 
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Result<int>>> CreateOficioResponsable([FromBody] CreateOficioResponsableCommand command)
         {
 
@@ -46,6 +49,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpPut]
+        [Authorize]
 
         public async Task<ActionResult<Result<int>>> UpdateOficioResponsable([FromBody] UpdateOficioResponsableArrayCommand command)
         {
@@ -53,6 +57,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<ActionResult<Result<int>>> DeleteOficioResponsable([FromBody] DeleteOficioResponsableCommand command)
         {
             return await _mediator.Send(command);

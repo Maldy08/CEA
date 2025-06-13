@@ -6,6 +6,8 @@
         public int TotRec { get; set; }
         public int TotXExp { get; set; }
         public int TotXExpTrans { get; set; }
+        public int TotRecXVenc { get; set; }
+        public int TotExpXVenc { get; set; }
         public int ProxFRec { get; set; }
         public int ProxFEnv { get; set; }
     }

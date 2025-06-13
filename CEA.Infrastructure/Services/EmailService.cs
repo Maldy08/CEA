@@ -23,7 +23,11 @@ namespace CEA.Infrastructure.Services
 
 
             };
-            message.To.Add(request.To);
+            request.To = request.To ?? string.Empty;
+            if(!string.IsNullOrWhiteSpace(request.To))
+            {
+                message.To.Add(request.To);
+            }
             if (request.Cc != null)
             {
                 foreach (var cc in request.Cc)

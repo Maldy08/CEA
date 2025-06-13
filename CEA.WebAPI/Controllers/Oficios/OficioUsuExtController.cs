@@ -2,6 +2,7 @@
 using CEA.Application.Features.Oficios.Queries.GetAllOficiosUsuExt;
 using CEA.Application.UseCases.Oficios.Commands.CreateOficioUsuExt;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,12 +20,14 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<OficioUsuExtDto>>> GetAllOficiosUsuExt()
         {
             return Ok(await _mediator.Send(new GetAllOficiosUsuExtQuery()));
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateOficioUsuExt([FromBody] CreateOficioUsuExtCommand command)
         {
             var result = await _mediator.Send(command);

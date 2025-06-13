@@ -4,8 +4,8 @@ using CEA.Application.Features.GetAllEmpleados;
 using CEA.Application.Features.GetAllEmpleadosByDeptoComi;
 using CEA.Application.Features.GetAllEmpleadosByDeptoPpto;
 using CEA.Application.Features.GetEmpleadoById;
-using CEA.Application.Interfaces.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers
@@ -15,7 +15,7 @@ namespace CEA.WebAPI.Controllers
     public class EmpleadoController : ControllerBase
     {
 
-       // private readonly IEmpleadoRepository _repository;
+        // private readonly IEmpleadoRepository _repository;
         private readonly IMediator _mediator;
 
         public EmpleadoController(IMediator mediator)
@@ -24,12 +24,14 @@ namespace CEA.WebAPI.Controllers
         }
 
         [HttpGet]
+        //[Authorize]
         public async Task<ActionResult<IEnumerable<EmpleadoDto>>> GetEmpleados()
         {
             return Ok(await _mediator.Send(new GetAllEmpleadosQuery()));
         }
 
         [HttpGet("GetEmpleadoById/{id}")]
+        //[Authorize]
 
         public async Task<ActionResult<EmpleadoDto>> GetEmpleadoById(int id)
         {
@@ -38,6 +40,7 @@ namespace CEA.WebAPI.Controllers
         }
 
         [HttpGet("GetEmpleadosByDeptoPpto/{id}")]
+        //[Authorize]
 
         public async Task<ActionResult<List<EmpleadoDto>>> GetEmpleadosByDeptoPpto(int id)
         {
@@ -45,6 +48,7 @@ namespace CEA.WebAPI.Controllers
         }
 
         [HttpGet("GetEmpleadosByDeptoComi/{id}")]
+        //[Authorize]
 
         public async Task<ActionResult<List<EmpleadoDto>>> GetEmpleadosByDeptoComi(int id)
         {

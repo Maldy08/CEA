@@ -30,7 +30,8 @@ namespace CEA.Shared.Interfaces
             {
                 return new Result<T>
                 {
-                    Succeeded = true
+                    Succeeded = true,
+                    Code = 200,
                 };
             }
 
@@ -39,7 +40,8 @@ namespace CEA.Shared.Interfaces
                 return new Result<T>
                 {
                     Succeeded = true,
-                    Messages = new List<string> { message }
+                    Messages = new List<string> { message },
+                    Code = 200
                 };
             }
 
@@ -48,7 +50,8 @@ namespace CEA.Shared.Interfaces
                 return new Result<T>
                 {
                     Succeeded = true,
-                    Data = data
+                    Data = data,
+                    Code = 200
                 };
             }
 
@@ -58,7 +61,8 @@ namespace CEA.Shared.Interfaces
                 {
                     Succeeded = true,
                     Messages = new List<string> { message },
-                    Data = data
+                    Data = data,
+                    Code = 200
                 };
             }
 
@@ -70,7 +74,9 @@ namespace CEA.Shared.Interfaces
             {
                 return new Result<T>
                 {
-                    Succeeded = false
+                    Succeeded = false,
+                    Messages = new List<string> { "An error occurred." },
+                    Code = 400
                 };
             }
 
@@ -79,7 +85,8 @@ namespace CEA.Shared.Interfaces
                 return new Result<T>
                 {
                     Succeeded = false,
-                    Messages = new List<string> { message }
+                    Messages = new List<string> { message },
+                    Code = 400
                 };
             }
 
@@ -88,7 +95,8 @@ namespace CEA.Shared.Interfaces
                 return new Result<T>
                 {
                     Succeeded = false,
-                    Messages = messages
+                    Messages = messages,
+                    Code = 400
                 };
             }
 
@@ -97,7 +105,9 @@ namespace CEA.Shared.Interfaces
                 return new Result<T>
                 {
                     Succeeded = false,
-                    Data = data
+                    Data = data,
+                    Messages = new List<string> { "An error occurred." },
+                    Code = 400
                 };
             }
 
@@ -107,7 +117,8 @@ namespace CEA.Shared.Interfaces
                 {
                     Succeeded = false,
                     Messages = new List<string> { message },
-                    Data = data
+                    Data = data,
+                    Code = 400
                 };
             }
 
@@ -117,7 +128,8 @@ namespace CEA.Shared.Interfaces
                 {
                     Succeeded = false,
                     Messages = messages,
-                    Data = data
+                    Data = data,
+                    Code = 400
                 };
             }
 
@@ -126,7 +138,9 @@ namespace CEA.Shared.Interfaces
                 return new Result<T>
                 {
                     Succeeded = false,
-                    Exception = exception
+                    Exception = exception,
+                    Messages = new List<string> { exception.Message },
+                    Code = 500
                 };
             }
 

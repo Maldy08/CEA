@@ -10,16 +10,12 @@ namespace CEA.Application.Features.Email.Commands.SendEmail
 {
     public record SendEmailCommand : IRequest<Result<int>>
     {
-        public string To { get; set; }
+        public string? To { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public string From { get; set; }
-        public string?[] Cc
-        {
-            get; set; }  = Array.Empty<string>();
+        public string?[] Cc { get; set; }  = Array.Empty<string>();
         public IFormFile? Attachment { get; set; }
-
-
 
     }
     internal class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<int>>
@@ -53,8 +49,6 @@ namespace CEA.Application.Features.Email.Commands.SendEmail
                 return Result<int>.Failure("Error al enviar el correo");
                 throw;
             }
-          
-           
 
         }
     

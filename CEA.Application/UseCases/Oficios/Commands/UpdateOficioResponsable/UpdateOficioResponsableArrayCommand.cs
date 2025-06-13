@@ -39,6 +39,46 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficioResponsable
             var entidadesOriginales = await _oficioResponsableRepository2.GetOficioReponsableByEjercicioFolioEor(ejercicio, folio, eor);
             var count = entidadesOriginales.Count;
 
+            if (count == 0)
+            {
+                return await Task.FromResult(Result<int>.Failure("No existen registros para actualizar"));
+            }
+
+
+            var temporales = new List<OficioResponsable>();
+
+            foreach (var dto in request.oficioResponsableDtos)
+            {
+                var existente = entidadesOriginales
+                    .FirstOrDefault(e => e.IdEmpleado == dto.IdEmpleado && e.Rol == dto.Rol);
+
+                if (existente == null)
+                {
+                    temporales.Add(new OficioResponsable
+                    {
+                        Ejercicio = dto.Ejercicio,
+                        Folio = dto.Folio,
+                        Eor = dto.Eor,
+                        IdEmpleado = dto.IdEmpleado,
+                        Rol = dto.Rol,
+                        FAsignado = DateTime.Now,
+                    });
+                }
+                else
+                {
+     
+                    temporales.Add(new OficioResponsable
+                    {
+                        Ejercicio = dto.Ejercicio,
+                        Folio = dto.Folio,
+                        Eor = dto.Eor,
+                        IdEmpleado = existente.IdEmpleado,
+                        Rol = existente.Rol,
+                        FAsignado = _oficioResponsableRepository2.GetOficioReponsableByEjercicioFolioEorNoDto(dto.Ejercicio, dto.Folio, dto.Eor, existente.IdEmpleado,existente.Rol).Result.FAsignado,
+                    });
+                }
+            }
+
             for (int i = 0; i < count; i++)
             {
                 var commandDelete = new DeleteOficioResponsableCommand(entidadesOriginales[i].Ejercicio, entidadesOriginales[i].Folio, entidadesOriginales[i].Eor, entidadesOriginales[i].IdEmpleado, entidadesOriginales[i].Rol, entidadesOriginales[i].Id);
@@ -46,22 +86,23 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficioResponsable
             }
 
 
-            for (int i = 0; i < request.oficioResponsableDtos.Count; i++)
+            for (int i = 0; i < temporales.Count; i++)
             {
                 var entity = new OficioResponsable
                 {
-                    Ejercicio = request.oficioResponsableDtos[i].Ejercicio,
-                    Folio = request.oficioResponsableDtos[i].Folio,
-                    Eor = request.oficioResponsableDtos[i].Eor,
-                    IdEmpleado = request.oficioResponsableDtos[i].IdEmpleado,
-                    Rol = request.oficioResponsableDtos[i].Rol,
-                    FAsignado = DateTime.Now,
+                    Ejercicio = temporales[i].Ejercicio,
+                    Folio = temporales[i].Folio,
+                    Eor = temporales[i].Eor,
+                    IdEmpleado = temporales[i].IdEmpleado,
+                    Rol = temporales[i].Rol,
+                    FAsignado = temporales[i].FAsignado,
+                    Iox = 1,
                 };
                 await _unitOfWork.Repository<OficioResponsable>().AddAsync(entity);
             }
 
             await _unitOfWork.Save(cancellationToken);
-            return await Task.FromResult(Result<int>.Success(1));
+            return await Task.FromResult(Result<int>.Success("Datos actualizados correctamente!"));
         }
     }
 

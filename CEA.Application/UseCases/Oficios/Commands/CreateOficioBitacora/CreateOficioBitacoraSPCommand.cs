@@ -22,8 +22,6 @@ namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioBitacora
 
         public async Task<Result<int>> Handle(CreateOficioBitacoraSPCommand request, CancellationToken cancellationToken)
         {
-
-
             await _oficioFunctions.SaveBitacoraOficio(request.oficioBitacoraDtos);
             return Result<int>.Success(1);
         }

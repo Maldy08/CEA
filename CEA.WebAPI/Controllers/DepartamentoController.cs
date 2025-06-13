@@ -1,6 +1,7 @@
 ﻿using CEA.Application.DTOs;
 using CEA.Application.DTOs.Oficios;
 using CEA.Application.Interfaces.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers
@@ -31,6 +32,7 @@ namespace CEA.WebAPI.Controllers
         }
 
         [HttpGet("GetDepartamentos/{depto}/{ejercicio}")]
+        [Authorize]
         public async Task<ActionResult<List<OficioListaDepartamentosDto>>> GetDepartamentos(int depto, int ejercicio)
         {
             return Ok(await _repository.GetDepartamentosAsync(depto, ejercicio));

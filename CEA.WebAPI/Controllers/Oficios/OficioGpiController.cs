@@ -2,6 +2,7 @@
 using CEA.Application.UseCases.Oficios.Queries.GetAllOficioGpi;
 using CEA.Shared.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Oficios
@@ -18,6 +19,7 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<Result<IEnumerable<OficioGpiDto>>>> GetAllOficioGpi()
         {
             return await _mediator.Send(new GetAllOficioGpiQuery());
