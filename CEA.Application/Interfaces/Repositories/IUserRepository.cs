@@ -10,6 +10,7 @@ namespace CEA.Application.Interfaces.Repositories
         Task<UserDto> GetUserById(int id);
         Task<List<UserDto>> GetAllUsuarios();
         Task<UserDto> GetUserByIdEmpleado(int idEmpleado);
+        Task<UserDto> GetUserByIdEmpleadoAndDepto(int idEmpleado, int depto);
        // Task<UserDto> GetUserByEmail(string email);
 
     }

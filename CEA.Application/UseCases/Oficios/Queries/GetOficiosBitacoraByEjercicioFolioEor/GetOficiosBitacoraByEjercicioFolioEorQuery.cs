@@ -41,7 +41,8 @@ namespace CEA.Application.Features.Oficios.Queries.GetOficiosBitacoraByEjercicio
             foreach (var entity in entities)
             {
                 var user = await _mediator.Send(new GetUserByIdEmpleadoQuery(entity.IdEmpleado));
-                entity.Usuario = user.Data.Login;
+                entity.Usuario = user.Data.Nombre.Substring(0, 1) + user.Data.Paterno + user.Data.Materno.Substring(0, 1);
+
             }
             var mappedEntities = _mapper.Map<List<OficioBitacoraDto>>(entities);
             return await Result<List<OficioBitacoraDto>>.SuccessAsync(mappedEntities);

@@ -41,6 +41,10 @@ namespace CEA.Application.DTOs
         public int? Oficios { get; set; }
         public int? OficiosNivel { get; set; }
 
+        public string Nombre { get; set; } = string.Empty;
+        public string Paterno { get; set; } = string.Empty;
+        public string Materno { get; set; } = string.Empty;
+
 
     }
 }

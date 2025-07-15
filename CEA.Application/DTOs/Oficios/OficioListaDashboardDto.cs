@@ -10,5 +10,6 @@
         public string NomTipo { get; set; } = string.Empty;
         public string NoOficio { get; set; } = string.Empty;
         public int Rn { get; set; }
+        public int Rol { get; set; }
     }
 }

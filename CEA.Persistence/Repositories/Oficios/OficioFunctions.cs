@@ -76,7 +76,7 @@ namespace CEA.Persistence.Repositories.Oficios
                     oficioDto.OficiosResponsables.Select(x => new System.Xml.Linq.XElement("RESPONSABLE",
                         new System.Xml.Linq.XElement("ID_EMPLEADO", x.IdEmpleado),
                         new System.Xml.Linq.XElement("ROL", x.Rol),
-                        new System.Xml.Linq.XElement("IOX", 0)
+                        new System.Xml.Linq.XElement("IOX", 1)
                     )
                 ))
             )

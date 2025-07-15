@@ -64,5 +64,13 @@ namespace CEA.Persistence.Repositories
 
             }).OrderBy(d => d.IdCea).ToListAsync();
         }
+
+        public async Task<DeptoCeaSeproaDto> GetSeproaByIdAsync(int idCea)
+        {
+           return await _context.deptoCeaSeproaDto
+                 .FromSqlRaw("SELECT * FROM VS_DEPTOSCEAYSEPROA")
+                 .Where(d => d.IdCea == idCea)
+                .FirstOrDefaultAsync();
+        }
     }
 }

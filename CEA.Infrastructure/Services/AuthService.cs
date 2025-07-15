@@ -45,7 +45,7 @@ namespace CEA.Infrastructure.Services
                 IsAuthenticated = true,
                 Message = "User Authenticated",
                 Roles = empleado.DeptoUe == 23 ? new List<string> { "Admin" } : new List<string> { "User" },
-                TokenExpiresOn = DateTime.Now.AddHours(1),
+                //TokenExpiresOn = DateTime.Now.AddHours(1),
                 Username = credential.Login,
                 UserData = new UserDto
                 {
@@ -157,7 +157,7 @@ namespace CEA.Infrastructure.Services
                     IsAuthenticated = false,
                     Message = "User not Authenticated",
                     Roles = new List<string> { "User" },
-                  //  TokenExpiresOn = DateTime.Now.AddHours(1),
+                    TokenExpiresOn = DateTime.Now.AddHours(1),
                     Username = ""
                 };
             }

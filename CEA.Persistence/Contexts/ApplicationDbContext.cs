@@ -1,4 +1,5 @@
-﻿using CEA.Application.DTOs.Oficios;
+﻿using CEA.Application.DTOs;
+using CEA.Application.DTOs.Oficios;
 using CEA.Application.DTOs.Vehiculos;
 using CEA.Application.DTOs.Viaticos;
 using CEA.Domain.Common;
@@ -57,6 +58,7 @@ namespace CEA.Persistence.Context
         public DbSet<OficioXexpedir> OficioXexpedir => Set<OficioXexpedir>();
         public DbSet<OficioParametro> OficioParametro => Set<OficioParametro>();
         public DbSet<OficioGpi> OficioGpi => Set<OficioGpi>();
+        public DbSet<DeptoCeaSeproaDto> deptoCeaSeproaDto => Set<DeptoCeaSeproaDto>();
 
 
         //Oficios Functions

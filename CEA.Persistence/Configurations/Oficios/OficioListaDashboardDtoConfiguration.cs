@@ -19,6 +19,7 @@ namespace CEA.Persistence.Configurations.Oficios
             entity.Property(e => e.NomTipo).HasColumnName("NOM_TIPO");
             entity.Property(e => e.NoOficio).HasColumnName("NO_OFICIO");
             entity.Property(e => e.Rn).HasColumnName("RN");
+            entity.Property(e => e.Rol).HasColumnName("ROL");
 
         }
     }

@@ -155,7 +155,7 @@ namespace CEA.Persistence.Repositories
         public async Task<UserDto> GetUserByIdEmpleado(int idEmpleado)
         {
             return await _context.Usuarios
-                 .Where(a => a.NoEmpleado == idEmpleado)
+                 .Where(a => a.NoEmpleado == idEmpleado )
                  .Select(a => new UserDto
                  {
                      Login = a.Login,
@@ -189,9 +189,55 @@ namespace CEA.Persistence.Repositories
                      Vales = a.Vales ?? false,
                      ValesNivel = a.ValesNivel ?? 0,
                      Viaticos = a.Viaticos ?? false,
-                     ViaticosNivel = a.ViaticosNivel ?? 0
+                     ViaticosNivel = a.ViaticosNivel ?? 0,
+                     Nombre = a.Nombre,
+                     Paterno = a.Paterno,
+                     Materno = a.Materno
+
 
                  }).FirstOrDefaultAsync();
+        }
+
+        public async Task<UserDto> GetUserByIdEmpleadoAndDepto(int idEmpleado, int depto)
+        {
+            return await _context.Usuarios
+             .Where(a => a.NoEmpleado == idEmpleado && a.Depto == depto)
+             .Select(a => new UserDto
+             {
+                 Login = a.Login,
+                 Pass = a.Pass,
+                 Activo = a.Activo,
+                 Depto = a.Depto,
+                 DeptoDescripcion = a.DeptoDescripcion,
+                 Descripcion = a.Descripcion,
+                 IdPue = a.IdPue,
+                 NoEmpleado = a.NoEmpleado,
+                 NombreCompleto = a.NombreCompleto,
+                 Usuario = a.Usuario,
+                 Municipio = a.Municipio,
+                 Oficina = a.Oficina,
+                 Activos = a.Activos ?? false,
+                 ActivosNivel = a.ActivosNivel ?? 0,
+                 Almacen = a.Almacen ?? false,
+                 AlmacenNivel = a.AlmacenNivel ?? 0,
+                 Bd = a.Bd ?? 0,
+                 Caja = a.Caja ?? false,
+                 CajaNivel = a.CajaNivel ?? 0,
+                 Compras = a.Compras ?? false,
+                 ComprasNivel = a.ComprasNivel ?? 0,
+                 Contabilidad = a.Contabilidad ?? false,
+                 ContabilidadNivel = a.ContabilidadNivel ?? 0,
+                 Nominas = a.Nominas ?? false,
+                 NominasNivel = a.NominasNivel ?? 0,
+                 Polnom = a.Polnom,
+                 Presupuestos = a.Presupuestos ?? false,
+                 PresupuestosNivel = a.PresupuestosNivel ?? 0,
+                 Vales = a.Vales ?? false,
+                 ValesNivel = a.ValesNivel ?? 0,
+                 Viaticos = a.Viaticos ?? false,
+                 ViaticosNivel = a.ViaticosNivel ?? 0
+
+             }).FirstOrDefaultAsync();
         }
     }
 }

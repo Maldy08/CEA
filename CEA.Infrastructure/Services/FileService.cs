@@ -72,7 +72,7 @@ namespace CEA.Infrastructure.Services
         {
             try
             {
-                var depto = await _deptoRepository.GetDeptoByIdAsync(oficio.Depto);
+                var depto = await _deptoRepository.GetSeproaByIdAsync(oficio.Depto);
                 var filePath = Path.Combine(_rutaPredeterminadaOficiosPlantilla, "PlantillaCea.docx");
                 _logger.LogInformation($"Ruta de la plantilla: {filePath}");
 
@@ -80,7 +80,7 @@ namespace CEA.Infrastructure.Services
                 {
                     // Registra un mensaje de error si el archivo no existe
                     _logger.LogError($"La plantilla no existe en la ruta: {filePath}");
-                    SystemException ex = new SystemException($"La plantilla no existe en la ruta: {filePath}");
+                    SystemException ex = new SystemException($"La plantilla no exiso c1te en la ruta: {filePath}");
                     throw ex;
                 }
 
@@ -88,7 +88,7 @@ namespace CEA.Infrastructure.Services
                 {
                     var reemplazos = new Dictionary<string, string>
             {
-                { "{{DEPENDENCIA}}", oficio.Tipo == 1 ? "COMISION ESTATAL DEL AGUA DE BAJA CALIFORNIA" : "SEPROA" },
+                { "{{DEPENDENCIA}}", oficio.Tipo == 1 ? "COMISION ESTATAL DEL AGUA DE BAJA CALIFORNIA" : "SECRETARÍA PARA EL MANEJO, SANEAMIENTO Y PROTECCIÓN DEL AGUA" },
                 { "{{SECCION}}", depto.Descripcion },
                 { "{{OFICIO}}", oficio.NoOficio },
                 { "{{DEST_RESPONSABLE}}", oficio.DestNombre },

@@ -5,7 +5,6 @@ using CEA.Application.Features.GetAllEmpleadosByDeptoComi;
 using CEA.Application.Features.GetAllEmpleadosByDeptoPpto;
 using CEA.Application.Features.GetEmpleadoById;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers
