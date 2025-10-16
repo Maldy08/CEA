@@ -10,11 +10,15 @@ using CEA.Application.Services;
 using CEA.Application.UseCases.Google;
 using CEA.Application.UseCases.Oficios.Commands.CreateOficio;
 using CEA.Application.UseCases.Oficios.Commands.FoliarOficioSp;
+using CEA.Application.UseCases.Oficios.Commands.GetListadoOficiosExcel;
 using CEA.Application.UseCases.Oficios.Commands.GetPdfOficio;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficio;
+using CEA.Application.UseCases.Oficios.Commands.UpdateOficioEstatus;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficioFolio;
 using CEA.Application.UseCases.Oficios.Commands.UploadOficioPdf;
+using CEA.Application.UseCases.Oficios.Queries.GetOficioEstatusByEor;
 using CEA.Application.UseCases.Oficios.Queries.GetOficioParametroByEjercicio;
+using CEA.Application.UseCases.Oficios.Queries.GetOficiosClasificacionQuery;
 using CEA.Application.UseCases.Oficios.Queries.GetOficiosMcByEorAndEjercicio;
 using CEA.Application.UseCases.Oficios.Queries.GetOficiosMcByEorAndEjercicioAndFolio;
 using CEA.Domain.Entities.Oficios;
@@ -130,6 +134,12 @@ namespace CEA.WebAPI.Controllers.Oficios
             return await _mediator.Send(command);
         }
 
+        [HttpPut("UpdateOficioEstatus/{ejercicio}/{folio}/{eor}/{estatus}")]
+        public async Task<ActionResult<Result<int>>> UpdateOficioEstatus([FromBody] UpdateOficioEstatusCommand command)
+        {
+            return await _mediator.Send(command);
+        }
+
         [HttpGet("GetOficiosMCByEorAndEjercicio/{eor}/{ejercicio}")]
         [Authorize]
 
@@ -190,6 +200,23 @@ namespace CEA.WebAPI.Controllers.Oficios
 
         }
 
+        [HttpGet("DownloadExcel/{ejercicio}/{idEmpleado}")]
+        //[Authorize]
+        public async Task<IActionResult> DownloadExcel(int ejercicio, int idEmpleado)
+        {
+            var file = await _mediator.Send(new GetListadoOficiosExcelCommand(ejercicio, idEmpleado));
+            if (file == null)
+            {
+                return NotFound();
+            }
+            return new FileStreamResult(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                FileDownloadName = "ListadoOficios.xlsx",
+            };
+        }
+
+
+
         [HttpPost("FoliarOficioSp")]
         [Authorize]
         public async Task<ActionResult<Result<OficioSpFoliarResult>>> FoliarOficioSp([FromBody] FoliarOficioSpCommand command)
@@ -205,6 +232,23 @@ namespace CEA.WebAPI.Controllers.Oficios
             return new JsonResult(response);
 
         }
+
+        [HttpGet("GetOficiosEstatusByEor/{eor}")]
+        public async Task<ActionResult<Result<List<OficioEstatusDto>>>> GetOficiosEstatusByEor(int eor)
+        {
+
+            return await _mediator.Send(new GetOficioEstatusByEorQuery(eor));
+        }
+
+        [HttpGet("GetOficiosClasificaciones")]
+
+        public async Task<ActionResult<Result<List<OficioClasificacionDto>>>> GetOficiosClasificaciones()
+        {
+
+            return await _mediator.Send(new GetOficiosClasificacionQuery());
+
+        }
+
 
     }
 }

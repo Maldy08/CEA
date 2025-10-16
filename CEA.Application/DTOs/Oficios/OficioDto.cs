@@ -2,7 +2,6 @@
 using CEA.Domain.Entities.Oficios;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
 
 namespace CEA.Application.DTOs.Oficios
 {
@@ -38,6 +37,8 @@ namespace CEA.Application.DTOs.Oficios
         public int IdEmpleado { get; set; }
         public string NombreResponsable { get; set; } = string.Empty;
         public int Rol { get; set; }
+
+        public int idClasificacion { get; set; }
 
         [NotMapped]
         public IFormFile? archivo { get; set; }

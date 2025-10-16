@@ -15,7 +15,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.CreateOficioUsuExt
         public string Nombre { get; set; } = string.Empty;
         public string? Cargo { get; set; }
         public DateTime FechaCaptura { get; set; }
-        public bool Activo { get; set; }
+        public int Activo { get; set; }
 
     }
     internal class CreateOficioUsuExtCommandHandler: IRequestHandler<CreateOficioUsuExtCommand, Result<int>>

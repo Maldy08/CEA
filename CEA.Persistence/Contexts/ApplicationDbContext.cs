@@ -60,12 +60,15 @@ namespace CEA.Persistence.Context
         public DbSet<OficioGpi> OficioGpi => Set<OficioGpi>();
         public DbSet<DeptoCeaSeproaDto> deptoCeaSeproaDto => Set<DeptoCeaSeproaDto>();
 
+        public DbSet<OficioClasificacion> oficioClasificacions => Set<OficioClasificacion>();
+
 
         //Oficios Functions
         public DbSet<OficioDtoFunction> OficioDtoFunction => Set<OficioDtoFunction>();
         public DbSet<OficioListaDashboardDto> oficioListaDashboardDtos => Set<OficioListaDashboardDto>();
         public DbSet<OficioContadoresDashboardDto> oficioContadoresDashboardDtos => Set<OficioContadoresDashboardDto>();
         public DbSet<OficioListaDepartamentosDto> oficioListaDepartamentosDtos => Set<OficioListaDepartamentosDto>();
+        public DbSet<OficioCppDto> oficioCppDtos => Set<OficioCppDto>();
 
 
 

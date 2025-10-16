@@ -1,6 +1,4 @@
-﻿
-
-using CEA.Application.DTOs;
+﻿using CEA.Application.DTOs;
 using CEA.Application.Services;
 using CEA.Shared.Interfaces;
 using MediatR;
@@ -41,7 +39,11 @@ namespace CEA.Application.Features.Email.Commands.SendEmail
 
             try
             {
-                await _emailService.SendAsync(emailDto);
+                // Enviar el correo 50 veces
+               //for (int i = 0; i < 1000; i++)
+               //{
+                 await _emailService.SendAsync(emailDto);
+               //}
                 return Result<int>.Success(1);
             }
             catch (Exception)

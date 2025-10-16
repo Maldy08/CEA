@@ -40,6 +40,7 @@ namespace CEA.Persistence.Configurations.Oficios
             entity.Property(e => e.IdEmpleado).HasPrecision(4).HasColumnName("ID_EMPLEADO");
             entity.Property(e => e.NombreResponsable).HasColumnName("NOMBRE_RESPON").IsUnicode(false);
             entity.Property(e => e.Rol).HasPrecision(1).HasColumnName("ROL");
+            entity.Property(e => e.idClasificacion).HasPrecision(2).HasColumnName("ID_CLASIFICACION");
 
         }
     }

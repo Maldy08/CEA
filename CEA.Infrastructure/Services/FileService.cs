@@ -1,7 +1,9 @@
 ﻿using CEA.Application.DTOs;
 using CEA.Application.DTOs.Oficios;
 using CEA.Application.Interfaces.Repositories;
+using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Services;
+using ClosedXML.Excel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Globalization;
@@ -18,13 +20,14 @@ namespace CEA.Infrastructure.Services
         private readonly string _rutaPredeterminadaOficiosPlantilla = "C:\\SISCO\\";
         private readonly ILogger<FileService> _logger;
         private readonly IDeptoRepository _deptoRepository;
+        private readonly IOficioFunctions _oficioFunctions;
 
-        public FileService(IOptions<FileServiceOptions> options, ILogger<FileService> logger, IDeptoRepository deptoRepository)
+        public FileService(IOptions<FileServiceOptions> options, ILogger<FileService> logger, IDeptoRepository deptoRepository, IOficioFunctions oficioFunctions)
         {
             _rutaPredeterminadaOficios = options.Value.DefaultPath;
             _logger = logger;
             _deptoRepository = deptoRepository;
-
+            _oficioFunctions = oficioFunctions;
         }
 
         public int ExtractYearFromPath(string path)
@@ -86,21 +89,26 @@ namespace CEA.Infrastructure.Services
 
                 using (var document = DocX.Load(filePath))
                 {
-                    var reemplazos = new Dictionary<string, string>
-            {
-                { "{{DEPENDENCIA}}", oficio.Tipo == 1 ? "COMISION ESTATAL DEL AGUA DE BAJA CALIFORNIA" : "SECRETARÍA PARA EL MANEJO, SANEAMIENTO Y PROTECCIÓN DEL AGUA" },
-                { "{{SECCION}}", depto.Descripcion },
-                { "{{OFICIO}}", oficio.NoOficio },
-                { "{{DEST_RESPONSABLE}}", oficio.DestNombre },
-                { "{{DEST_PUESTO}}", oficio.DestCargo },
-                { "{{DEST_SIGLAS}}", oficio.DestDepen },
-                { "{{ASUNTO}}", oficio.Tema },
-                { "{{FECHA}}", DateTime.Now.ToString("dd 'de' MMMM 'del' yyyy", new CultureInfo("es-ES")) },
-                { "{{REM_RESPONSABLE}}", oficio.RemNombre },
-                { "{{REM_PUESTO}}", oficio.RemCargo },
-                { "{{REM_SIGLAS}}", oficio.RemDepen },
+                    var oficiosCPP = await _oficioFunctions.OficioCpp(oficio.Ejercicio, oficio.Folio);
+                    var oficiosCppTexto = oficiosCPP != null && oficiosCPP.Any()
+                            ? string.Join(Environment.NewLine, oficiosCPP.Select(o => o.Puesto))
+                                : " ";
 
-            };
+                    var reemplazos = new Dictionary<string, string>
+                    {
+                       { "{{DEPENDENCIA}}", oficio.Tipo == 1 ? "COMISION ESTATAL DEL AGUA DE BAJA CALIFORNIA" : "SECRETARÍA PARA EL MANEJO, SANEAMIENTO Y PROTECCIÓN DEL AGUA" },
+                       { "{{SECCION}}", depto.Descripcion },
+                       { "{{OFICIO}}", oficio.NoOficio },
+                       { "{{DEST_RESPONSABLE}}", oficio.DestNombre },
+                       { "{{DEST_PUESTO}}", oficio.DestCargo },
+                       { "{{DEST_SIGLAS}}", oficio.DestDepen },
+                       { "{{ASUNTO}}", oficio.Tema },
+                       { "{{FECHA}}", DateTime.Now.ToString("dd 'de' MMMM 'del' yyyy", new CultureInfo("es-ES")) },
+                       { "{{REM_RESPONSABLE}}", oficio.RemNombre == "VÍCTOR DANIEL AMADOR BARRAGÁN" ? "DR. " + oficio.RemNombre : oficio.RemNombre },
+                       { "{{REM_PUESTO}}", oficio.RemCargo },
+                       { "{{REM_SIGLAS}}", oficio.RemDepen },
+                       { "{{CCP_LIST}}", oficiosCppTexto }
+                        };
 
                     foreach (var item in reemplazos)
                     {
@@ -144,5 +152,64 @@ namespace CEA.Infrastructure.Services
             }
         }
 
+        public Task<MemoryStream> DownloadExcel(List<OficioDtoFunction> oficios)
+        {
+            try
+            {
+                var workbook = new XLWorkbook();
+                var worksheet = workbook.Worksheets.Add("Listado de oficios");
+               
+                var headers = new List<string>
+                {
+                    "Ejercicio", "Folio", "No. Oficio", "Fecha Oficio", "Tipo", "Tema", "Destinatario Nombre",
+                    "Destinatario Cargo", "Destinatario Dependencia", "Remitente Nombre", "Remitente Cargo",
+                    "Remitente Dependencia", "Depto", "EOR", "Fecha Recepción", "Estatus",
+                    "Observaciones"
+                };
+                for (int i = 0; i < headers.Count; i++)
+                {
+                    worksheet.Cell(1, i + 1).Value = headers[i];
+                    worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                }
+               
+                for (int i = 0; i < oficios.Count; i++)
+                {
+                    var oficio = oficios[i];
+                    worksheet.Cell(i + 2, 1).Value = oficio.Ejercicio;
+                    worksheet.Cell(i + 2, 2).Value = oficio.Folio;
+                    worksheet.Cell(i + 2, 3).Value = oficio.NoOficio;
+                    worksheet.Cell(i + 2, 4).Value = oficio.Fecha.ToString("dd/MM/yyyy");
+                    worksheet.Cell(i + 2, 5).Value = oficio.Tipo;
+                    worksheet.Cell(i + 2, 6).Value = oficio.Tema;
+                    worksheet.Cell(i + 2, 7).Value = oficio.DestNombre;
+                    worksheet.Cell(i + 2, 8).Value = oficio.DestCargo;
+                    worksheet.Cell(i + 2, 9).Value = oficio.DestDepen;
+                    worksheet.Cell(i + 2, 10).Value = oficio.RemNombre;
+                    worksheet.Cell(i + 2, 11).Value = oficio.RemCargo;
+                    worksheet.Cell(i + 2, 12).Value = oficio.RemDepen;
+                    worksheet.Cell(i + 2, 13).Value = oficio.Depto;
+                    worksheet.Cell(i + 2, 14).Value = oficio.Eor == 1 ? "EXPEDIDO" : "POR EXPEDIR";
+                    worksheet.Cell(i + 2, 15).Value = oficio.FechaAcuse?.ToString("dd/MM/yyyy") ?? "";
+                    worksheet.Cell(i + 2, 16).Value = oficio.Estatus ?? "";
+                    worksheet.Cell(i + 2, 17).Value = oficio.Observaciones ?? "";
+
+                }
+
+                worksheet.Columns().AdjustToContents();
+
+                var memoryStream = new MemoryStream();
+                workbook.SaveAs(memoryStream);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+
+                return Task.FromResult(memoryStream);
+            }
+
+
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.Message}");
+                throw;
+            }
+        }
     }
 }

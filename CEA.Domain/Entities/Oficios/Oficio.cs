@@ -31,6 +31,7 @@ namespace CEA.Domain.Entities.Oficios
         public string? Relacionoficio { get; set; }
         public int Depto { get; set; }
         public int DeptoRespon { get; set; }
+        public int idClasificacion { get; set; }
 
         [NotMapped]
         public List<OficioBitacora> OficioBitacora { get; set; } = new();

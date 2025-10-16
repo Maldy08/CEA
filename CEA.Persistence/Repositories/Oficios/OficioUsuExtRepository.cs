@@ -21,14 +21,35 @@ namespace CEA.Persistence.Repositories.Oficios
             return await _context.OficioUsuExtDto
                 .Select(o => new OficioUsuExtDto
                 {
+                    Id = o.Id,
                     IdExterno = o.IdExterno,
                     Frecuencia = o.Frecuencia,
                     Empresa = o.Empresa,
                     Siglas = o.Siglas,
                     Nombre = o.Nombre,
                     Cargo = o.Cargo,
-       
+                    Activo = o.Activo
+
                 })
+                .Where(o => o.Activo == 1)
+                .ToListAsync();
+        }
+
+        public async Task<List<OficioUsuExtDto>> GetOficiosUsuariosExternosMantenimiento()
+        {
+           return await _context.OficioUsuExtDto
+                .Select(o => new OficioUsuExtDto
+                {
+                    Id = o.Id,
+                    IdExterno = o.IdExterno,
+                    Frecuencia = o.Frecuencia,
+                    Empresa = o.Empresa,
+                    Siglas = o.Siglas,
+                    Nombre = o.Nombre,
+                    Cargo = o.Cargo,
+                    Activo = o.Activo
+                })
+             
                 .ToListAsync();
         }
     }

@@ -3,6 +3,7 @@ using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.UseCases.Oficios.Queries.GetContadoresDashboardByEjercicioEmpleado;
 using CEA.Application.UseCases.Oficios.Queries.GetListaDashboardByEjercicioEmpleado;
 using CEA.Application.UseCases.Oficios.Queries.GetListadoOficiosFunction;
+using CEA.Application.UseCases.Oficios.Queries.GetOficiosCppByEjercicioFolio;
 using CEA.Shared.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -45,6 +46,13 @@ namespace CEA.WebAPI.Controllers.Oficios
         public async Task<ActionResult<Result<List<OficioContadoresDashboardDto>>>> GetContadoresDashboard(int ejercicio, int empleado)
         {
             return await _mediator.Send(new GetContadoresDashboardByEjercicioEmpleadoQuery(ejercicio, empleado));
+        }
+
+        [HttpGet("GetOficiosCpp/{ejercicio}/{folio}")]
+       // [Authorize]
+        public async Task<ActionResult<Result<List<OficioCppDto>>>> GetOficiosCpp(int ejercicio, int folio)
+        {
+            return await _mediator.Send(new GetOficiosCppByEjercicioFolioQuery(ejercicio, folio));
         }
 
     }

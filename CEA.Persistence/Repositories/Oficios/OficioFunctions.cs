@@ -62,6 +62,7 @@ namespace CEA.Persistence.Repositories.Oficios
                     new System.Xml.Linq.XElement("RELACIONOFICIO", oficioDto.Relacionoficio),
                     new System.Xml.Linq.XElement("DEPTO", oficioDto.Depto),
                     new System.Xml.Linq.XElement("DEPTO_RESPON", oficioDto.DeptoRespon),
+                    new System.Xml.Linq.XElement("ID_CLASIFICACION", oficioDto.idClasificacion),
                      //recorrer oficioDto.OficioBitacora y oficioDto.OficiosResponsables
                      new System.Xml.Linq.XElement("BITACORA_DATA",
                        oficioDto.OficioBitacora.Select(x => new System.Xml.Linq.XElement("BITACORA",
@@ -188,6 +189,13 @@ namespace CEA.Persistence.Repositories.Oficios
 
             return Task.FromResult(new OficioSpInsertarResult { Resultado = resultado!, Folio = Convert.ToInt32(folio), NoOficio = noOficio! });
 
+        }
+
+        public async Task<List<OficioCppDto>> OficioCpp(int ejercicio, int folio)
+        {
+            return await _context.oficioCppDtos
+                .FromSqlInterpolated($"SELECT * FROM TABLE (F_LISTADOCCP({ejercicio},{folio}))")
+                .ToListAsync();
         }
     }
 }

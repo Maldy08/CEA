@@ -1,8 +1,6 @@
 ﻿using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Services;
-using CEA.Shared.Interfaces;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.Application.UseCases.Google
 {
@@ -53,10 +51,6 @@ namespace CEA.Application.UseCases.Google
                 throw new Exception("No se encontró el archivo");
             }
             return file;
-
-
-
-
 
         }
     }

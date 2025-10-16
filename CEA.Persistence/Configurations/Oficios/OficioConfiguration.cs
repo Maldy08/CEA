@@ -37,6 +37,7 @@ namespace CEA.Persistence.Configurations.Oficios
                 entity.Property(e => e.RemSiglas).HasMaxLength(25).IsUnicode(false).HasColumnName("REM_SIGLAS");
                 entity.Property(e => e.Tema).HasMaxLength(250).IsUnicode(false).HasColumnName("TEMA");
                 entity.Property(e => e.Tipo).HasPrecision(1).HasColumnName("TIPO");
+                entity.Property(e => e.idClasificacion).HasPrecision(2).HasColumnName("ID_CLASIFICACION");
         }
     }
 }

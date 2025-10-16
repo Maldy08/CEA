@@ -38,7 +38,9 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficio
         public string? Relacionoficio { get; set; }
         public int Depto { get; set; }
         public int DeptoRespon { get; set; }
-       // public IFormFile? archivo { get; set; }
+
+        public int idClasificacion { get; set; }
+        // public IFormFile? archivo { get; set; }
     }
     internal class UpdateOficioCommandHandler : IRequestHandler<UpdateOficioCommand, Result<int>>
     {
@@ -84,6 +86,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficio
             oficioDto.Pdfpath = request.Pdfpath;
             oficioDto.Tipo = request.Tipo;
             oficioDto.DeptoRespon = request.DeptoRespon;
+            oficioDto.idClasificacion = request.idClasificacion;
 
 
             //if (request.archivo != null)

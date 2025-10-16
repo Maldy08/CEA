@@ -13,5 +13,7 @@ namespace CEA.Application.Interfaces.Repositories.Oficios
         string ConvertOficioDtoToXml(OficioDto oficioDto);
         Task<OficioSpFoliarResult> OficioSPFoliar(int ejercicio, int folio, int eor, int idEmpleado);
 
+        Task<List<OficioCppDto>> OficioCpp(int ejercicio, int folio);
+
     }
 }

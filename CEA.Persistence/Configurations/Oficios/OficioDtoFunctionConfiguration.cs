@@ -40,6 +40,8 @@ namespace CEA.Persistence.Configurations.Oficios
             entity.Property(e => e.Observaciones).HasColumnName("OBSERVACIONES");
             entity.Property(e => e.Rol).HasColumnName("ROL");
             entity.Property(e => e.EstatusNum).HasColumnName("ESTATUSNUM");
+            entity.Property(e => e.idClasificacion).HasColumnName("ID_CLASIFICACION");
+            entity.Property(e => e.Clasificacion).HasColumnName("CLASIFICACION");
         }
     }
 }

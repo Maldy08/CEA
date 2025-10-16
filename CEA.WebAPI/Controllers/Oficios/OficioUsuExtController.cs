@@ -1,9 +1,9 @@
 ﻿using CEA.Application.DTOs.Oficios;
 using CEA.Application.Features.Oficios.Queries.GetAllOficiosUsuExt;
 using CEA.Application.UseCases.Oficios.Commands.CreateOficioUsuExt;
+using CEA.Application.UseCases.Oficios.Commands.UpdateOficioUsuExt;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Oficios
@@ -20,10 +20,17 @@ namespace CEA.WebAPI.Controllers.Oficios
         }
 
         [HttpGet]
-        [Authorize]
+         //[Authorize]
         public async Task<ActionResult<IEnumerable<OficioUsuExtDto>>> GetAllOficiosUsuExt()
         {
             return Ok(await _mediator.Send(new GetAllOficiosUsuExtQuery()));
+        }
+
+        [HttpGet("mantenimiento")]
+        //[Authorize]
+        public async Task<ActionResult<IEnumerable<OficioUsuExtDto>>> GetAllOficiosUsuExtManto()
+        {
+            return Ok(await _mediator.Send(new GetAllOficiosUsuExtQueryManto()));
         }
 
         [HttpPost]
@@ -33,6 +40,14 @@ namespace CEA.WebAPI.Controllers.Oficios
             var result = await _mediator.Send(command);
             return Ok(result);
 
+        }
+
+        [HttpPut]
+        //[Authorize]
+        public async Task<IActionResult> UpdateOficioUsuExt([FromBody] UpdateOficioUsuExtCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
     }
 }
