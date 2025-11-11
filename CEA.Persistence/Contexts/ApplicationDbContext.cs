@@ -5,6 +5,7 @@ using CEA.Application.DTOs.Viaticos;
 using CEA.Domain.Common;
 using CEA.Domain.Common.Interfaces;
 using CEA.Domain.Entities;
+using CEA.Domain.Entities.Nomina;
 using CEA.Domain.Entities.Oficios;
 using CEA.Domain.Entities.RecursosHumanos;
 using CEA.Domain.Entities.Viaticos;
@@ -42,6 +43,7 @@ namespace CEA.Persistence.Context
         //Recursos Humanos
         public DbSet<Empleado> Empleado => Set<Empleado>();
         public DbSet<DeptoUe> DeptoUe => Set<DeptoUe>();
+        public DbSet<NomPeriodos> NomPeriodos => Set<NomPeriodos>();
 
         //Vehiculos
         public DbSet<VsWtVehiculosDto> VsWtVehiculos => Set<VsWtVehiculosDto>();

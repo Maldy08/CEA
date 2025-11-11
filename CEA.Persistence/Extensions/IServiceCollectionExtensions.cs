@@ -1,10 +1,12 @@
 ﻿using CEA.Application.Interfaces.Repositories;
+using CEA.Application.Interfaces.Repositories.Nomina;
 using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Interfaces.Repositories.Transparencia;
 using CEA.Application.Interfaces.Repositories.Vehiculos;
 using CEA.Application.Interfaces.Repositories.Viaticos;
 using CEA.Persistence.Context;
 using CEA.Persistence.Repositories;
+using CEA.Persistence.Repositories.Nomina;
 using CEA.Persistence.Repositories.Oficios;
 using CEA.Persistence.Repositories.Transparencia;
 using CEA.Persistence.Repositories.Vehiculos;
@@ -86,7 +88,11 @@ namespace CEA.Persistence.Extensions
                 .AddTransient<IOficioResponsableRepository, OficioResponsableRepository>()
                 .AddTransient<IOficioParametroRepository, OficioParametroRepository>()
                 .AddTransient<IOficioFunctions, OficioFunctions>()
-                .AddTransient<IOficioGpiRepository, OficioGpiRepository>();
+                .AddTransient<IOficioGpiRepository, OficioGpiRepository>()
+
+                //Nomina
+
+                .AddTransient<INomPeriodosRepository, NomPeriodosRepository>(); 
 
 
 

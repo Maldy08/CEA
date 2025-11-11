@@ -158,44 +158,83 @@ namespace CEA.Infrastructure.Services
             {
                 var workbook = new XLWorkbook();
                 var worksheet = workbook.Worksheets.Add("Listado de oficios");
+
+                // Agregar título/encabezado principal
+                var ejercicio = oficios.FirstOrDefault()?.Ejercicio ?? DateTime.Now.Year;
+                var titulo = $"LISTADO DE OFICIOS - EJERCICIO {ejercicio}";
+                
+                worksheet.Cell(1, 1).Value = titulo;
+                worksheet.Cell(1, 1).Style.Font.Bold = true;
+                worksheet.Cell(1, 1).Style.Font.FontSize = 16;
+                worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                
+                // Fusionar celdas para el título (ajustar según el número de columnas)
+                worksheet.Range(1, 1, 1, 11).Merge();
+
+                // Agregar subtítulo con fecha de generación
+                var subtitulo = $"Generado el: {DateTime.Now.ToString("dd/MM/yyyy HH:mm")}";
+                worksheet.Cell(2, 1).Value = subtitulo;
+                worksheet.Cell(2, 1).Style.Font.Italic = true;
+                worksheet.Cell(2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range(2, 1, 2, 11).Merge();
+
+                // Dejar una fila en blanco
+                // Los headers ahora empezarán en la fila 4
+                var headerRow = 4;
                
                 var headers = new List<string>
                 {
-                    "Ejercicio", "Folio", "No. Oficio", "Fecha Oficio", "Tipo", "Tema", "Destinatario Nombre",
-                    "Destinatario Cargo", "Destinatario Dependencia", "Remitente Nombre", "Remitente Cargo",
-                    "Remitente Dependencia", "Depto", "EOR", "Fecha Recepción", "Estatus",
-                    "Observaciones"
+                    "EJERCICIO", "FOLIO", "EOR", "NO. OFICIO","FECHA OFICIO","FECHA RECEPCION", "TIPO", "REMITENTE NOMBRE", "DESTINATARIO NOMBRE",
+                    "DESTINATARIO DEPENDENCIA", "TEMA", "ESTATUS"
                 };
+                
                 for (int i = 0; i < headers.Count; i++)
                 {
-                    worksheet.Cell(1, i + 1).Value = headers[i];
-                    worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                    worksheet.Cell(headerRow, i + 1).Value = headers[i];
+                    worksheet.Cell(headerRow, i + 1).Style.Font.Bold = true;
+                    worksheet.Cell(headerRow, i + 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+                    worksheet.Cell(headerRow, i + 1).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 }
                
+                // Los datos empezarán en la fila 5
+                var dataStartRow = headerRow + 1;
+                
                 for (int i = 0; i < oficios.Count; i++)
                 {
                     var oficio = oficios[i];
-                    worksheet.Cell(i + 2, 1).Value = oficio.Ejercicio;
-                    worksheet.Cell(i + 2, 2).Value = oficio.Folio;
-                    worksheet.Cell(i + 2, 3).Value = oficio.NoOficio;
-                    worksheet.Cell(i + 2, 4).Value = oficio.Fecha.ToString("dd/MM/yyyy");
-                    worksheet.Cell(i + 2, 5).Value = oficio.Tipo;
-                    worksheet.Cell(i + 2, 6).Value = oficio.Tema;
-                    worksheet.Cell(i + 2, 7).Value = oficio.DestNombre;
-                    worksheet.Cell(i + 2, 8).Value = oficio.DestCargo;
-                    worksheet.Cell(i + 2, 9).Value = oficio.DestDepen;
-                    worksheet.Cell(i + 2, 10).Value = oficio.RemNombre;
-                    worksheet.Cell(i + 2, 11).Value = oficio.RemCargo;
-                    worksheet.Cell(i + 2, 12).Value = oficio.RemDepen;
-                    worksheet.Cell(i + 2, 13).Value = oficio.Depto;
-                    worksheet.Cell(i + 2, 14).Value = oficio.Eor == 1 ? "EXPEDIDO" : "POR EXPEDIR";
-                    worksheet.Cell(i + 2, 15).Value = oficio.FechaAcuse?.ToString("dd/MM/yyyy") ?? "";
-                    worksheet.Cell(i + 2, 16).Value = oficio.Estatus ?? "";
-                    worksheet.Cell(i + 2, 17).Value = oficio.Observaciones ?? "";
+                    var currentRow = dataStartRow + i;
+                    
+                    worksheet.Cell(currentRow, 1).Value = oficio.Ejercicio;
+                    worksheet.Cell(currentRow, 2).Value = oficio.Folio;
+                    worksheet.Cell(currentRow, 3).Value = oficio.Eor == 1 ? "EXPEDIDO" : "POR EXPEDIR";
+                    worksheet.Cell(currentRow, 4).Value = oficio.NoOficio;
+                    worksheet.Cell(currentRow, 5).Value = oficio.Fecha.ToString("dd/MM/yyyy");
+                    worksheet.Cell(currentRow, 6).Value = oficio.FechaCaptura.ToString("dd/MM/yyyy");
+                    worksheet.Cell(currentRow, 7).Value = oficio.Tipo;
+                    worksheet.Cell(currentRow, 8).Value = oficio.RemNombre;
+                    worksheet.Cell(currentRow, 9).Value = oficio.DestNombre;
+                    worksheet.Cell(currentRow, 10).Value = oficio.DestDepen;
+                    worksheet.Cell(currentRow, 11).Value = oficio.Tema;
+                    worksheet.Cell(currentRow, 12).Value = oficio.Estatus ?? "";
 
+                    // Aplicar bordes a todas las celdas de datos
+                    for (int col = 1; col <= headers.Count; col++)
+                    {
+                        worksheet.Cell(currentRow, col).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    }
                 }
 
+                // Ajustar el ancho de las columnas
                 worksheet.Columns().AdjustToContents();
+
+                // Opcional: Agregar pie de página con total de registros
+                if (oficios.Any())
+                {
+                    var lastDataRow = dataStartRow + oficios.Count - 1;
+                    var footerRow = lastDataRow + 2;
+                    worksheet.Cell(footerRow, 1).Value = $"Total de registros: {oficios.Count}";
+                    worksheet.Cell(footerRow, 1).Style.Font.Bold = true;
+                }
 
                 var memoryStream = new MemoryStream();
                 workbook.SaveAs(memoryStream);
@@ -203,8 +242,6 @@ namespace CEA.Infrastructure.Services
 
                 return Task.FromResult(memoryStream);
             }
-
-
             catch (Exception ex)
             {
                 _logger.LogError($"Error: {ex.Message}");
