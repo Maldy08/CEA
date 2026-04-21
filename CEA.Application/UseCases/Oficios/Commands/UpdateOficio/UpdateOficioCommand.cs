@@ -107,6 +107,12 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficio
             try
             {
                 await _unitOfWork.Repository<Oficio>().UpdateAsync(oficioDto);
+
+                if (!string.IsNullOrWhiteSpace(request.Relacionoficio))
+                {
+                    await ActualizarRelacionesBidireccionales(request.Ejercicio, request.Folio, request.Eor, request.Relacionoficio, cancellationToken);
+                }
+
                 await _unitOfWork.Save(cancellationToken);
             }
             catch(Exception ex)
@@ -115,6 +121,38 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficio
             }
              return await Result<int>.SuccessAsync("Actualizacion correcta");
 
+        }
+
+        private async Task ActualizarRelacionesBidireccionales(int ejercicioActual, int folioActual, int eorActual, string relacionoficio, CancellationToken cancellationToken)
+        {
+            var oficiosRelacionados = relacionoficio.Split('|');
+            var oficioActualString = $"{ejercicioActual}-{folioActual}-{eorActual}";
+
+            foreach (var oficioRelacionado in oficiosRelacionados)
+            {
+                var partes = oficioRelacionado.Trim().Split('-');
+
+                if (partes.Length == 3 &&
+                    int.TryParse(partes[0], out int ejercicio) &&
+                    int.TryParse(partes[1], out int folio) &&
+                    int.TryParse(partes[2], out int eor))
+                {
+                    var oficio = await _oficioRepository.GetOficio(ejercicio, folio, eor);
+                    if (oficio != null)
+                    {
+                        var relacionesActuales = string.IsNullOrWhiteSpace(oficio.Relacionoficio)
+                            ? new List<string>()
+                            : oficio.Relacionoficio.Split('|').Select(r => r.Trim()).ToList();
+
+                        if (!relacionesActuales.Contains(oficioActualString))
+                        {
+                            relacionesActuales.Add(oficioActualString);
+                            oficio.Relacionoficio = string.Join("|", relacionesActuales);
+                            await _unitOfWork.Repository<Oficio>().UpdateAsync(oficio);
+                        }
+                    }
+                }
+            }
         }
     }
 }

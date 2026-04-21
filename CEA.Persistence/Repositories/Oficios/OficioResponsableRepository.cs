@@ -103,5 +103,10 @@ namespace CEA.Persistence.Repositories.Oficios
 
                 }).FirstOrDefaultAsync();
         }
+
+        public  async Task<bool> TienePermisoParaVerOficio(int ejercicio, int folio, int eor, int idEmpleado)
+        {
+            return await _context.OficioResponsable.AnyAsync(x => x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor && x.IdEmpleado == idEmpleado);
+        }
     }
 }

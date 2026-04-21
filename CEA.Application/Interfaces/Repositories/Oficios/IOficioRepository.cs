@@ -13,10 +13,10 @@ namespace CEA.Application.Interfaces.Repositories.Oficios
         Task<Oficio> GetOficio(int ejercicio, int folio, int eor);
         Task<List<OficioDtoFunction>> GetListadoOficioFunction(int ejercicio, int eor, int idEmpleado);
         Task<int> UpdateOficioPdf(int ejercicio, int folio, int eor, string pdfPath);
-
         Task<List<OficioEstatusDto>> GetEstatusOficiosByEor(int eor);
-
         Task<List<OficioClasificacionDto>> GetOficioClasificacions();
+        Task<List<OficioDto>> GetAllOficiosByEjercicio(int ejercicio);
+        Task<List<OficioDto>> GetOficiosRelacionados(string relacionoficio);
 
 
     }

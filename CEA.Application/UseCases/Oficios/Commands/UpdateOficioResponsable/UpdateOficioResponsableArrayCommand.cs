@@ -66,7 +66,8 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficioResponsable
                 }
                 else
                 {
-     
+                    var oficioResponsable = await _oficioResponsableRepository2.GetOficioReponsableByEjercicioFolioEorNoDto(dto.Ejercicio, dto.Folio, dto.Eor, existente.IdEmpleado, existente.Rol);
+
                     temporales.Add(new OficioResponsable
                     {
                         Ejercicio = dto.Ejercicio,
@@ -74,7 +75,7 @@ namespace CEA.Application.UseCases.Oficios.Commands.UpdateOficioResponsable
                         Eor = dto.Eor,
                         IdEmpleado = existente.IdEmpleado,
                         Rol = existente.Rol,
-                        FAsignado = _oficioResponsableRepository2.GetOficioReponsableByEjercicioFolioEorNoDto(dto.Ejercicio, dto.Folio, dto.Eor, existente.IdEmpleado,existente.Rol).Result.FAsignado,
+                        FAsignado = oficioResponsable?.FAsignado,
                     });
                 }
             }

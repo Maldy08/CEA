@@ -4,6 +4,7 @@ using CEA.Application.UseCases.Oficios.Commands.DeleteOficioResponsable;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficioResponsable;
 using CEA.Application.UseCases.Oficios.Queries.GetOficioResponsableByEjercicioFolioEor;
 using CEA.Application.UseCases.Oficios.Queries.GetOficiosResponsableByEjercicioFolioEor;
+using CEA.Application.UseCases.Oficios.Queries.TienePermisoParaVerOficio;
 using CEA.Shared.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -61,6 +62,13 @@ namespace CEA.WebAPI.Controllers.Oficios
         public async Task<ActionResult<Result<int>>> DeleteOficioResponsable([FromBody] DeleteOficioResponsableCommand command)
         {
             return await _mediator.Send(command);
+        }
+
+        [HttpGet("TienePermisoParaVerOficio/{ejercicio}/{folio}/{eor}/{idEmpleado}")]
+       // [Authorize]
+        public async Task<ActionResult<Result<bool>>> TienePermisoParaVerOficio(int ejercicio, int folio, int eor, int idEmpleado)
+        {
+            return await _mediator.Send(new TienePermisoParaVerOficioQuery(ejercicio, folio, eor, idEmpleado));
         }
     }
 }

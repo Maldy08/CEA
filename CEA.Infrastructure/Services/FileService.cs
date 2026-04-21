@@ -71,20 +71,20 @@ namespace CEA.Infrastructure.Services
             return memoryStream;
         }
 
-        public async Task<MemoryStream> DownloadWord(OficioDto oficio)
+        public async Task<MemoryStream> DownloadWord(OficioDto oficio, int? idPuesto = null, int? idDepto = null)
         {
             try
             {
+                var deptoId = idDepto ?? oficio.Depto;
                 var depto = await _deptoRepository.GetSeproaByIdAsync(oficio.Depto);
-                var filePath = Path.Combine(_rutaPredeterminadaOficiosPlantilla, "PlantillaCea.docx");
+                var templateFileName = oficio.Tipo == 1 ? $"PlantillaCea-{oficio.Ejercicio}.docx" : $"PlantillaSeproa-{oficio.Ejercicio}.docx";
+                var filePath = Path.Combine(_rutaPredeterminadaOficiosPlantilla, templateFileName);
                 _logger.LogInformation($"Ruta de la plantilla: {filePath}");
 
                 if (!File.Exists(filePath))
                 {
-                    // Registra un mensaje de error si el archivo no existe
                     _logger.LogError($"La plantilla no existe en la ruta: {filePath}");
-                    SystemException ex = new SystemException($"La plantilla no exiso c1te en la ruta: {filePath}");
-                    throw ex;
+                    throw new FileNotFoundException($"La plantilla no existe en la ruta: {filePath}");
                 }
 
                 using (var document = DocX.Load(filePath))
@@ -94,19 +94,21 @@ namespace CEA.Infrastructure.Services
                             ? string.Join(Environment.NewLine, oficiosCPP.Select(o => o.Puesto))
                                 : " ";
 
+                    var usarLogicaEspecial = deptoId == 1 && idPuesto == 20;
+
                     var reemplazos = new Dictionary<string, string>
                     {
-                       { "{{DEPENDENCIA}}", oficio.Tipo == 1 ? "COMISION ESTATAL DEL AGUA DE BAJA CALIFORNIA" : "SECRETARÍA PARA EL MANEJO, SANEAMIENTO Y PROTECCIÓN DEL AGUA" },
-                       { "{{SECCION}}", depto.Descripcion },
+                       { "{{DEPENDENCIA}}", oficio.Tipo == 1 ? "COMISIÓN ESTATAL DEL AGUA DE BAJA CALIFORNIA" : "SECRETARÍA PARA EL MANEJO, SANEAMIENTO Y PROTECCIÓN DEL AGUA" },
+                       { "{{SECCION}}", depto.IdCea == 99 ? "OFICINA DEL TITULAR" : depto.Descripcion },
                        { "{{OFICIO}}", oficio.NoOficio },
                        { "{{DEST_RESPONSABLE}}", oficio.DestNombre },
                        { "{{DEST_PUESTO}}", oficio.DestCargo },
                        { "{{DEST_SIGLAS}}", oficio.DestDepen },
                        { "{{ASUNTO}}", oficio.Tema },
                        { "{{FECHA}}", DateTime.Now.ToString("dd 'de' MMMM 'del' yyyy", new CultureInfo("es-ES")) },
-                       { "{{REM_RESPONSABLE}}", oficio.RemNombre == "VÍCTOR DANIEL AMADOR BARRAGÁN" ? "DR. " + oficio.RemNombre : oficio.RemNombre },
-                       { "{{REM_PUESTO}}", oficio.RemCargo },
-                       { "{{REM_SIGLAS}}", oficio.RemDepen },
+                       { "{{REM_RESPONSABLE}}", usarLogicaEspecial ? (oficio.RemNombre == "VÍCTOR DANIEL AMADOR BARRAGÁN" ? "DR. " + oficio.RemNombre : oficio.RemNombre) : oficio.RemNombre },
+                       { "{{REM_PUESTO}}", usarLogicaEspecial ? (depto.IdCea == 99 ? "SECRETARIO PARA EL MANEJO, SANEAMIENTO Y PROTECCION DEL AGUA DE BAJA CALIFORNIA" : (depto.IdCea == 1 || depto.IdCea == 96) ? "DIRECTOR GENERAL DE LA COMISIÓN ESTATAL DEL AGUA DE BAJA CALIFORNIA" : oficio.RemCargo) : oficio.RemCargo },
+                       { "{{REM_SIGLAS}}", usarLogicaEspecial ? ((depto.IdCea == 99 || depto.IdCea == 1 || depto.IdCea == 96) ? " " : "COMISIÓN ESTATAL DEL AGUA DE BAJA CALIFORNIA") : "COMISIÓN ESTATAL DEL AGUA DE BAJA CALIFORNIA" },
                        { "{{CCP_LIST}}", oficiosCppTexto }
                         };
 

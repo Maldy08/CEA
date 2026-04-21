@@ -1,7 +1,6 @@
 ﻿
 
 using CEA.Application.Common.Mappings;
-using CEA.Domain.Entities.Oficios;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CEA.Application.DTOs.Oficios
@@ -9,7 +8,7 @@ namespace CEA.Application.DTOs.Oficios
     public class OficioDtoFunction : IMapFrom<OficioDtoFunction>
     {
 
-        public string Ren {  get; set; } = string.Empty;
+        public string Ren { get; set; } = string.Empty;
         public int Id { get; set; }
         public int Ejercicio { get; set; }
         public int Folio { get; set; }
@@ -41,7 +40,7 @@ namespace CEA.Application.DTOs.Oficios
         public int EstatusNum { get; set; } //Estatus numerico
 
         public int idClasificacion { get; set; }
-        public string Clasificacion { get; set; } = string.Empty;   
+        public string Clasificacion { get; set; } = string.Empty;
 
 
         [NotMapped]

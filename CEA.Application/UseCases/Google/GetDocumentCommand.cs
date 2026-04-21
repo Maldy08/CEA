@@ -10,13 +10,17 @@ namespace CEA.Application.UseCases.Google
         public int Ejercicio { get; set; }
         public int Folio { get; set; }
         public int Eor { get; set; }
+        public int? IdPuesto { get; set; }
+        public int? IdDepto { get; set; }
 
 
-        public GetDocumentCommand(int ejercicio, int folio, int eor)
+        public GetDocumentCommand(int ejercicio, int folio, int eor, int? idPuesto = null, int? idDepto = null)
         {
             Ejercicio = ejercicio;
             Folio = folio;
             Eor = eor;
+            IdPuesto = idPuesto;
+            IdDepto = idDepto;
         }
 
 
@@ -45,7 +49,7 @@ namespace CEA.Application.UseCases.Google
                 throw new Exception("No se encontró el oficio");
             }
 
-            var file = await _fileService.DownloadWord(oficio);
+            var file = await _fileService.DownloadWord(oficio, request.IdPuesto, request.IdDepto);
             if (file == null)
             {
                 throw new Exception("No se encontró el archivo");

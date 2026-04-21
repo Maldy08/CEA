@@ -1,6 +1,4 @@
-﻿
-
-using CEA.Application.Extensions;
+﻿using CEA.Application.Extensions;
 using CEA.Domain.Settings;
 using CEA.Infrastructure;
 using CEA.Infrastructure.Extensions;
@@ -15,13 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddApplicationLayer();
-builder.Services.AddInfrastructureLayer();
+builder.Services.AddInfrastructureLayer(builder.Configuration);
 builder.Services.AddPersistenceLayer(builder.Configuration);
 builder.Services.Configure<FileServiceOptions>(builder.Configuration.GetSection("FileServiceOptions"));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => {
+builder.Services.AddSwaggerGen(c =>
+{
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "JWTToken_Auth_API",
@@ -46,7 +45,7 @@ builder.Services.AddSwaggerGen(c => {
             },
             new string[] { }
 }
-    }); 
+    });
 });
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
@@ -91,6 +90,7 @@ var app = builder.Build();
 //{
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseDeveloperExceptionPage();
 //}
 
 app.UseAuthentication();

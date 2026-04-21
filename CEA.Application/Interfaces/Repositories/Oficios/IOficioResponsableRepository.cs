@@ -10,6 +10,7 @@ namespace CEA.Application.Interfaces.Repositories.Oficios
         Task<List<OficioResponsableDto>> GetOficioReponsableByEjercicioFolioEor(int ejercicio, int folio, int eor, int rol);
         Task<OficioResponsableDto> GetOficioResponsableByEjercicioFolioEorIdEmpleadoRol(int ejercicio, int folio, int eor, int idEmpleado, int rol);
         Task<OficioResponsable> GetOficioReponsableByEjercicioFolioEorNoDto(int ejercicio, int folio, int eor, int idEmpleado, int rol);
+        Task<bool> TienePermisoParaVerOficio(int ejercicio, int folio, int eor, int idEmpleado);
 
     }
 }

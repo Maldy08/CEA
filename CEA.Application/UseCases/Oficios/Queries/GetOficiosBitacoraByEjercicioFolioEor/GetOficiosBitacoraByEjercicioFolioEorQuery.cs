@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using CEA.Application.DTOs.Oficios;
+using CEA.Application.Features.GetEmpleadoById;
 using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.UseCases.GetUserByIdEmpleado;
 using CEA.Shared.Interfaces;
@@ -38,10 +39,17 @@ namespace CEA.Application.Features.Oficios.Queries.GetOficiosBitacoraByEjercicio
         public async Task<Result<List<OficioBitacoraDto>>> Handle(GetOficiosBitacoraByEjercicioFolioEorQuery request, CancellationToken cancellationToken)
         {
             var entities = await _oficioBitacoraRepository.GetOficioBitacoraByEjercicioFolioEor(request.Ejercicio, request.Folio, request.Eor);
+            entities = entities.Where(e => e.IdEmpleado < 9000 ).ToList();
             foreach (var entity in entities)
             {
-                var user = await _mediator.Send(new GetUserByIdEmpleadoQuery(entity.IdEmpleado));
-                entity.Usuario = user.Data.Nombre.Substring(0, 1) + user.Data.Paterno + user.Data.Materno.Substring(0, 1);
+               // var user = await _mediator.Send(new GetUserByIdEmpleadoQuery(entity.IdEmpleado));
+
+                //19/01/2026 Obtener las iniciales del usuario de empleados en lugar de la vista de usuarios
+                var empleado = await _mediator.Send(new GetEmpleadoByIdQuery(entity.IdEmpleado));
+                // verificar si la instacia de empleado contiene algo dejar pasar si no poner 
+               
+                entity.Usuario =  empleado.Data.Nombre.Substring(0, 1) + empleado.Data.Paterno + empleado.Data.Materno.Substring(0, 1);
+                //user.Data.Nombre.Substring(0, 1) + user.Data.Paterno + user.Data.Materno.Substring(0, 1);
 
             }
             var mappedEntities = _mapper.Map<List<OficioBitacoraDto>>(entities);

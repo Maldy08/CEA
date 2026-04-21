@@ -34,12 +34,12 @@ namespace CEA.Persistence.Configurations.Oficios
             entity.Property(e => e.Tema).IsRequired().HasMaxLength(250).IsUnicode(false).HasColumnName("TEMA");
             entity.Property(e => e.Estatus).HasPrecision(2).HasColumnName("ESTATUS");
             entity.Property(e => e.Empqentrega).HasPrecision(4).HasColumnName("EMPQENTREGA");
-            entity.Property(e => e.Relacionoficio).HasMaxLength(10).IsUnicode(false).HasColumnName("RELACIONOFICIO");
+            entity.Property(e => e.Relacionoficio).HasMaxLength(100).IsUnicode(false).HasColumnName("RELACIONOFICIO");
             entity.Property(e => e.Depto).HasPrecision(2).HasColumnName("DEPTO");
             entity.Property(e => e.DeptoRespon).HasPrecision(2).HasColumnName("DEPTO_RESPON");
-            entity.Property(e => e.IdEmpleado).HasPrecision(4).HasColumnName("ID_EMPLEADO");
-            entity.Property(e => e.NombreResponsable).HasColumnName("NOMBRE_RESPON").IsUnicode(false);
-            entity.Property(e => e.Rol).HasPrecision(1).HasColumnName("ROL");
+            //entity.Property(e => e.IdEmpleado).HasPrecision(4).HasColumnName("ID_EMPLEADO");
+            //entity.Property(e => e.NombreResponsable).HasColumnName("NOMBRE_RESPON").IsUnicode(false);
+            //entity.Property(e => e.Rol).HasPrecision(1).HasColumnName("ROL");
             entity.Property(e => e.idClasificacion).HasPrecision(2).HasColumnName("ID_CLASIFICACION");
 
         }

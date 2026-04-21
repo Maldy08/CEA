@@ -16,11 +16,13 @@ using CEA.Application.UseCases.Oficios.Commands.UpdateOficio;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficioEstatus;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficioFolio;
 using CEA.Application.UseCases.Oficios.Commands.UploadOficioPdf;
+using CEA.Application.UseCases.Oficios.Queries.GetAllOficiosByEjercicio;
 using CEA.Application.UseCases.Oficios.Queries.GetOficioEstatusByEor;
 using CEA.Application.UseCases.Oficios.Queries.GetOficioParametroByEjercicio;
 using CEA.Application.UseCases.Oficios.Queries.GetOficiosClasificacionQuery;
 using CEA.Application.UseCases.Oficios.Queries.GetOficiosMcByEorAndEjercicio;
 using CEA.Application.UseCases.Oficios.Queries.GetOficiosMcByEorAndEjercicioAndFolio;
+using CEA.Application.UseCases.Oficios.Queries.GetOficiosRelacionados;
 using CEA.Domain.Entities.Oficios;
 using CEA.Shared.Interfaces;
 using MediatR;
@@ -185,9 +187,9 @@ namespace CEA.WebAPI.Controllers.Oficios
 
         [HttpGet("DownloadWord/{ejercicio}/{folio}/{eor}")]
         [Authorize]
-        public async Task<IActionResult> Pruebas(int ejercicio, int folio, int eor)
+        public async Task<IActionResult> Pruebas(int ejercicio, int folio, int eor, [FromQuery] int? idPuesto, [FromQuery] int? idDepto)
         {
-            var file = await _mediator.Send(new GetDocumentCommand(ejercicio, folio, eor));
+            var file = await _mediator.Send(new GetDocumentCommand(ejercicio, folio, eor, idPuesto, idDepto));
             if (file == null)
             {
                 return NotFound();
@@ -249,6 +251,16 @@ namespace CEA.WebAPI.Controllers.Oficios
 
         }
 
+        [HttpGet("GetListadoOficiosByEjercicio/{ejercicio}")]
+        public async Task<ActionResult<Result<List<OficioDto>>>> GetListadoOficiosByEjercicio(int ejercicio)
+        {
+            return await _mediator.Send(new GetAllOficiosByEjercicioQuery(ejercicio));
+        }
 
+        [HttpPost("GetOficiosRelacionados")]
+        public async Task<ActionResult<Result<List<OficioDto>>>> GetOficiosRelacionados([FromBody] string relacionoficio)
+        {
+            return await _mediator.Send(new GetOficiosRelacionadosQuery(relacionoficio));
+        }
     }
 }

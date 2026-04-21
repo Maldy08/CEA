@@ -30,7 +30,7 @@ namespace CEA.Persistence.Configurations.Oficios
                 entity.Property(e => e.FechaLimite).HasColumnType("DATE").HasColumnName("FECHA_LIMITE");
                 entity.Property(e => e.NoOficio).HasMaxLength(50).IsUnicode(false).HasColumnName("NO_OFICIO");
                 entity.Property(e => e.Pdfpath).HasMaxLength(600).IsUnicode(false).HasColumnName("PDFPATH");
-                entity.Property(e => e.Relacionoficio).HasMaxLength(10).IsUnicode(false).HasColumnName("RELACIONOFICIO");
+                entity.Property(e => e.Relacionoficio).HasMaxLength(100).IsUnicode(false).HasColumnName("RELACIONOFICIO");
                 entity.Property(e => e.RemCargo).HasMaxLength(100).IsUnicode(false).HasColumnName("REM_CARGO");
                 entity.Property(e => e.RemDepen).HasMaxLength(100).IsUnicode(false).HasColumnName("REM_DEPEN");
                 entity.Property(e => e.RemNombre).HasMaxLength(100).IsUnicode(false).HasColumnName("REM_NOMBRE");

@@ -35,10 +35,10 @@ namespace CEA.Persistence.Repositories.Oficios
         }
 
 
-        public async Task<List<OficioDto>> GetOficiosUsuarios(int ejercicio, int eor, int idEmpleado, int idDepto)
-        {
-            return await _context.OficioDto.Where(x => x.Ejercicio == ejercicio && x.Eor == eor && x.IdEmpleado == idEmpleado && x.Depto == idDepto).ToListAsync();
-        }
+        //public async Task<List<OficioDto>> GetOficiosUsuarios(int ejercicio, int eor, int idEmpleado, int idDepto)
+        //{
+        //    return await _context.OficioDto.Where(x => x.Ejercicio == ejercicio && x.Eor == eor && x.IdEmpleado == idEmpleado && x.Depto == idDepto).ToListAsync();
+        //}
 
         public async Task<List<OficioDto>> GetOficiosMCByEjercicio(int eor, int ejercicio)
         {
@@ -111,5 +111,53 @@ namespace CEA.Persistence.Repositories.Oficios
                 Nombre = x.Nombre,
             }).OrderBy(x => x.Id).ToListAsync();
         }
-    }
+
+        public async Task<List<OficioDto>> GetAllOficiosByEjercicio(int ejercicio)
+        {
+            return await _context.OficioDto.Where(x => x.Ejercicio == ejercicio && x.Eor != 3).OrderBy(x => x.Ejercicio).ThenBy(x => x.Folio).ToListAsync();
+        }
+
+        public Task<List<OficioDto>> GetOficiosUsuarios(int ejercicio, int eor, int idEmpleado, int idDepto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<OficioDto>> GetOficiosRelacionados(string relacionoficio)
+        {
+            if(string.IsNullOrWhiteSpace(relacionoficio))
+            {
+                return new List<OficioDto>();
+            }
+
+            var relacionesArray = relacionoficio.Split('|', StringSplitOptions.RemoveEmptyEntries)
+                                     .Select(r => r.Trim())
+                                     .Where(r => !string.IsNullOrWhiteSpace(r))
+                                     .ToList();
+
+            var oficios = new List<OficioDto>();
+
+            foreach (var relacion in relacionesArray)
+            {
+                var partes = relacion.Split('-');
+                if (partes.Length == 3 && 
+                    int.TryParse(partes[0], out int ejercicio) && 
+                    int.TryParse(partes[1], out int folio) && 
+                    int.TryParse(partes[2], out int eor))
+                {
+                    var oficio = await _context.OficioDto
+                        .Where(x => x.Ejercicio == ejercicio && x.Folio == folio && x.Eor == eor)
+                        .FirstOrDefaultAsync();
+
+                    if (oficio != null)
+                    {
+                        oficios.Add(oficio);
+                    }
+                }
+            }
+
+            return oficios;
+        }
+    } 
 }
+
+

@@ -34,9 +34,9 @@ namespace CEA.Application.DTOs.Oficios
         public int Depto { get; set; }
         public int DeptoRespon { get; set; }
 
-        public int IdEmpleado { get; set; }
-        public string NombreResponsable { get; set; } = string.Empty;
-        public int Rol { get; set; }
+        //public int IdEmpleado { get; set; }
+        //public string NombreResponsable { get; set; } = string.Empty;
+        //public int Rol { get; set; }
 
         public int idClasificacion { get; set; }
 

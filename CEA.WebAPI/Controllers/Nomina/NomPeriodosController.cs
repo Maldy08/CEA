@@ -2,7 +2,6 @@
 using CEA.Application.UseCases.Nomina.Queries.GetPeriodosNominaByTipoEjercicio;
 using CEA.Shared.Interfaces;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Nomina
@@ -19,7 +18,7 @@ namespace CEA.WebAPI.Controllers.Nomina
 
 
         [HttpGet("GetNomPeriodosByTipoNomEjercicio/{tiponom}/{ejercicio}")]
-        public async Task<ActionResult<Result<List<NomPeriodosDto>>>> GetNomPeriodosByTipoNomEjercicio( int tiponom, int ejercicio)
+        public async Task<ActionResult<Result<List<NomPeriodosDto>>>> GetNomPeriodosByTipoNomEjercicio(int tiponom, int ejercicio)
         {
 
             return await _mediator.Send(new GetPeriodosNominaByTipoEjercicio(tiponom, ejercicio));
