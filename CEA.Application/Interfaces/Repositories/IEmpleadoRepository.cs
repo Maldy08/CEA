@@ -10,6 +10,7 @@ namespace CEA.Application.Interfaces.Repositories
         Task<EmpleadoDto> GetEmpleadoByIdAsync(int id);
         Task<List<EmpleadoDto>> GetEmpleadosByDeptoPpto(int id);
         Task<List<EmpleadoDto>> GetEmpleadosByDeptoComi(int id);
- 
+        Task<bool> EsEmpleadoResponsableAsync(int idEmpleado);
+
     }
 }

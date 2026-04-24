@@ -4,6 +4,7 @@ using CEA.Application.Features.GetAllEmpleados;
 using CEA.Application.Features.GetAllEmpleadosByDeptoComi;
 using CEA.Application.Features.GetAllEmpleadosByDeptoPpto;
 using CEA.Application.Features.GetEmpleadoById;
+using CEA.Application.UseCases.GetEsEmpleadoResponsable;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,6 +54,14 @@ namespace CEA.WebAPI.Controllers
         {
             return Ok(await _mediator.Send(new GetAllEmpleadosByDeptoComiQuery(id)));
 
+        }
+
+        [HttpGet("EsEmpleadoResponsable/{idEmpleado}")]
+        //[Authorize]
+
+        public async Task<ActionResult<bool>> EsEmpleadoResponsable(int idEmpleado)
+        {
+            return Ok(await _mediator.Send(new GetEsEmpleadoResponsableQuery(idEmpleado)));
         }
 
     }

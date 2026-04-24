@@ -123,5 +123,11 @@ namespace CEA.Persistence.Repositories
                     Obra = a.Obra
                 }).Where(a => a.Activo == "V" || a.Activo == "C").ToListAsync();
         }
+
+        public async Task<bool> EsEmpleadoResponsableAsync(int idEmpleado)
+        {
+            return await _context.EmpleadoResponsable
+                .AnyAsync(e => e.IdEmpleado == idEmpleado);
+        }
     }
 }

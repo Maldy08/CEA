@@ -5,6 +5,7 @@ using CEA.Application.DTOs.Viaticos;
 using CEA.Domain.Common;
 using CEA.Domain.Common.Interfaces;
 using CEA.Domain.Entities;
+using CEA.Domain.Entities.Bitacora;
 using CEA.Domain.Entities.Nomina;
 using CEA.Domain.Entities.Oficios;
 using CEA.Domain.Entities.RecursosHumanos;
@@ -28,6 +29,12 @@ namespace CEA.Persistence.Context
         //General
         public DbSet<User> Usuarios => Set<User>();
 
+        //Bitacora
+        public DbSet<Tema> Temas => Set<Tema>();
+        public DbSet<Avance> Avances => Set<Avance>();
+        public DbSet<Adjunto> Adjuntos => Set<Adjunto>();
+        public DbSet<TemaInvolucrado> TemaInvolucrados => Set<TemaInvolucrado>();
+
         //Viaticos
         public DbSet<Viatico> Viatico => Set<Viatico>();
         public DbSet<ViaticoCiudad> ViaticoCiudad => Set<ViaticoCiudad>();
@@ -42,6 +49,7 @@ namespace CEA.Persistence.Context
 
         //Recursos Humanos
         public DbSet<Empleado> Empleado => Set<Empleado>();
+        public DbSet<EmpleadoResponsable> EmpleadoResponsable => Set<EmpleadoResponsable>();
         public DbSet<DeptoUe> DeptoUe => Set<DeptoUe>();
         public DbSet<NomPeriodos> NomPeriodos => Set<NomPeriodos>();
 
