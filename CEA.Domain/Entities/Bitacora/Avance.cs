@@ -8,5 +8,6 @@ namespace CEA.Domain.Entities.Bitacora
         public int IdUsuario { get; set; }
         public string Observaciones { get; set; } = string.Empty;
         public DateTime FechaHora { get; set; } = DateTime.Now;
+        public DateTime? FechaEdicion { get; set; }
     }
 }

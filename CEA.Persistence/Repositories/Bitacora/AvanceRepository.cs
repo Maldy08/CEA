@@ -34,6 +34,15 @@ namespace CEA.Persistence.Repositories.Bitacora
             return adjunto;
         }
 
+        public async Task UpdateObservacionesAsync(int id, string observaciones)
+        {
+            var avance = await _context.Avances.FindAsync(id);
+            if (avance == null) return;
+            avance.Observaciones = observaciones;
+            avance.FechaEdicion = DateTime.Now;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task DeleteAsync(int id)
         {
             var avance = await _context.Avances.FindAsync(id);

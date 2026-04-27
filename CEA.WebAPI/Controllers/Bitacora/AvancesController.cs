@@ -1,5 +1,6 @@
 using CEA.Application.UseCases.Bitacora.Avances.Commands.CreateAvance;
 using CEA.Application.UseCases.Bitacora.Avances.Commands.DeleteAvance;
+using CEA.Application.UseCases.Bitacora.Avances.Commands.UpdateAvance;
 using CEA.Application.UseCases.Bitacora.Avances.Queries.GetAvancesByTema;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
@@ -61,8 +62,14 @@ namespace CEA.WebAPI.Controllers.Bitacora
             return Ok(await _mediator.Send(command));
         }
 
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateAvanceRequest request)
+            => Ok(await _mediator.Send(new UpdateAvanceCommand(id, request.Observaciones)));
+
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
             => Ok(await _mediator.Send(new DeleteAvanceCommand(id)));
     }
+
+    public record UpdateAvanceRequest(string Observaciones);
 }

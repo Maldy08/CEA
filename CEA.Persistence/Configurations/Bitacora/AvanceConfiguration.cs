@@ -32,6 +32,11 @@ namespace CEA.Persistence.Configurations.Bitacora
             entity.Property(e => e.FechaHora)
                 .HasColumnType("DATE")
                 .HasColumnName("FECHA_HORA");
+
+            entity.Property(e => e.FechaEdicion)
+                .HasColumnType("DATE")
+                .HasColumnName("FECHA_EDICION")
+                .IsRequired(false);
         }
     }
 }

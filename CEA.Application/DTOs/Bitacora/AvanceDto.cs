@@ -21,6 +21,7 @@ namespace CEA.Application.DTOs.Bitacora
         public string NombreUsuario { get; set; } = string.Empty;
         public string Observaciones { get; set; } = string.Empty;
         public DateTime FechaHora { get; set; }
+        public DateTime? FechaEdicion { get; set; }
         public List<AdjuntoDto> Adjuntos { get; set; } = new();
 
         public void Mapping(Profile profile) => profile.CreateMap<Avance, AvanceDto>()
