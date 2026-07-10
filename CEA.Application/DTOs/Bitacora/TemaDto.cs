@@ -12,6 +12,7 @@ namespace CEA.Application.DTOs.Bitacora
         public DateTime FechaCreacion { get; set; }
         public DateTime? FechaLimite { get; set; }
         public int IdDepartamentoOrigen { get; set; }
+        public int? IdCreador { get; set; }
         public string? NombreDepartamento { get; set; }
         public int TotalAvances { get; set; }
         public DateTime? UltimoAvance { get; set; }

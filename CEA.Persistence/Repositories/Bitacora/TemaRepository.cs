@@ -29,6 +29,7 @@ namespace CEA.Persistence.Repositories.Bitacora
                     FechaCreacion = t.FechaCreacion,
                     FechaLimite = t.FechaLimite,
                     IdDepartamentoOrigen = t.IdDepartamentoOrigen,
+                    IdCreador = t.IdCreador,
                     NombreDepartamento = _context.DeptoUe
                         .Where(d => d.IdCea == t.IdDepartamentoOrigen)
                         .Select(d => d.Descripcion)
@@ -62,6 +63,7 @@ namespace CEA.Persistence.Repositories.Bitacora
                     FechaCreacion = t.FechaCreacion,
                     FechaLimite = t.FechaLimite,
                     IdDepartamentoOrigen = t.IdDepartamentoOrigen,
+                    IdCreador = t.IdCreador,
                     NombreDepartamento = _context.DeptoUe
                         .Where(d => d.IdCea == t.IdDepartamentoOrigen)
                         .Select(d => d.Descripcion)

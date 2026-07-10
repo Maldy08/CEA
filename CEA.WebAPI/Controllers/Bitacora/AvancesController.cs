@@ -27,13 +27,13 @@ namespace CEA.WebAPI.Controllers.Bitacora
 
         [HttpPost("Create")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Create([FromForm] int idTema, [FromForm] int idUsuario, [FromForm] string observaciones, IList<IFormFile>? adjuntos)
+        public async Task<IActionResult> Create([FromForm] int idTema, [FromForm] int idUsuario, [FromForm] string observaciones, [FromForm] string? estado, [FromForm] int? idAvancePadre, IList<IFormFile>? adjuntos)
         {
             var adjuntosInfo = new List<AdjuntoInfo>();
 
             if (adjuntos != null && adjuntos.Count > 0)
             {
-                var carpeta = Path.Combine(_env.WebRootPath ?? "wwwroot", "bitacora", "adjuntos");
+                var carpeta = Path.Combine(_env.WebRootPath ?? "wwwroot", "temas", "adjuntos");
                 Directory.CreateDirectory(carpeta);
 
                 foreach (var file in adjuntos)
@@ -45,7 +45,7 @@ namespace CEA.WebAPI.Controllers.Bitacora
                     adjuntosInfo.Add(new AdjuntoInfo
                     {
                         Nombre = file.FileName,
-                        Url = $"/bitacora/adjuntos/{nombreArchivo}",
+                        Url = $"/temas/adjuntos/{nombreArchivo}",
                         TipoMime = file.ContentType
                     });
                 }
@@ -56,6 +56,8 @@ namespace CEA.WebAPI.Controllers.Bitacora
                 IdTema = idTema,
                 IdUsuario = idUsuario,
                 Observaciones = observaciones,
+                Estado = estado,
+                IdAvancePadre = idAvancePadre,
                 Adjuntos = adjuntosInfo
             };
 
@@ -64,12 +66,12 @@ namespace CEA.WebAPI.Controllers.Bitacora
 
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateAvanceRequest request)
-            => Ok(await _mediator.Send(new UpdateAvanceCommand(id, request.Observaciones)));
+            => Ok(await _mediator.Send(new UpdateAvanceCommand(id, request.Observaciones, request.Estado)));
 
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
             => Ok(await _mediator.Send(new DeleteAvanceCommand(id)));
     }
 
-    public record UpdateAvanceRequest(string Observaciones);
+    public record UpdateAvanceRequest(string Observaciones, string? Estado);
 }

@@ -12,6 +12,7 @@ namespace CEA.Application.Features.Email.Commands.SendEmail
         public string Subject { get; set; }
         public string Body { get; set; }
         public string From { get; set; }
+        public string? FromName { get; set; }
         public string?[] Cc { get; set; }  = Array.Empty<string>();
         public IFormFile? Attachment { get; set; }
 
@@ -32,6 +33,7 @@ namespace CEA.Application.Features.Email.Commands.SendEmail
                 Subject = request.Subject,
                 Body = request.Body,
                 From = request.From,
+                FromName = request.FromName,
                 Attachment = request.Attachment,
                 Cc = request.Cc
 

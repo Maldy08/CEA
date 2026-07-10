@@ -6,6 +6,7 @@ using CEA.Domain.Common;
 using CEA.Domain.Common.Interfaces;
 using CEA.Domain.Entities;
 using CEA.Domain.Entities.Bitacora;
+using CEA.Domain.Entities.IndiArct;
 using CEA.Domain.Entities.Nomina;
 using CEA.Domain.Entities.Oficios;
 using CEA.Domain.Entities.RecursosHumanos;
@@ -34,6 +35,11 @@ namespace CEA.Persistence.Context
         public DbSet<Avance> Avances => Set<Avance>();
         public DbSet<Adjunto> Adjuntos => Set<Adjunto>();
         public DbSet<TemaInvolucrado> TemaInvolucrados => Set<TemaInvolucrado>();
+
+        //IndiArct
+        public DbSet<IndiArctCatpresas> IndiArctCatpresas => Set<IndiArctCatpresas>();
+        public DbSet<IndiArctEnergia> IndiArctEnergia => Set<IndiArctEnergia>();
+        public DbSet<IndiArctPresasNiveles> IndiArctPresasNiveles => Set<IndiArctPresasNiveles>();
 
         //Viaticos
         public DbSet<Viatico> Viatico => Set<Viatico>();

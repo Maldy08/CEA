@@ -17,8 +17,21 @@ namespace CEA.Persistence.Repositories.Bitacora
         public async Task<IEnumerable<Avance>> GetByTemaAsync(int idTema)
             => await _context.Avances.Where(a => a.IdTema == idTema).OrderByDescending(a => a.FechaHora).ToListAsync();
 
+        public async Task<Avance?> GetByIdAsync(int id)
+            => await _context.Avances.FindAsync(id);
+
+        public async Task<Avance?> GetUltimoByTemaAsync(int idTema)
+            => await _context.Avances
+                .Where(a => a.IdTema == idTema)
+                .OrderByDescending(a => a.FechaHora)
+                .ThenByDescending(a => a.Id)
+                .FirstOrDefaultAsync();
+
         public async Task<IEnumerable<Adjunto>> GetAdjuntosByAvanceAsync(int idAvance)
             => await _context.Adjuntos.Where(a => a.IdAvance == idAvance).ToListAsync();
+
+        public async Task<Adjunto?> GetAdjuntoByIdAsync(int id)
+            => await _context.Adjuntos.FindAsync(id);
 
         public async Task<Avance> AddAsync(Avance avance)
         {
@@ -34,11 +47,12 @@ namespace CEA.Persistence.Repositories.Bitacora
             return adjunto;
         }
 
-        public async Task UpdateObservacionesAsync(int id, string observaciones)
+        public async Task UpdateAsync(int id, string observaciones, string estado)
         {
             var avance = await _context.Avances.FindAsync(id);
             if (avance == null) return;
             avance.Observaciones = observaciones;
+            avance.Estado = estado;
             avance.FechaEdicion = DateTime.Now;
             await _context.SaveChangesAsync();
         }

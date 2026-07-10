@@ -13,6 +13,7 @@ namespace CEA.Application.DTOs
         public string Subject { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
         public string From { get; set; } = string.Empty;
+        public string? FromName { get; set; }
         public string?[] Cc { get; set; } = Array.Empty<string>();
         public IFormFile? Attachment { get; set; } = null;
     }

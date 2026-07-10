@@ -42,6 +42,9 @@ namespace CEA.Persistence.Configurations.Bitacora
             entity.Property(e => e.IdDepartamentoOrigen)
                 .HasPrecision(4)
                 .HasColumnName("ID_DEPARTAMENTO_ORIGEN");
+
+            entity.Property(e => e.IdCreador)
+                .HasColumnName("ID_CREADOR");
         }
     }
 }

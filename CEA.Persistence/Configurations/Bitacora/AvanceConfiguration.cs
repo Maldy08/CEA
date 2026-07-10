@@ -29,6 +29,11 @@ namespace CEA.Persistence.Configurations.Bitacora
                 .IsUnicode(false)
                 .HasColumnName("OBSERVACIONES");
 
+            entity.Property(e => e.Estado)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("ESTADO");
+
             entity.Property(e => e.FechaHora)
                 .HasColumnType("DATE")
                 .HasColumnName("FECHA_HORA");
@@ -36,6 +41,11 @@ namespace CEA.Persistence.Configurations.Bitacora
             entity.Property(e => e.FechaEdicion)
                 .HasColumnType("DATE")
                 .HasColumnName("FECHA_EDICION")
+                .IsRequired(false);
+
+            entity.Property(e => e.IdAvancePadre)
+                .HasPrecision(10)
+                .HasColumnName("ID_AVANCE_PADRE")
                 .IsRequired(false);
         }
     }

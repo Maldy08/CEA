@@ -10,5 +10,6 @@ namespace CEA.Domain.Entities.Bitacora
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         public DateTime? FechaLimite { get; set; }
         public int IdDepartamentoOrigen { get; set; }
+        public int? IdCreador { get; set; }
     }
 }

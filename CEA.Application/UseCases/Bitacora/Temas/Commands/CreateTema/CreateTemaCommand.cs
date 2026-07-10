@@ -12,6 +12,7 @@ namespace CEA.Application.UseCases.Bitacora.Temas.Commands.CreateTema
         public string Estado { get; init; } = "Pendiente";
         public DateTime? FechaLimite { get; init; }
         public int IdDepartamentoOrigen { get; init; }
+        public int? IdCreador { get; init; }
     }
 
     internal class CreateTemaCommandHandler : IRequestHandler<CreateTemaCommand, Result<int>>
@@ -32,7 +33,8 @@ namespace CEA.Application.UseCases.Bitacora.Temas.Commands.CreateTema
                 Estado = request.Estado,
                 FechaCreacion = DateTime.Now,
                 FechaLimite = request.FechaLimite,
-                IdDepartamentoOrigen = request.IdDepartamentoOrigen
+                IdDepartamentoOrigen = request.IdDepartamentoOrigen,
+                IdCreador = request.IdCreador
             };
             var created = await _temaRepository.AddAsync(tema);
             return Result<int>.Success(created.Id);

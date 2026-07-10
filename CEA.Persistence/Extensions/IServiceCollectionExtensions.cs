@@ -1,5 +1,6 @@
 ﻿using CEA.Application.Interfaces.Repositories;
 using CEA.Application.Interfaces.Repositories.Bitacora;
+using CEA.Application.Interfaces.Repositories.IndiArct;
 using CEA.Application.Interfaces.Repositories.Nomina;
 using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Interfaces.Repositories.Transparencia;
@@ -8,6 +9,7 @@ using CEA.Application.Interfaces.Repositories.Viaticos;
 using CEA.Persistence.Context;
 using CEA.Persistence.Repositories;
 using CEA.Persistence.Repositories.Bitacora;
+using CEA.Persistence.Repositories.IndiArct;
 using CEA.Persistence.Repositories.Nomina;
 using CEA.Persistence.Repositories.Oficios;
 using CEA.Persistence.Repositories.Transparencia;
@@ -98,7 +100,12 @@ namespace CEA.Persistence.Extensions
                 //Bitacora
                 .AddTransient<ITemaRepository, TemaRepository>()
                 .AddTransient<IAvanceRepository, AvanceRepository>()
-                .AddTransient<ITemaInvolucradoRepository, TemaInvolucradoRepository>();
+                .AddTransient<ITemaInvolucradoRepository, TemaInvolucradoRepository>()
+
+                //IndiArct
+                .AddTransient<IIndiArctCatpresasRepository, IndiArctCatpresasRepository>()
+                .AddTransient<IIndiArctEnergiaRepository, IndiArctEnergiaRepository>()
+                .AddTransient<IIndiArctPresasNivelesRepository, IndiArctPresasNivelesRepository>();
 
 
 
