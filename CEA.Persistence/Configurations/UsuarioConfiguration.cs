@@ -49,6 +49,8 @@ namespace CEA.Persistence.Configurations
             builder.Property(e => e.ValesNivel).HasPrecision(1).HasColumnName("VALES_NIVEL");
             builder.Property(e => e.Oficios).HasPrecision(1).HasColumnName("OFICIOS");
             builder.Property(e => e.OficiosNivel).HasPrecision(1).HasColumnName("OFICIOS_NIVEL");
+            builder.Property(e => e.Tramites).HasPrecision(1).HasColumnName("TRAMITES");
+            builder.Property(e => e.TramitesNivel).HasPrecision(1).HasColumnName("TRAMITES_NIVEL");
             builder.Property(e => e.Nombre).HasColumnName("NOMBRE");
             builder.Property(e => e.Paterno).HasColumnName("PATERNO");
             builder.Property(e => e.Materno).HasColumnName("MATERNO");

@@ -104,7 +104,9 @@ namespace CEA.Persistence.Repositories
                     Viaticos = a.Viaticos,
                     ViaticosNivel = a.ViaticosNivel,
                     Oficios = a.Oficios,
-                    OficiosNivel = a.OficiosNivel
+                    OficiosNivel = a.OficiosNivel,
+                    Tramites = a.Tramites,
+                    TramitesNivel = a.TramitesNivel
                 }).FirstOrDefaultAsync();
         }
 

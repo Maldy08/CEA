@@ -42,6 +42,8 @@ namespace CEA.Domain.Entities
 
         public int? Oficios { get; set; }
         public int? OficiosNivel { get; set; }
+        public int? Tramites { get; set; }
+        public int? TramitesNivel { get; set; }
 
         public string Nombre {  get; set; } = string.Empty;
         public string Paterno { get; set; } = string.Empty; 

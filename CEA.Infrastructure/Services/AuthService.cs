@@ -82,7 +82,9 @@ namespace CEA.Infrastructure.Services
                     Viaticos = credential.Viaticos,
                     ViaticosNivel = credential.ViaticosNivel,
                     Oficios = credential.Oficios,
-                    OficiosNivel = credential.OficiosNivel
+                    OficiosNivel = credential.OficiosNivel,
+                    Tramites = credential.Tramites,
+                    TramitesNivel = credential.TramitesNivel
 
                 }
             };

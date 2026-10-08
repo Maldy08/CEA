@@ -22,6 +22,7 @@ namespace CEA.Domain.Entities.RecursosHumanos
         public int Nivel { get; set; }
         public int LugarTrab { get; set; }
         public string Correo { get; set; } = string.Empty;
+        public int? SupervisorId { get; set; }
 
         //public int IdEmpleado { get; set; }
         //public string Nombre { get; set; } = string.Empty;

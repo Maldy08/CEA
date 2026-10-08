@@ -25,5 +25,6 @@ namespace CEA.Application.DTOs
         public int Nivel { get; set; }
         public int LugarTrab { get; set; }
         public string Correo { get; set; } = string.Empty;
+        public int? SupervisorId { get; set; }
     }
 }

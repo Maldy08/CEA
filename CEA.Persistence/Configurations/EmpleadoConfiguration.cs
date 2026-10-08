@@ -31,6 +31,7 @@ namespace CEA.Persistence.Configurations
             builder.Property(e => e.Correo).HasMaxLength(50).IsUnicode(false).HasColumnName("CORREO");
             builder.Property(e => e.DeptoPpto).HasPrecision(4).HasColumnName("DEPTOPPTO");
             builder.Property(e => e.Obra).HasPrecision(4).HasColumnName("OBRA");
+            builder.Property(e => e.SupervisorId).HasPrecision(4).HasColumnName("SUPERVISOR_ID");
         }
     }
 }

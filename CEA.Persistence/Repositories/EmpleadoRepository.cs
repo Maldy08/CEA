@@ -39,7 +39,8 @@ namespace CEA.Persistence.Repositories
                     Oficina = a.Oficina,
                     Correo = a.Correo,
                     DeptoPpto = a.DeptoPpto,
-                    Obra = a.Obra
+                    Obra = a.Obra,
+                    SupervisorId = a.SupervisorId
                 }).Where(a => a.Activo == "V" || a.Activo == "C").OrderBy(a => a.Empleado).ToListAsync();
         }
 
@@ -65,7 +66,8 @@ namespace CEA.Persistence.Repositories
                     Oficina = a.Oficina,
                     Correo = a.Correo,
                     DeptoPpto = a.DeptoPpto,
-                    Obra = a.Obra
+                    Obra = a.Obra,
+                    SupervisorId = a.SupervisorId
                 }).Where(a => a.Activo == "V" || a.Activo == "C").OrderBy(a => a.Empleado).ToListAsync();
         }
 
@@ -93,7 +95,8 @@ namespace CEA.Persistence.Repositories
                     Oficina = a.Oficina ,
                     Correo = a.Correo,
                     DeptoPpto = a.DeptoPpto,
-                    Obra = a.Obra
+                    Obra = a.Obra,
+                    SupervisorId = a.SupervisorId
                 }).FirstOrDefaultAsync();
         }
 
@@ -120,7 +123,8 @@ namespace CEA.Persistence.Repositories
                     Oficina = a.Oficina,
                     Correo = a.Correo,
                     DeptoPpto = a.DeptoPpto,
-                    Obra = a.Obra
+                    Obra = a.Obra,
+                    SupervisorId = a.SupervisorId
                 }).Where(a => a.Activo == "V" || a.Activo == "C").ToListAsync();
         }
 
