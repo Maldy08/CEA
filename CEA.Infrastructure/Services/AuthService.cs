@@ -1,8 +1,8 @@
-﻿
+
 using CEA.Application.DTOs;
 using CEA.Application.Interfaces.Repositories;
 using CEA.Application.Services;
-using CEA.Domain.Settings;
+using CEA.Infrastructure.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

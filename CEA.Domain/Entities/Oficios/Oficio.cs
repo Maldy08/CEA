@@ -1,12 +1,9 @@
-﻿
 using CEA.Domain.Common;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CEA.Domain.Entities.Oficios
 {
     public class Oficio : BaseAuditableEntity
     {
-     
         public int Ejercicio { get; set; }
         public int Folio { get; set; }
         public int Eor { get; set; }
@@ -33,10 +30,7 @@ namespace CEA.Domain.Entities.Oficios
         public int DeptoRespon { get; set; }
         public int idClasificacion { get; set; }
 
-        [NotMapped]
         public List<OficioBitacora> OficioBitacora { get; set; } = new();
-        [NotMapped]
         public List<OficioResponsable> OficiosResponsables { get; set; } = new();
-
     }
 }

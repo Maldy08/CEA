@@ -1,4 +1,5 @@
-﻿using CEA.Application.DTOs;
+using CEA.Application.DTOs;
+using CEA.Application.DTOs.Nomina;
 using CEA.Application.DTOs.Oficios;
 using CEA.Application.DTOs.Vehiculos;
 using CEA.Application.DTOs.Viaticos;
@@ -58,6 +59,12 @@ namespace CEA.Persistence.Context
         public DbSet<EmpleadoResponsable> EmpleadoResponsable => Set<EmpleadoResponsable>();
         public DbSet<DeptoUe> DeptoUe => Set<DeptoUe>();
         public DbSet<NomPeriodos> NomPeriodos => Set<NomPeriodos>();
+        public DbSet<NomDiasFestivos> NomDiasFestivos => Set<NomDiasFestivos>();
+        public DbSet<NomTramite> NomTramites => Set<NomTramite>();
+        public DbSet<NomTramiteBitacora> NomTramitesBitacora => Set<NomTramiteBitacora>();
+        public DbSet<NomVacaempM> NomVacaempM => Set<NomVacaempM>();
+        public DbSet<NomVacaempD> NomVacaempD => Set<NomVacaempD>();
+        public DbSet<NomPermisoJustificante> NomPermisosJustificantes => Set<NomPermisoJustificante>();
 
         //Vehiculos
         public DbSet<VsWtVehiculosDto> VsWtVehiculos => Set<VsWtVehiculosDto>();
@@ -86,6 +93,14 @@ namespace CEA.Persistence.Context
         public DbSet<OficioListaDepartamentosDto> oficioListaDepartamentosDtos => Set<OficioListaDepartamentosDto>();
         public DbSet<OficioCppDto> oficioCppDtos => Set<OficioCppDto>();
 
+        //Nomina Functions
+        public DbSet<SimulaVacacionesDto> SimulaVacacionesDtos => Set<SimulaVacacionesDto>();
+        public DbSet<SaldoVacacionesDto> SaldoVacacionesDtos => Set<SaldoVacacionesDto>();
+        public DbSet<ConsultaVacacionesRenglonDto> ConsultaVacacionesRenglonDtos => Set<ConsultaVacacionesRenglonDto>();
+        public DbSet<FirmasTramiteDto> FirmasTramiteDtos => Set<FirmasTramiteDto>();
+        public DbSet<FormatoTramiteEncabezadoDto> FormatoTramiteEncabezadoDtos => Set<FormatoTramiteEncabezadoDto>();
+        public DbSet<FormatoTramiteDetalleDto> FormatoTramiteDetalleDtos => Set<FormatoTramiteDetalleDto>();
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -93,6 +108,14 @@ namespace CEA.Persistence.Context
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             modelBuilder.HasDefaultSchema("CEA");
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+                {
+                    modelBuilder.Entity(entityType.ClrType).Ignore(nameof(BaseEntity.DomainEvents));
+                }
+            }
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

@@ -1,9 +1,10 @@
-﻿
+
 using CEA.Application.DTOs;
 using CEA.Application.Features.Transparencia.Commands.CreateBitacora;
 using CEA.Application.Interfaces.Repositories;
 using CEA.Application.Services;
 using CEA.Domain.Entities.Transparencia;
+using CEA.Domain.Events.Transparencia;
 using CEA.Shared.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;

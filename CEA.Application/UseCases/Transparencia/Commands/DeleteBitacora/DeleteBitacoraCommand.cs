@@ -1,7 +1,8 @@
-﻿using CEA.Application.Common.Mappings;
+using CEA.Application.Common.Mappings;
 using CEA.Application.DTOs.Transparencia;
 using CEA.Application.Interfaces.Repositories;
 using CEA.Domain.Entities.Transparencia;
+using CEA.Domain.Events.Transparencia;
 using CEA.Shared.Interfaces;
 using MediatR;
 

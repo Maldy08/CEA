@@ -96,6 +96,10 @@ namespace CEA.Persistence.Extensions
 
                 //Nomina
                 .AddTransient<INomPeriodosRepository, NomPeriodosRepository>()
+                .AddTransient<INomVacacionesFunctions, NomVacacionesFunctions>()
+                .AddTransient<INomTramitesFunctions, NomTramitesFunctions>()
+                .AddTransient<INomDiasFestivosRepository, NomDiasFestivosRepository>()
+                .AddTransient<INomTramitesRepository, NomTramitesRepository>()
 
                 //Bitacora
                 .AddTransient<ITemaRepository, TemaRepository>()

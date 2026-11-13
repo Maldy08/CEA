@@ -1,0 +1,75 @@
+-- Tablas generales de trámites de RH (diseño "Diseño de Tablas para Tramites RH.xlsx",
+-- pestañas nom_tramites y nom_tramites_bitacora). Por ahora solo las usa vacaciones;
+-- viáticos conserva sus propias tablas.
+--
+-- NOM_TRAMITES            encabezado de cada trámite (un renglón por solicitud).
+--   TIPO_TRAMITE          catálogo rh_cat_tipos_tramite: 1 VACACIONES, 2 VIATICOS, 3 PERMISOS,
+--                         4 JUSTIFICANTES, 5 INCAPACIDADES. Sin FK: el catálogo aún no existe.
+--   AMBITO                'P' autogestión, 'S' capturado por el supervisor (ID_EMPLEADO_SUPERVISOR).
+--   ESTATUS               catálogo rh_cat_estatus: 1 creado, 2 revisión jefe, 3 revisión director,
+--                         4 revisión RH, 5 revisión finanzas, 98 regresado, 99 cancelado,
+--                         100 autorizado, 101 reprogramación, 110 pagado. Sin FK por lo mismo.
+-- NOM_TRAMITES_BITACORA   un renglón por cada movimiento del trámite.
+--   ID_EMPLEADO           quien hizo la acción. Sin FK a EMPLEADOS: puede ser un usuario sin ficha (SISTEMA).
+--   ID_ESTATUS            estatus resultante del movimiento (mismo catálogo que NOM_TRAMITES.ESTATUS).
+--
+-- Cambios contra el Excel: ID_ESTATUS es NUMBER(3) (no 2) porque hay estatus 100, 101 y 110.
+
+CREATE TABLE NOM_TRAMITES (
+    ID_TRAMITE             NUMBER(12)              NOT NULL,
+    ANO                    NUMBER(4)               NOT NULL,
+    FOLIO                  VARCHAR2(25)            NOT NULL,
+    TIPO_TRAMITE           NUMBER(2)               NOT NULL,
+    ID_EMPLEADO            NUMBER(4)               NOT NULL,
+    AMBITO                 VARCHAR2(1) DEFAULT 'P' NOT NULL,
+    ID_EMPLEADO_SUPERVISOR NUMBER(4),
+    FECHA_SOLICITUD        DATE DEFAULT SYSDATE    NOT NULL,
+    ESTATUS                NUMBER(3)   DEFAULT 1   NOT NULL,
+    FECHA_AUTORIZACION     DATE,
+    FECHA_CANCELACION      DATE,
+    CONSTRAINT PK_NOM_TRAMITES PRIMARY KEY (ID_TRAMITE),
+    CONSTRAINT UK_NOM_TRAMITES_FOLIO UNIQUE (ANO, FOLIO),
+    CONSTRAINT FK_NOM_TRAMITES_EMP FOREIGN KEY (ID_EMPLEADO) REFERENCES EMPLEADOS (EMPLEADO),
+    CONSTRAINT FK_NOM_TRAMITES_SUP FOREIGN KEY (ID_EMPLEADO_SUPERVISOR) REFERENCES EMPLEADOS (EMPLEADO),
+    CONSTRAINT CK_NOM_TRAMITES_AMBITO CHECK (AMBITO IN ('P', 'S'))
+);
+
+CREATE INDEX IX_NOM_TRAMITES_EMP ON NOM_TRAMITES (ID_EMPLEADO);
+CREATE INDEX IX_NOM_TRAMITES_SUP ON NOM_TRAMITES (ID_EMPLEADO_SUPERVISOR);
+CREATE INDEX IX_NOM_TRAMITES_TIPO ON NOM_TRAMITES (TIPO_TRAMITE, ESTATUS);
+
+CREATE SEQUENCE SEQ_NOM_TRAMITES START WITH 1 INCREMENT BY 1 NOCACHE;
+
+CREATE OR REPLACE TRIGGER TRG_NOM_TRAMITES_BI
+BEFORE INSERT ON NOM_TRAMITES
+FOR EACH ROW
+WHEN (NEW.ID_TRAMITE IS NULL)
+BEGIN
+    SELECT SEQ_NOM_TRAMITES.NEXTVAL INTO :NEW.ID_TRAMITE FROM DUAL;
+END;
+/
+
+CREATE TABLE NOM_TRAMITES_BITACORA (
+    ID_BITACORA      NUMBER(12)           NOT NULL,
+    ID_TRAMITE       NUMBER(12)           NOT NULL,
+    FECHA_MOVIMIENTO DATE DEFAULT SYSDATE NOT NULL,
+    ID_EMPLEADO      NUMBER(4)            NOT NULL,
+    ID_ESTATUS       NUMBER(3)            NOT NULL,
+    ACCION           VARCHAR2(35)         NOT NULL,
+    COMENTARIOS      VARCHAR2(1000),
+    CONSTRAINT PK_NOM_TRAMITES_BITACORA PRIMARY KEY (ID_BITACORA),
+    CONSTRAINT FK_NOM_TRAM_BIT_TRAMITE FOREIGN KEY (ID_TRAMITE) REFERENCES NOM_TRAMITES (ID_TRAMITE)
+);
+
+CREATE INDEX IX_NOM_TRAM_BIT_TRAMITE ON NOM_TRAMITES_BITACORA (ID_TRAMITE, FECHA_MOVIMIENTO);
+
+CREATE SEQUENCE SEQ_NOM_TRAMITES_BITACORA START WITH 1 INCREMENT BY 1 NOCACHE;
+
+CREATE OR REPLACE TRIGGER TRG_NOM_TRAMITES_BITACORA_BI
+BEFORE INSERT ON NOM_TRAMITES_BITACORA
+FOR EACH ROW
+WHEN (NEW.ID_BITACORA IS NULL)
+BEGIN
+    SELECT SEQ_NOM_TRAMITES_BITACORA.NEXTVAL INTO :NEW.ID_BITACORA FROM DUAL;
+END;
+/

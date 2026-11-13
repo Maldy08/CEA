@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CEA.Application.Interfaces.Repositories;
 using CEA.Application.Interfaces.Repositories.Viaticos;
 using CEA.Domain.Entities.Viaticos;
+using CEA.Domain.Events.Viaticos;
 using CEA.Shared.Interfaces;
 using MediatR;
 

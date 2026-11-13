@@ -1,5 +1,5 @@
-﻿using CEA.Application.Extensions;
-using CEA.Domain.Settings;
+using CEA.Application.Extensions;
+using CEA.Infrastructure.Settings;
 using CEA.Infrastructure;
 using CEA.Infrastructure.Extensions;
 using CEA.Persistence.Extensions;

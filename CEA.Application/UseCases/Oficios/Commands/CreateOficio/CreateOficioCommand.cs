@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CEA.Application.Common.Mappings;
 using CEA.Application.DTOs;
 using CEA.Application.Interfaces.Repositories;
@@ -6,6 +6,7 @@ using CEA.Application.Interfaces.Repositories.Oficios;
 using CEA.Application.Services;
 using CEA.Application.UseCases.Oficios.Commands.UpdateOficioFolio;
 using CEA.Domain.Entities.Oficios;
+using CEA.Domain.Events.Oficios;
 using CEA.Shared.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
