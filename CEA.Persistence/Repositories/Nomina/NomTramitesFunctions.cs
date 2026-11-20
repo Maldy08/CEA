@@ -52,7 +52,7 @@ namespace CEA.Persistence.Repositories.Nomina
 SELECT COUNT(*) FROM EMPLEADOS E
  WHERE E.EMPLEADO = :noemp
    AND E.SUPERVISOR_ID IS NOT NULL
-   AND EXISTS (SELECT 1 FROM USUARIOS U WHERE U.NO_EMPLEADO = :u1 AND NVL(U.TRAMITES_NIVEL, 0) >= 2)
+   AND EXISTS (SELECT 1 FROM USUARIOS U WHERE U.NO_EMPLEADO = :u1 AND U.TRAMITES_NIVEL IN (2, 3))
    AND (E.SUPERVISOR_ID = :u2
         OR E.DEPTOCOMI = (SELECT S.DEPTOCOMI FROM EMPLEADOS S WHERE S.EMPLEADO = :u3))";
 
@@ -78,7 +78,12 @@ SELECT COUNT(*) FROM EMPLEADOS E
             }
         }
 
-        public async Task<bool> EsAdministradorRh(int noEmp)
+        public Task<bool> EsAdministradorRh(int noEmp) => TieneNivel(noEmp, 9);
+
+        public Task<bool> EsFirmante(int noEmp) => TieneNivel(noEmp, 3);
+
+        // USUARIOS.TRAMITES_NIVEL es un rol exacto: se compara con =, nunca con >=.
+        private async Task<bool> TieneNivel(int noEmp, int nivel)
         {
             var conexion = _context.Database.GetDbConnection();
             var abrio = conexion.State != ConnectionState.Open;
@@ -86,11 +91,14 @@ SELECT COUNT(*) FROM EMPLEADOS E
             try
             {
                 await using var cmd = conexion.CreateCommand();
-                cmd.CommandText = "SELECT COUNT(*) FROM USUARIOS WHERE NO_EMPLEADO = :u AND NVL(TRAMITES, 0) = 1 AND NVL(TRAMITES_NIVEL, 0) >= 9";
-                var p = cmd.CreateParameter();
-                p.ParameterName = "u";
-                p.Value = noEmp;
-                cmd.Parameters.Add(p);
+                cmd.CommandText = "SELECT COUNT(*) FROM USUARIOS WHERE NO_EMPLEADO = :u AND NVL(TRAMITES, 0) = 1 AND TRAMITES_NIVEL = :n";
+                foreach (var (nombre, valor) in new[] { ("u", noEmp), ("n", nivel) })
+                {
+                    var p = cmd.CreateParameter();
+                    p.ParameterName = nombre;
+                    p.Value = valor;
+                    cmd.Parameters.Add(p);
+                }
                 return Convert.ToInt32(await cmd.ExecuteScalarAsync()) > 0;
             }
             finally

@@ -59,9 +59,9 @@ namespace CEA.Persistence.Repositories.Nomina
                 .Select(m => new SolicitudVacacionesDto
                 {
                     IdVacaemp = m.IdVacaemp,
-                    IdTramite = m.IdTramite,
+                    IdTramite = idTramite,
                     Ano = m.Ano,
-                    Folio = m.Folio,
+                    Folio = m.Folio ?? "",
                     NoEmp = m.NoEmp,
                     DiasSolicitados = m.DiasSolicitados,
                     FDesde = m.FDesde,
@@ -215,14 +215,24 @@ namespace CEA.Persistence.Repositories.Nomina
         private const int EstatusCancelado = 99;
         private const int EstatusAutorizado = 100;
         private const int TipoViaticos = 2;
+        private const int EstatusRevisionJefe = 2;
+        private const int EstatusRevisionDirector = 3;
 
-        public async Task<List<TramiteRhDto>> GetTodosAsync(int ano, int? tipoTramite, int? estatus)
-        {
-            var tramites = _context.NomTramites.AsNoTracking()
+        public Task<List<TramiteRhDto>> GetTodosAsync(int ano, int? tipoTramite, int? estatus) =>
+            ListaConDetalleAsync(_context.NomTramites.AsNoTracking()
                 .Where(t => t.Ano == ano && t.TipoTramite != TipoViaticos
                             && (tipoTramite == null || t.TipoTramite == tipoTramite)
-                            && (estatus == null || t.Estatus == estatus));
+                            && (estatus == null || t.Estatus == estatus)));
 
+        public Task<List<TramiteRhDto>> GetPorFirmarAsync(int noEmp) =>
+            ListaConDetalleAsync(_context.NomTramites.AsNoTracking()
+                .Where(t => t.TipoTramite != TipoViaticos
+                            && ((t.Estatus == EstatusRevisionJefe && t.Valida1 == noEmp)
+                                || (t.Estatus == EstatusRevisionDirector && t.Valida2 == noEmp))));
+
+        // Renglones con fechas del detalle (vacaciones o permiso/justificante) y nombre/depto del empleado.
+        private async Task<List<TramiteRhDto>> ListaConDetalleAsync(IQueryable<NomTramite> tramites)
+        {
             var lista = await (from t in tramites
                                from m in _context.NomVacaempM.Where(m => m.IdTramite == t.IdTramite).DefaultIfEmpty()
                                from p in _context.NomPermisosJustificantes.Where(p => p.IdTramite == t.IdTramite).DefaultIfEmpty()
@@ -341,6 +351,148 @@ namespace CEA.Persistence.Repositories.Nomina
 
             await tx.CommitAsync(cancellationToken);
             return null;
+        }
+
+        // ---- Saldos de vacaciones capturados por RH ----
+
+        // Último registro por empleado = mismo criterio que F_SALDO_VACACIONES (FHASTA, ID_VACAEMP, PERVAC desc).
+        private const string UltimoRegistroSql = @"
+SELECT M.NOEMP, M.ORIGEN_REGISTRO, M.FOLIO, D.PERVAC, D.DIASXDISF, M.FHASTA,
+       ROW_NUMBER() OVER (PARTITION BY D.NOEMP ORDER BY M.FHASTA DESC, M.ID_VACAEMP DESC, D.PERVAC DESC) RN
+  FROM NOM_VACAEMP_M M JOIN NOM_VACAEMP_D D ON D.ID_VACAEMP = M.ID_VACAEMP";
+
+        public async Task<List<SaldoVacacionesRhDto>> GetSaldosVacacionesAsync()
+        {
+            var sql = $@"
+SELECT E.EMPLEADO, S.NOMBRE_COMPLETO, DP.DESCRIPCION, E.FECHAALTA, S.ANTIGUEDAD_ACTUAL_ANOS,
+       S.A_ANO_DISPONIBLE, S.A_PERIODO_DISPONIBLE, S.A_DIAS_POR_DISFRUTAR, S.B_DIAS_TOTALES_POR_DISFRUTAR,
+       U.ORIGEN_REGISTRO, U.FOLIO, U.PERVAC, U.DIASXDISF, U.FHASTA
+  FROM EMPLEADOS E, TABLE(F_SALDO_VACACIONES(E.EMPLEADO)) S, DEPTOS DP, ({UltimoRegistroSql}) U
+ WHERE E.ACTIVO = 'V'
+   AND DP.DEPTO(+) = E.DEPTOCOMI
+   AND U.NOEMP(+) = E.EMPLEADO AND U.RN(+) = 1
+ ORDER BY S.NOMBRE_COMPLETO";
+
+            return await LeerAsync(sql, Array.Empty<(string, object)>(), r => new SaldoVacacionesRhDto
+            {
+                Empleado = Convert.ToInt32(r.GetValue(0)),
+                NombreCompleto = r.IsDBNull(1) ? "" : r.GetString(1),
+                Departamento = r.IsDBNull(2) ? null : r.GetString(2),
+                FechaAlta = r.GetDateTime(3),
+                AntiguedadAnos = r.IsDBNull(4) ? 0 : Convert.ToInt32(r.GetValue(4)),
+                AnoDisponible = r.IsDBNull(5) ? null : Convert.ToInt32(r.GetValue(5)),
+                PeriodoDisponible = r.IsDBNull(6) ? null : Convert.ToInt32(r.GetValue(6)),
+                DiasPorDisfrutar = r.IsDBNull(7) ? null : Convert.ToDecimal(r.GetValue(7)),
+                DiasTotales = r.IsDBNull(8) ? 0 : Convert.ToDecimal(r.GetValue(8)),
+                UltimoOrigen = r.IsDBNull(9) ? null : r.GetString(9),
+                UltimoFolio = r.IsDBNull(10) ? null : r.GetString(10),
+                UltimoPerVac = r.IsDBNull(11) ? null : r.GetString(11),
+                UltimoDiasXDisf = r.IsDBNull(12) ? null : Convert.ToInt32(r.GetValue(12)),
+                UltimaFecha = r.IsDBNull(13) ? null : r.GetDateTime(13)
+            });
+        }
+
+        public async Task<List<RegistroVacacionesRhDto>> GetRegistrosVacacionesAsync(int noEmp)
+        {
+            // Por registro M, su último periodo D (el que F_SALDO tomaría si fuera el más reciente).
+            const string sql = @"
+SELECT M.ID_VACAEMP, M.ORIGEN_REGISTRO, M.ID_TRAMITE, M.FOLIO, T.ESTATUS, M.FDESDE, M.FHASTA, M.DIAS_SOLICITADOS,
+       D.PERVAC, D.DIASXDISF, M.ID_EMPLEADO_CAPTURA, M.FECHA_CAPTURA
+  FROM NOM_VACAEMP_M M
+  LEFT JOIN NOM_TRAMITES T ON T.ID_TRAMITE = M.ID_TRAMITE
+  LEFT JOIN (SELECT ID_VACAEMP, PERVAC, DIASXDISF,
+                    ROW_NUMBER() OVER (PARTITION BY ID_VACAEMP ORDER BY PERVAC DESC) RN
+               FROM NOM_VACAEMP_D) D ON D.ID_VACAEMP = M.ID_VACAEMP AND D.RN = 1
+ WHERE M.NOEMP = :noemp
+ ORDER BY M.FHASTA DESC, M.ID_VACAEMP DESC";
+
+            return await LeerAsync(sql, new (string, object)[] { ("noemp", noEmp) }, r => new RegistroVacacionesRhDto
+            {
+                IdVacaemp = Convert.ToInt32(r.GetValue(0)),
+                Origen = r.IsDBNull(1) ? NomVacaempM.OrigenTramite : r.GetString(1),
+                IdTramite = r.IsDBNull(2) ? null : Convert.ToInt32(r.GetValue(2)),
+                Folio = r.IsDBNull(3) ? null : r.GetString(3),
+                Estatus = r.IsDBNull(4) ? null : Convert.ToInt32(r.GetValue(4)),
+                FDesde = r.GetDateTime(5),
+                FHasta = r.GetDateTime(6),
+                DiasSolicitados = Convert.ToInt32(r.GetValue(7)),
+                PerVac = r.IsDBNull(8) ? null : r.GetString(8),
+                DiasXDisf = r.IsDBNull(9) ? null : Convert.ToInt32(r.GetValue(9)),
+                IdEmpleadoCaptura = r.IsDBNull(10) ? null : Convert.ToInt32(r.GetValue(10)),
+                FechaCaptura = r.IsDBNull(11) ? null : r.GetDateTime(11)
+            });
+        }
+
+        public async Task<decimal?> DiasPorPeriodoAsync(int antiguedad)
+        {
+            var dias = await LeerAsync("SELECT DIAS / 2 FROM NOM_VACAPRIMA WHERE ANOS = :anos",
+                new (string, object)[] { ("anos", antiguedad) }, r => r.IsDBNull(0) ? (decimal?)null : Convert.ToDecimal(r.GetValue(0)));
+            return dias.FirstOrDefault();
+        }
+
+        public async Task<string?> GetFolioVacacionesPosteriorAsync(int noEmp, DateTime fecha)
+        {
+            return await (from m in _context.NomVacaempM.AsNoTracking()
+                          where m.NoEmp == noEmp && m.OrigenRegistro == NomVacaempM.OrigenTramite && m.FHasta >= fecha
+                                && _context.NomVacaempD.Any(d => d.IdVacaemp == m.IdVacaemp)
+                          orderby m.FHasta descending
+                          select m.Folio)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> CreateRegistroRhAsync(NomVacaempM registro, NomVacaempD periodo, CancellationToken cancellationToken)
+        {
+            await using var tx = await _context.Database.BeginTransactionAsync(cancellationToken);
+            _context.NomVacaempM.Add(registro);
+            await _context.SaveChangesAsync(cancellationToken);
+            periodo.IdVacaemp = registro.IdVacaemp;
+            _context.NomVacaempD.Add(periodo);
+            await _context.SaveChangesAsync(cancellationToken);
+            await tx.CommitAsync(cancellationToken);
+            return registro.IdVacaemp;
+        }
+
+        public async Task<bool> DeleteRegistroRhAsync(int idVacaemp, CancellationToken cancellationToken)
+        {
+            await using var tx = await _context.Database.BeginTransactionAsync(cancellationToken);
+            var registro = await _context.NomVacaempM
+                .FirstOrDefaultAsync(m => m.IdVacaemp == idVacaemp && m.OrigenRegistro == NomVacaempM.OrigenRh, cancellationToken);
+            if (registro == null) return false;
+            await _context.Database.ExecuteSqlInterpolatedAsync(
+                $"DELETE FROM NOM_VACAEMP_D WHERE ID_VACAEMP = {idVacaemp}", cancellationToken);
+            _context.NomVacaempM.Remove(registro);
+            await _context.SaveChangesAsync(cancellationToken);
+            await tx.CommitAsync(cancellationToken);
+            return true;
+        }
+
+        // SQL directo (ODP.NET liga parámetros por POSICIÓN, en el orden en que aparecen).
+        private async Task<List<T>> LeerAsync<T>(string sql, (string Nombre, object Valor)[] parametros, Func<DbDataReader, T> leer)
+        {
+            var conexion = _context.Database.GetDbConnection();
+            var abrio = conexion.State != System.Data.ConnectionState.Open;
+            if (abrio) await conexion.OpenAsync();
+            try
+            {
+                await using var cmd = conexion.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.Transaction = _context.Database.CurrentTransaction?.GetDbTransaction();
+                foreach (var (nombre, valor) in parametros)
+                {
+                    var p = cmd.CreateParameter();
+                    p.ParameterName = nombre;
+                    p.Value = valor;
+                    cmd.Parameters.Add(p);
+                }
+                var lista = new List<T>();
+                await using var r = await cmd.ExecuteReaderAsync();
+                while (await r.ReadAsync()) lista.Add(leer(r));
+                return lista;
+            }
+            finally
+            {
+                if (abrio) await conexion.CloseAsync();
+            }
         }
 
         // Igual que en CambiarEstatusAsync: FromSql sin componer para que el FOR UPDATE llegue tal cual.

@@ -38,6 +38,9 @@ namespace CEA.Application.Interfaces.Repositories.Nomina
 
         // Todos los trámites del año (sin viáticos), con nombre del empleado y fechas del detalle. Filtros opcionales.
         Task<List<TramiteRhDto>> GetTodosAsync(int ano, int? tipoTramite, int? estatus);
+        // Bandeja de firmas: trámites (sin viáticos, de cualquier año) que esperan la firma del empleado:
+        // estatus 2 con VALIDA_1 = él (jefe) o estatus 3 con VALIDA_2 = él (director).
+        Task<List<TramiteRhDto>> GetPorFirmarAsync(int noEmp);
         // Detalle de permiso/justificante del trámite; nulo si no tiene.
         Task<PermisoJustificanteDto?> GetPermisoJustificanteAsync(int idTramite);
         // Rehace la solicitud de vacaciones en UNA transacción (trámite bloqueado con FOR UPDATE): borra su NOM_VACAEMP_D
@@ -52,5 +55,20 @@ namespace CEA.Application.Interfaces.Repositories.Nomina
         // trámite bloqueado. Regresa el mensaje de error o nulo si se guardó.
         Task<string?> ModificarPermisoJustificanteAsync(int idTramite, Action<NomPermisoJustificante> aplicar,
             NomTramiteBitacora bitacora, CancellationToken cancellationToken);
+
+        // ---- Saldos de vacaciones capturados por RH (NOM_VACAEMP_M.ORIGEN_REGISTRO = 'R') ----
+
+        // Empleados activos con su saldo (F_SALDO_VACACIONES) y su último registro M/D.
+        Task<List<SaldoVacacionesRhDto>> GetSaldosVacacionesAsync();
+        // Historial M/D del empleado, más reciente primero.
+        Task<List<RegistroVacacionesRhDto>> GetRegistrosVacacionesAsync(int noEmp);
+        // Días del tabulador (NOM_VACAPRIMA.DIAS / 2) para un periodo con `antiguedad` años; nulo si no hay renglón.
+        Task<decimal?> DiasPorPeriodoAsync(int antiguedad);
+        // Folio del trámite de vacaciones del empleado con días en NOM_VACAEMP_D y FHASTA >= `fecha`; nulo si no hay.
+        Task<string?> GetFolioVacacionesPosteriorAsync(int noEmp, DateTime fecha);
+        // Inserta M (origen R) + su periodo D en una transacción; regresa ID_VACAEMP.
+        Task<int> CreateRegistroRhAsync(NomVacaempM registro, NomVacaempD periodo, CancellationToken cancellationToken);
+        // Borra un registro de origen R (D y M). Regresa false si no existe o no es de RH.
+        Task<bool> DeleteRegistroRhAsync(int idVacaemp, CancellationToken cancellationToken);
     }
 }

@@ -1,4 +1,5 @@
-﻿using CEA.Application.DTOs.Nomina;
+﻿using CEA.WebAPI.Filters;
+using CEA.Application.DTOs.Nomina;
 using CEA.Application.UseCases.Nomina.Commands.CancelarTramite;
 using CEA.Application.UseCases.Nomina.Commands.EnviarTramite;
 using CEA.Application.UseCases.Nomina.Queries.GetFirmasTramite;
@@ -15,6 +16,7 @@ namespace CEA.WebAPI.Controllers.Nomina
     // Trámites de RH (NOM_TRAMITES): consulta y cambios de estatus (pestaña "Procesos").
     [Route("api/[controller]")]
     [ApiController]
+    [Mayusculas] // todo lo capturado se guarda en MAYÚSCULAS (Filters/MayusculasAttribute)
     public class NomTramitesController : ControllerBase
     {
         private readonly IMediator _mediator;

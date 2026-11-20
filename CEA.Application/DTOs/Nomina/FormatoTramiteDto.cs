@@ -34,6 +34,8 @@ namespace CEA.Application.DTOs.Nomina
         public DateTime? FechaFin { get; set; }
         public DateTime? FechaRegreso { get; set; }
         public int? Dias { get; set; }
+        // Vacaciones: saldo total vigente del empleado (F_SALDO_VACACIONES) al consultar el formato.
+        public decimal? SaldoTotal { get; set; }
         public int? NoEmpCubre { get; set; }
         public string? NombreCubre { get; set; }
         // Permisos / justificantes (NOM_PERMISOS_JUSTIFICANTES)

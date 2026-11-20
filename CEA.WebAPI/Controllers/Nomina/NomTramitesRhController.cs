@@ -1,3 +1,4 @@
+using CEA.WebAPI.Filters;
 using CEA.Application.DTOs.Nomina;
 using CEA.Application.UseCases.Nomina.TramitesRh;
 using CEA.Shared.Interfaces;
@@ -13,6 +14,7 @@ namespace CEA.WebAPI.Controllers.Nomina
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [Mayusculas] // todo lo capturado se guarda en MAYÚSCULAS (Filters/MayusculasAttribute)
     public class NomTramitesRhController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -61,6 +63,38 @@ namespace CEA.WebAPI.Controllers.Nomina
         {
             if (Usuario() is not int u) return Unauthorized();
             return await _mediator.Send(command with { IdTramite = idTramite, NoEmpActor = u });
+        }
+
+        // ---- Saldos de vacaciones (punto de partida de F_SALDO_VACACIONES) ----
+
+        [HttpGet("SaldosVacaciones")]
+        public async Task<ActionResult<Result<List<SaldoVacacionesRhDto>>>> GetSaldosVacaciones()
+        {
+            if (Usuario() is not int u) return Unauthorized();
+            return await _mediator.Send(new GetSaldosVacacionesRhQuery(u));
+        }
+
+        [HttpGet("SaldosVacaciones/{noEmp}")]
+        public async Task<ActionResult<Result<List<RegistroVacacionesRhDto>>>> GetRegistrosVacaciones(int noEmp)
+        {
+            if (Usuario() is not int u) return Unauthorized();
+            return await _mediator.Send(new GetRegistrosVacacionesRhQuery(u, noEmp));
+        }
+
+        // Body: { perVac: "AAAA-N", diasXDisf }. La fecha del registro es la del día.
+        [HttpPost("SaldosVacaciones/{noEmp}")]
+        public async Task<ActionResult<Result<SaldoVacacionesDto?>>> CreateSaldoInicial(int noEmp, CreateSaldoInicialVacacionesRhCommand command)
+        {
+            if (Usuario() is not int u) return Unauthorized();
+            return await _mediator.Send(command with { NoEmp = noEmp, NoEmpActor = u });
+        }
+
+        // Solo registros de origen R.
+        [HttpDelete("SaldosVacaciones/Registro/{idVacaemp}")]
+        public async Task<ActionResult<Result<int>>> DeleteRegistro(int idVacaemp)
+        {
+            if (Usuario() is not int u) return Unauthorized();
+            return await _mediator.Send(new DeleteRegistroVacacionesRhCommand(u, idVacaemp));
         }
 
         // Body: { tipoIncidencia, fechaInicio, fechaFin, justificacionMotivo, idEmpleadoCubre?, comentarios }.

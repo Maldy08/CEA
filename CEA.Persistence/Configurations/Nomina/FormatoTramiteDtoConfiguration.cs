@@ -31,6 +31,7 @@ namespace CEA.Persistence.Configurations.Nomina
             entity.Property(e => e.FechaFin).HasColumnName("FECHA_FIN");
             entity.Property(e => e.FechaRegreso).HasColumnName("FECHA_REGRESO");
             entity.Property(e => e.Dias).HasColumnName("DIAS");
+            entity.Property(e => e.SaldoTotal).HasColumnName("SALDO_TOTAL");
             entity.Property(e => e.NoEmpCubre).HasColumnName("NOEMP_CUBRE");
             entity.Property(e => e.NombreCubre).HasColumnName("NOMBRE_CUBRE");
             entity.Property(e => e.TipoIncidencia).HasColumnName("TIPO_INCIDENCIA");

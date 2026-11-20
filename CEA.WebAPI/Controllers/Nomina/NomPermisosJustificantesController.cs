@@ -1,3 +1,4 @@
+using CEA.WebAPI.Filters;
 using CEA.Application.DTOs.Nomina;
 using CEA.Application.UseCases.Nomina.Commands.CreatePermisoJustificante;
 using CEA.Shared.Interfaces;
@@ -11,6 +12,7 @@ namespace CEA.WebAPI.Controllers.Nomina
     // Consulta, envío y cancelación van por NomTramites, igual que vacaciones.
     [Route("api/[controller]")]
     [ApiController]
+    [Mayusculas] // todo lo capturado se guarda en MAYÚSCULAS (Filters/MayusculasAttribute)
     public class NomPermisosJustificantesController : ControllerBase
     {
         private readonly IMediator _mediator;

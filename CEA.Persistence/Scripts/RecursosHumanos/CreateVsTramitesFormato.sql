@@ -10,6 +10,7 @@
 -- PROVISIONAL (no existe en Oracle todavía): MODALIDAD = 'ORDINARIO'.
 -- Firma de RH: responsable del departamento 24 (DEPTOS_UE.EMP_RESPON).
 -- DIAS de permisos = días hábiles del empleado (FN_DIAS_HABILES_EMP, crearla antes). Justificantes: sin DIAS.
+-- SALDO_TOTAL (solo vacaciones) = F_SALDO_VACACIONES.B_DIAS_TOTALES_POR_DISFRUTAR a la fecha de consulta.
 -- TIPO_INCIDENCIA / DESC_INCIDENCIA / MOTIVO solo para permisos y justificantes.
 
 CREATE OR REPLACE VIEW VS_TRAMITES_FORMATO AS
@@ -39,6 +40,10 @@ SELECT
     CASE WHEN T.TIPO_TRAMITE = 1 THEN VM.DIAS_SOLICITADOS
          WHEN T.TIPO_TRAMITE = 3 THEN FN_DIAS_HABILES_EMP(T.ID_EMPLEADO, PJ.FECHA_INICIO, PJ.FECHA_FIN)
     END                                                 AS DIAS,
+    -- Vacaciones: saldo total VIGENTE del empleado al consultar (F_SALDO_VACACIONES), no el del día de la solicitud.
+    CASE WHEN T.TIPO_TRAMITE = 1 THEN
+        (SELECT S.B_DIAS_TOTALES_POR_DISFRUTAR FROM TABLE(F_SALDO_VACACIONES(T.ID_EMPLEADO)) S)
+    END                                                 AS SALDO_TOTAL,
     COALESCE(VM.ID_EMPLEADO_CUBRE, PJ.ID_EMPLEADO_CUBRE) AS NOEMP_CUBRE,
     CASE WHEN EC.EMPLEADO IS NOT NULL
          THEN EC.NOMBRE || ' ' || EC.PATERNO || ' ' || EC.MATERNO END AS NOMBRE_CUBRE,

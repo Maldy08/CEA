@@ -1,4 +1,5 @@
-﻿using CEA.Application.DTOs.Viaticos;
+﻿using CEA.WebAPI.Filters;
+using CEA.Application.DTOs.Viaticos;
 using CEA.Application.Features.Viaticos.Commands.CreateViaticoPart;
 using CEA.Application.Features.Viaticos.Commands.UpdateViaticoPart;
 using CEA.Application.Features.Viaticos.Queries.GetViaticoPartByOficinaEjercicioNoviatPartida;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CEA.WebAPI.Controllers.Viaticos
 {
     [Route("api/Viatico/ViaticosPart")]
+    [Mayusculas] // todo lo capturado se guarda en MAYÚSCULAS (Filters/MayusculasAttribute)
     public class ViaticoPartController : ApiControllerBaseViaticos
     {
 

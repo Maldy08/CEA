@@ -1,3 +1,4 @@
+using CEA.WebAPI.Filters;
 using CEA.Application.DTOs.Nomina;
 using CEA.Application.UseCases.Nomina.Commands.CreateSolicitudVacaciones;
 using CEA.Application.UseCases.Nomina.Queries.GetConsultaVacaciones;
@@ -13,6 +14,7 @@ namespace CEA.WebAPI.Controllers.Nomina
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Mayusculas] // todo lo capturado se guarda en MAYÚSCULAS (Filters/MayusculasAttribute)
     public class NomVacacionesController : ControllerBase
     {
         private readonly IMediator _mediator;

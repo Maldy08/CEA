@@ -1,4 +1,4 @@
-using CEA.Application.Interfaces.Repositories.Nomina;
+﻿using CEA.Application.Interfaces.Repositories.Nomina;
 using CEA.Application.UseCases.Nomina.Commands.CreatePermisoJustificante;
 using CEA.Application.UseCases.Nomina.Commands.CreateSolicitudVacaciones;
 using CEA.Application.UseCases.Nomina.Queries.GetConsultaVacaciones;
@@ -11,7 +11,9 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
     // Acciones del administrador de RH sobre cualquier trámite de NOM_TRAMITES (sin viáticos), en cualquier estatus.
     // Todas dejan movimiento en la bitácora con el número de quien las hizo. NoEmpActor lo pone el controlador.
 
-    // Completar: pasa el trámite a Autorizado (100) con FECHA_AUTORIZACION, sin esperar firmas.
+    // Completar: RH autoriza (100, FECHA_AUTORIZACION) en cuanto el empleado lo envió a firma, aunque falten las
+    // firmas del jefe o del director: Revisión Jefe (2), Revisión Director (3) o Revisión RH (4). No desde Creado (1)
+    // ni Regresado (98): están en manos del empleado.
     public record CompletarTramiteRhCommand : IRequest<Result<int>>
     {
         public int IdTramite { get; init; }
@@ -60,6 +62,8 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
         public const int TipoVacaciones = 1;
         public const int EstatusCancelado = 99;
         public const int EstatusAutorizado = 100;
+        // Estatus desde los que RH puede autorizar (el empleado ya lo envió a firma).
+        public static readonly int[] Autorizables = { 2, 3, 4 };
         // Todos los estatus de RH_CAT_ESTATUS menos 99.
         public static readonly int[] Vigentes = { 1, 2, 3, 4, 5, 98, 100, 101, 110 };
 
@@ -94,7 +98,7 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
             if (tramite == null || tramite.TipoTramite == ReglasRh.TipoViaticos)
                 return await Result<int>.FailureAsync("El trámite no existe.");
 
-            var permitidos = ReglasRh.Vigentes.Where(e => e != ReglasRh.EstatusAutorizado).ToArray();
+            var permitidos = ReglasRh.Autorizables;
             var anterior = await _tramites.CambiarEstatusAsync(request.IdTramite, permitidos, ReglasRh.EstatusAutorizado,
                 new NomTramiteBitacora
                 {
@@ -107,7 +111,9 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
             if (!permitidos.Contains(anterior.Value))
                 return await Result<int>.FailureAsync(anterior == ReglasRh.EstatusAutorizado
                     ? "El trámite ya estaba autorizado."
-                    : "El trámite está cancelado; ya no se puede autorizar.");
+                    : anterior == ReglasRh.EstatusCancelado
+                        ? "El trámite está cancelado; ya no se puede autorizar."
+                        : "Solo se autorizan trámites que el empleado ya envió a firma (en revisión del jefe, director o RH).");
             return await Result<int>.SuccessAsync(ReglasRh.EstatusAutorizado, "Trámite autorizado.");
         }
     }

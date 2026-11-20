@@ -35,11 +35,13 @@ namespace CEA.Application.UseCases.Nomina.Commands.CreateSolicitudVacaciones
         private readonly INomTramitesRepository _tramites;
         private readonly INomDiasFestivosRepository _festivos;
         private readonly INomTramitesFunctions _funciones;
+        private readonly INomVacacionesFunctions _vacaciones;
 
         public CreateSolicitudVacacionesCommandHandler(IMediator mediator, INomTramitesRepository tramites,
-            INomDiasFestivosRepository festivos, INomTramitesFunctions funciones)
+            INomDiasFestivosRepository festivos, INomTramitesFunctions funciones, INomVacacionesFunctions vacaciones)
         {
             _funciones = funciones;
+            _vacaciones = vacaciones;
             _mediator = mediator;
             _tramites = tramites;
             _festivos = festivos;
@@ -72,6 +74,13 @@ namespace CEA.Application.UseCases.Nomina.Commands.CreateSolicitudVacaciones
                 return await Fallo("El rango no tiene días hábiles.");
             if (calculo.Periodos.Sum(p => p.Dias) < calculo.DiasHabiles)
                 return await Fallo($"No tiene saldo suficiente para {calculo.DiasHabiles} días.");
+            // Candado contra el saldo OFICIAL (F_SALDO_VACACIONES, el que ve el empleado en la captura): F_SIMULA reparte
+            // por año calendario y puede usar periodos que el empleado aún no gana por antigüedad (p. ej. 7139: saldo 34,
+            // F_SIMULA cubre 60 con los periodos 2026).
+            var saldo = await _vacaciones.SaldoVacaciones(request.NoEmp);
+            var saldoTotal = saldo?.DiasTotalesPorDisfrutar ?? 0;
+            if (calculo.DiasHabiles > saldoTotal)
+                return await Fallo($"Saldo insuficiente: solicita {calculo.DiasHabiles} días hábiles y su saldo de vacaciones es de {saldoTotal:0.#} días.");
             // NOM_VACAEMP_D.DIASVAC/DIASXDISF son enteros; F_SIMULA puede dar medios días (DIAS/2).
             if (calculo.Periodos.Any(p => p.Dias != decimal.Truncate(p.Dias) || p.DiasXDisfrutar != decimal.Truncate(p.DiasXDisfrutar)))
                 return await Fallo("El reparto por periodo trae medios días; no se puede guardar. Avise a Recursos Humanos.");
@@ -110,7 +119,10 @@ namespace CEA.Application.UseCases.Nomina.Commands.CreateSolicitudVacaciones
                 FDesde = desde,
                 FHasta = hasta,
                 FechaRegreso = regreso,
-                IdEmpleadoCubre = request.IdEmpleadoCubre
+                IdEmpleadoCubre = request.IdEmpleadoCubre,
+                OrigenRegistro = NomVacaempM.OrigenTramite,
+                IdEmpleadoCaptura = request.NoEmpCaptura,
+                FechaCaptura = ahora
             };
             var periodos = calculo.Periodos
                 .Where(p => p.Dias > 0)

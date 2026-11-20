@@ -1,4 +1,5 @@
-﻿using CEA.Application.DTOs.Viaticos;
+﻿using CEA.WebAPI.Filters;
+using CEA.Application.DTOs.Viaticos;
 using CEA.Application.Features.Viaticos.Commands.CreateViatico;
 using CEA.Application.Features.Viaticos.Commands.UpdateViatico;
 using CEA.Application.Features.Viaticos.Generates;
@@ -17,6 +18,7 @@ namespace CEA.WebAPI.Controllers.Viaticos
 {
 
   
+    [Mayusculas] // todo lo capturado se guarda en MAYÚSCULAS (Filters/MayusculasAttribute)
     public class ViaticoController : ApiControllerBaseViaticos
     {
         private readonly IMediator _mediator;
