@@ -1,4 +1,5 @@
-﻿using CEA.Application.Interfaces.Repositories.Nomina;
+﻿using CEA.Application.DTOs.Nomina;
+using CEA.Application.Interfaces.Repositories.Nomina;
 using CEA.Application.UseCases.Nomina.Commands.CreatePermisoJustificante;
 using CEA.Application.UseCases.Nomina.Commands.CreateSolicitudVacaciones;
 using CEA.Application.UseCases.Nomina.Queries.GetConsultaVacaciones;
@@ -30,10 +31,13 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
     }
 
     // Modificar vacaciones: rehace días y reparto por periodo con FN_CONSULTA_VACACIONES sin contar los días del propio trámite.
+    // PorEmpleado (lo pone el controlador, nunca el body): el empleado o su supervisor lo modifica desde la Bandeja,
+    // solo en Creado (1) o Regresado (98), con motivo opcional (ver ReglasRh.AccesoAsync).
     public record ModificarVacacionesRhCommand : IRequest<Result<int>>
     {
         public int IdTramite { get; init; }
         public int NoEmpActor { get; init; }
+        public bool PorEmpleado { get; init; }
         public DateTime Desde { get; init; }
         public DateTime Hasta { get; init; }
         public DateTime? FechaRegreso { get; init; }
@@ -48,6 +52,7 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
     {
         public int IdTramite { get; init; }
         public int NoEmpActor { get; init; }
+        public bool PorEmpleado { get; init; }
         public int TipoIncidencia { get; init; }
         public DateTime FechaInicio { get; init; }
         public DateTime FechaFin { get; init; }
@@ -66,6 +71,29 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
         public static readonly int[] Autorizables = { 2, 3, 4 };
         // Todos los estatus de RH_CAT_ESTATUS menos 99.
         public static readonly int[] Vigentes = { 1, 2, 3, 4, 5, 98, 100, 101, 110 };
+
+        // Estatus en que el empleado (o su supervisor) todavía puede modificar: antes de enviarlo a firma o ya regresado.
+        public static readonly int[] EditablesEmpleado = { 1, 98 };
+
+        // Quién puede ver/modificar el trámite. RH (nivel 9): cualquiera. PorEmpleado: el beneficiario o quien lo
+        // supervisa (INomTramitesFunctions.SupervisaA). Regresa el mensaje de error o null si puede.
+        public static async Task<string?> AccesoAsync(INomTramitesFunctions funciones, int noEmpActor, bool porEmpleado, NomTramiteDto? tramite)
+        {
+            if (!porEmpleado)
+                return !await funciones.EsAdministradorRh(noEmpActor) ? TramitesRhMensajes.SinPermiso
+                    : tramite == null ? "El trámite no existe." : null;
+            if (tramite == null || (tramite.IdEmpleado != noEmpActor && !await funciones.SupervisaA(noEmpActor, tramite.IdEmpleado)))
+                return "El trámite no existe o no tiene permiso para verlo.";
+            return null;
+        }
+
+        // Acción de bitácora de una modificación.
+        public static string AccionModificado(bool porEmpleado, int noEmpActor, NomTramiteDto tramite) =>
+            !porEmpleado ? "MODIFICADO POR RH"
+            : noEmpActor == tramite.IdEmpleado ? "MODIFICADO POR EL EMPLEADO" : "MODIFICADO POR EL SUPERVISOR";
+
+        public static string? ComentariosBitacora(string? comentarios) =>
+            string.IsNullOrWhiteSpace(comentarios) ? null : comentarios.Trim();
 
         public static string? ValidarMotivo(string? comentarios, bool obligatorio, string pide)
         {
@@ -155,26 +183,29 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
         private readonly INomTramitesRepository _tramites;
         private readonly INomTramitesFunctions _funciones;
         private readonly INomDiasFestivosRepository _festivos;
+        private readonly INomVacacionesFunctions _vacaciones;
 
         public ModificarVacacionesRhCommandHandler(IMediator mediator, INomTramitesRepository tramites,
-            INomTramitesFunctions funciones, INomDiasFestivosRepository festivos)
+            INomTramitesFunctions funciones, INomDiasFestivosRepository festivos, INomVacacionesFunctions vacaciones)
         {
             _mediator = mediator;
             _tramites = tramites;
             _funciones = funciones;
             _festivos = festivos;
+            _vacaciones = vacaciones;
         }
 
         public async Task<Result<int>> Handle(ModificarVacacionesRhCommand request, CancellationToken cancellationToken)
         {
-            if (!await _funciones.EsAdministradorRh(request.NoEmpActor))
-                return await Result<int>.FailureAsync(TramitesRhMensajes.SinPermiso);
-            var error = ReglasRh.ValidarMotivo(request.Comentarios, true, "Escriba el motivo de la modificación.");
-            if (error != null) return await Result<int>.FailureAsync(error);
-
             var tramite = await _tramites.GetByIdAsync(request.IdTramite);
-            if (tramite == null || tramite.TipoTramite != ReglasRh.TipoVacaciones)
-                return await Result<int>.FailureAsync("El trámite no existe o no es de vacaciones.");
+            var acceso = await ReglasRh.AccesoAsync(_funciones, request.NoEmpActor, request.PorEmpleado, tramite);
+            if (acceso != null) return await Result<int>.FailureAsync(acceso);
+            var error = ReglasRh.ValidarMotivo(request.Comentarios, !request.PorEmpleado, "Escriba el motivo de la modificación.");
+            if (error != null) return await Result<int>.FailureAsync(error);
+            if (tramite!.TipoTramite != ReglasRh.TipoVacaciones)
+                return await Result<int>.FailureAsync("El trámite no es de vacaciones.");
+            if (request.PorEmpleado && !ReglasRh.EditablesEmpleado.Contains(tramite.Estatus))
+                return await Result<int>.FailureAsync(TramitesRhMensajes.NoEditable);
             var noEmp = tramite.IdEmpleado;
 
             var desde = request.Desde.Date;
@@ -199,6 +230,12 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
                 if (calculo.DiasHabiles <= 0) return ("El rango no tiene días hábiles.", null, new List<NomVacaempD>());
                 if (calculo.Periodos.Sum(p => p.Dias) < calculo.DiasHabiles)
                     return ($"No tiene saldo suficiente para {calculo.DiasHabiles} días.", null, new List<NomVacaempD>());
+                // Mismo candado que al crear (saldo OFICIAL F_SALDO_VACACIONES). Corre en la misma transacción, ya sin
+                // los días de este trámite, así que el saldo los incluye.
+                var saldoTotal = (await _vacaciones.SaldoVacaciones(noEmp))?.DiasTotalesPorDisfrutar ?? 0;
+                if (calculo.DiasHabiles > saldoTotal)
+                    return ($"Saldo insuficiente: solicita {calculo.DiasHabiles} días hábiles y el saldo de vacaciones es de {saldoTotal:0.#} días.",
+                        null, new List<NomVacaempD>());
                 if (calculo.Periodos.Any(p => p.Dias != decimal.Truncate(p.Dias) || p.DiasXDisfrutar != decimal.Truncate(p.DiasXDisfrutar)))
                     return ("El reparto por periodo trae medios días; no se puede guardar.", null, new List<NomVacaempD>());
 
@@ -222,7 +259,12 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
                     })
                     .ToList();
                 return ((string?)null, (NomVacaempM?)datos, periodos);
-            }, new NomTramiteBitacora { IdEmpleado = request.NoEmpActor, Accion = "MODIFICADO POR RH", Comentarios = request.Comentarios.Trim() },
+            }, new NomTramiteBitacora
+            {
+                IdEmpleado = request.NoEmpActor,
+                Accion = ReglasRh.AccionModificado(request.PorEmpleado, request.NoEmpActor, tramite),
+                Comentarios = ReglasRh.ComentariosBitacora(request.Comentarios)
+            },
             cancellationToken);
 
             return resultado == null
@@ -247,14 +289,15 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
 
         public async Task<Result<int>> Handle(ModificarPermisoJustificanteRhCommand request, CancellationToken cancellationToken)
         {
-            if (!await _funciones.EsAdministradorRh(request.NoEmpActor))
-                return await Result<int>.FailureAsync(TramitesRhMensajes.SinPermiso);
-            var error = ReglasRh.ValidarMotivo(request.Comentarios, true, "Escriba el motivo de la modificación.");
-            if (error != null) return await Result<int>.FailureAsync(error);
-
             var tramite = await _tramites.GetByIdAsync(request.IdTramite);
-            if (tramite == null || tramite.TipoTramite is not (ReglasPermisoJustificante.TipoPermisos or ReglasPermisoJustificante.TipoJustificantes))
-                return await Result<int>.FailureAsync("El trámite no existe o no es permiso ni justificante.");
+            var acceso = await ReglasRh.AccesoAsync(_funciones, request.NoEmpActor, request.PorEmpleado, tramite);
+            if (acceso != null) return await Result<int>.FailureAsync(acceso);
+            var error = ReglasRh.ValidarMotivo(request.Comentarios, !request.PorEmpleado, "Escriba el motivo de la modificación.");
+            if (error != null) return await Result<int>.FailureAsync(error);
+            if (tramite!.TipoTramite is not (ReglasPermisoJustificante.TipoPermisos or ReglasPermisoJustificante.TipoJustificantes))
+                return await Result<int>.FailureAsync("El trámite no es permiso ni justificante.");
+            if (request.PorEmpleado && !ReglasRh.EditablesEmpleado.Contains(tramite.Estatus))
+                return await Result<int>.FailureAsync(TramitesRhMensajes.NoEditable);
             if (!ReglasPermisoJustificante.EsValida(request.TipoIncidencia)
                 || ReglasPermisoJustificante.TipoTramite(request.TipoIncidencia) != tramite.TipoTramite)
                 return await Result<int>.FailureAsync(tramite.TipoTramite == ReglasPermisoJustificante.TipoPermisos
@@ -273,7 +316,12 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
                 d.JustificacionMotivo = reglas.Motivo;
                 // Justificantes no llevan relevo.
                 d.IdEmpleadoCubre = tramite.TipoTramite == ReglasPermisoJustificante.TipoPermisos ? request.IdEmpleadoCubre : null;
-            }, new NomTramiteBitacora { IdEmpleado = request.NoEmpActor, Accion = "MODIFICADO POR RH", Comentarios = request.Comentarios.Trim() },
+            }, new NomTramiteBitacora
+            {
+                IdEmpleado = request.NoEmpActor,
+                Accion = ReglasRh.AccionModificado(request.PorEmpleado, request.NoEmpActor, tramite),
+                Comentarios = ReglasRh.ComentariosBitacora(request.Comentarios)
+            },
             cancellationToken);
 
             return resultado == null

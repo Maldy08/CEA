@@ -20,5 +20,8 @@ namespace CEA.Application.Interfaces.Repositories.Nomina
         // Firmante (jefe/director, USUARIOS.TRAMITES_NIVEL = 3): firma los trámites donde está en VALIDA_1 / VALIDA_2.
         // Misma regla que esFirmante del front.
         Task<bool> EsFirmante(int noEmp);
+        // Supervisor (USUARIOS.TRAMITES_NIVEL = 2): ve y opera en la Bandeja los trámites de su personal a cargo
+        // (EMPLEADOS.SUPERVISOR_ID = él). Misma regla que tienePersonalACargo del front.
+        Task<bool> EsSupervisor(int noEmp);
     }
 }

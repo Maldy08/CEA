@@ -10,6 +10,12 @@ namespace CEA.Application.Interfaces.Repositories.Nomina
         Task<List<NomTramiteDto>> GetByEmpleadoAsync(int noEmp, int ano, int? tipoTramite);
         // Trámite con su bitácora; nulo si no existe.
         Task<NomTramiteDto?> GetByIdAsync(int idTramite);
+        // Trámites en el año de los empleados a cargo del supervisor (EMPLEADOS.SUPERVISOR_ID = noEmpSupervisor),
+        // sin los del propio supervisor; tipoTramite nulo = todos los tipos.
+        Task<List<NomTramiteDto>> GetDePersonalAsync(int noEmpSupervisor, int ano, int? tipoTramite);
+        // Trámites en el año que el usuario capturó para otros (ID_EMPLEADO_SUPERVISOR = él), p. ej. en suplencia
+        // de otro supervisor; tipoTramite nulo = todos los tipos.
+        Task<List<NomTramiteDto>> GetCapturadosAsync(int noEmpCaptura, int ano, int? tipoTramite);
         // Solicitud de vacaciones del trámite con sus periodos; nula si el trámite no tiene.
         Task<SolicitudVacacionesDto?> GetSolicitudVacacionesAsync(int idTramite);
         // Folio de una solicitud vigente (no cancelada) del empleado que se cruce con el rango; nulo si no hay.

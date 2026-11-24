@@ -26,6 +26,41 @@ namespace CEA.Persistence.Repositories.Nomina
                 .ToListAsync();
         }
 
+        public async Task<List<NomTramiteDto>> GetDePersonalAsync(int noEmpSupervisor, int ano, int? tipoTramite)
+        {
+            var personal = _context.Empleado
+                .Where(e => e.SupervisorId == noEmpSupervisor && e.IdEmpleado != noEmpSupervisor)
+                .Select(e => e.IdEmpleado);
+            return await ConNombres(await Encabezados(_context.NomTramites
+                    .Where(t => personal.Contains(t.IdEmpleado) && t.Ano == ano && (tipoTramite == null || t.TipoTramite == tipoTramite))
+                    .OrderByDescending(t => t.FechaSolicitud)
+                    .ThenByDescending(t => t.IdTramite))
+                .ToListAsync());
+        }
+
+        public async Task<List<NomTramiteDto>> GetCapturadosAsync(int noEmpCaptura, int ano, int? tipoTramite)
+        {
+            return await ConNombres(await Encabezados(_context.NomTramites
+                    .Where(t => t.IdEmpleadoSupervisor == noEmpCaptura && t.IdEmpleado != noEmpCaptura && t.Ano == ano
+                                && (tipoTramite == null || t.TipoTramite == tipoTramite))
+                    .OrderByDescending(t => t.FechaSolicitud)
+                    .ThenByDescending(t => t.IdTramite))
+                .ToListAsync());
+        }
+
+        // Llena NombreEmpleado (EMPLEADOS) de una lista ya consultada.
+        private async Task<List<NomTramiteDto>> ConNombres(List<NomTramiteDto> tramites)
+        {
+            var ids = tramites.Select(t => t.IdEmpleado).Distinct().ToList();
+            if (ids.Count == 0) return tramites;
+            var nombres = await _context.Empleado.AsNoTracking()
+                .Where(e => ids.Contains(e.IdEmpleado))
+                .Select(e => new { e.IdEmpleado, e.NombreCompleto })
+                .ToDictionaryAsync(e => e.IdEmpleado, e => e.NombreCompleto);
+            foreach (var t in tramites) t.NombreEmpleado = nombres.GetValueOrDefault(t.IdEmpleado);
+            return tramites;
+        }
+
         public async Task<NomTramiteDto?> GetByIdAsync(int idTramite)
         {
             var tramite = await Encabezados(_context.NomTramites.Where(t => t.IdTramite == idTramite)).FirstOrDefaultAsync();

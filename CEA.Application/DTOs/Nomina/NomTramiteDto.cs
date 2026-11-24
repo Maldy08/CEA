@@ -1,4 +1,4 @@
-namespace CEA.Application.DTOs.Nomina
+﻿namespace CEA.Application.DTOs.Nomina
 {
     // Trámite de RH (NOM_TRAMITES). Bitacora solo viene llena en el detalle (GetTramiteById); en listados va vacía.
     public class NomTramiteDto
@@ -16,6 +16,8 @@ namespace CEA.Application.DTOs.Nomina
         public DateTime? FechaCancelacion { get; set; }
         public int? Valida1 { get; set; }
         public int? Valida2 { get; set; }
+        // Nombre del empleado (beneficiario); solo en las listas del supervisor (Personal / Capturados).
+        public string? NombreEmpleado { get; set; }
         public List<NomTramiteBitacoraDto> Bitacora { get; set; } = new();
     }
 

@@ -1,4 +1,4 @@
-using CEA.Application.DTOs.Nomina;
+﻿using CEA.Application.DTOs.Nomina;
 using CEA.Application.Interfaces.Repositories;
 using CEA.Application.Interfaces.Repositories.Nomina;
 using CEA.Shared.Interfaces;
@@ -13,7 +13,8 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
     public record GetTramitesRhQuery(int NoEmpActor, int Ano, int? TipoTramite, int? Estatus) : IRequest<Result<List<TramiteRhDto>>>;
 
     // Trámite con bitácora y su detalle (vacaciones o permiso/justificante) para modificarlo.
-    public record GetDetalleTramiteRhQuery(int NoEmpActor, int IdTramite) : IRequest<Result<DetalleTramiteRhDto>>;
+    // PorEmpleado: lo pide el beneficiario o su supervisor (Bandeja → Editar), en cualquier estatus.
+    public record GetDetalleTramiteRhQuery(int NoEmpActor, int IdTramite, bool PorEmpleado = false) : IRequest<Result<DetalleTramiteRhDto>>;
 
     internal class GetTramitesRhQueryHandler : IRequestHandler<GetTramitesRhQuery, Result<List<TramiteRhDto>>>
     {
@@ -53,10 +54,9 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
 
         public async Task<Result<DetalleTramiteRhDto>> Handle(GetDetalleTramiteRhQuery request, CancellationToken cancellationToken)
         {
-            if (!await _funciones.EsAdministradorRh(request.NoEmpActor))
-                return await Result<DetalleTramiteRhDto>.FailureAsync(TramitesRhMensajes.SinPermiso);
             var tramite = await _tramites.GetByIdAsync(request.IdTramite);
-            if (tramite == null) return await Result<DetalleTramiteRhDto>.FailureAsync("El trámite no existe.");
+            var acceso = await ReglasRh.AccesoAsync(_funciones, request.NoEmpActor, request.PorEmpleado, tramite);
+            if (acceso != null || tramite == null) return await Result<DetalleTramiteRhDto>.FailureAsync(acceso ?? "El trámite no existe.");
 
             var empleado = await _empleados.GetEmpleadoByIdAsync(tramite.IdEmpleado);
             return await Result<DetalleTramiteRhDto>.SuccessAsync(new DetalleTramiteRhDto
@@ -72,5 +72,6 @@ namespace CEA.Application.UseCases.Nomina.TramitesRh
     internal static class TramitesRhMensajes
     {
         public const string SinPermiso = "Solo el administrador de Recursos Humanos puede hacer esta operación.";
+        public const string NoEditable = "Solo se puede modificar un trámite Creado o Regresado (antes de enviarlo a firma).";
     }
 }

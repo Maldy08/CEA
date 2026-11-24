@@ -6,6 +6,8 @@ using CEA.Application.UseCases.Nomina.Queries.GetFirmasTramite;
 using CEA.Application.UseCases.Nomina.Queries.GetFormatoTramite;
 using CEA.Application.UseCases.Nomina.Queries.GetTramiteById;
 using CEA.Application.UseCases.Nomina.Queries.GetTramitesEmpleado;
+using CEA.Application.UseCases.Nomina.Queries.GetTramitesPersonal;
+using CEA.Application.UseCases.Nomina.TramitesRh;
 using CEA.Shared.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +36,27 @@ namespace CEA.WebAPI.Controllers.Nomina
             return await _mediator.Send(new GetTramitesEmpleadoQuery(noemp, ano, tipo));
         }
 
+        // Trámites en el año del personal a cargo del usuario (claim "userid"; solo TRAMITES_NIVEL 2). ?tipo= filtra.
+        [HttpGet("Personal/{ano}")]
+        [Authorize]
+        public async Task<ActionResult<Result<List<NomTramiteDto>>>> GetDePersonal(int ano, [FromQuery] int? tipo)
+        {
+            if (!int.TryParse(User.FindFirst("userid")?.Value, out var noEmpUsuario))
+                return Unauthorized();
+            return await _mediator.Send(new GetTramitesPersonalQuery(noEmpUsuario, ano, tipo));
+        }
+
+        // Trámites en el año que el usuario capturó para otros (ID_EMPLEADO_SUPERVISOR = claim "userid"), p. ej. en
+        // suplencia de otro supervisor. Solo TRAMITES_NIVEL 2. ?tipo= filtra.
+        [HttpGet("Capturados/{ano}")]
+        [Authorize]
+        public async Task<ActionResult<Result<List<NomTramiteDto>>>> GetCapturados(int ano, [FromQuery] int? tipo)
+        {
+            if (!int.TryParse(User.FindFirst("userid")?.Value, out var noEmpUsuario))
+                return Unauthorized();
+            return await _mediator.Send(new GetTramitesPersonalQuery(noEmpUsuario, ano, tipo, Capturados: true));
+        }
+
         // Quién firma el trámite del empleado según su departamento (FN_TRAMITES_CONSULTA_FIRMAS).
         [HttpGet("Firmas/{noemp}/{depto}")]
         [Authorize]
@@ -59,6 +82,36 @@ namespace CEA.WebAPI.Controllers.Nomina
             if (!int.TryParse(User.FindFirst("userid")?.Value, out var noEmpUsuario))
                 return Unauthorized();
             return await _mediator.Send(new GetFormatoTramiteQuery(idTramite, noEmpUsuario));
+        }
+
+        // ---- Edición por el empleado o su supervisor (Bandeja): mismos comandos que RH con PorEmpleado = true ----
+        // Solo el beneficiario o quien lo supervisa (SupervisaA); modificar solo en Creado (1) o Regresado (98).
+
+        // Trámite con bitácora y su detalle (vacaciones o permiso/justificante) para editarlo.
+        [HttpGet("{idTramite}/Detalle")]
+        [Authorize]
+        public async Task<ActionResult<Result<DetalleTramiteRhDto>>> GetDetalle(int idTramite)
+        {
+            if (!int.TryParse(User.FindFirst("userid")?.Value, out var u)) return Unauthorized();
+            return await _mediator.Send(new GetDetalleTramiteRhQuery(u, idTramite, PorEmpleado: true));
+        }
+
+        // Body: { desde, hasta, fechaRegreso?, idEmpleadoCubre?, comentarios? }.
+        [HttpPut("{idTramite}/Vacaciones")]
+        [Authorize]
+        public async Task<ActionResult<Result<int>>> ModificarVacaciones(int idTramite, ModificarVacacionesRhCommand command)
+        {
+            if (!int.TryParse(User.FindFirst("userid")?.Value, out var u)) return Unauthorized();
+            return await _mediator.Send(command with { IdTramite = idTramite, NoEmpActor = u, PorEmpleado = true });
+        }
+
+        // Body: { tipoIncidencia, fechaInicio, fechaFin, justificacionMotivo, idEmpleadoCubre?, comentarios? }.
+        [HttpPut("{idTramite}/PermisoJustificante")]
+        [Authorize]
+        public async Task<ActionResult<Result<int>>> ModificarPermisoJustificante(int idTramite, ModificarPermisoJustificanteRhCommand command)
+        {
+            if (!int.TryParse(User.FindFirst("userid")?.Value, out var u)) return Unauthorized();
+            return await _mediator.Send(command with { IdTramite = idTramite, NoEmpActor = u, PorEmpleado = true });
         }
 
         // Envío al jefe para su autorización (1 o 98 → 2). Body: { noEmpActor }.

@@ -10,8 +10,10 @@ using CEA.Application.Features.Viaticos.Queries.GetDetalleViaticoByEjercicioNovi
 using CEA.Application.Features.Viaticos.Queries.GetFormatoComisionByOficinaEjercicioNoviat;
 using CEA.Application.Features.Viaticos.Queries.GetNoViat;
 using CEA.Application.Features.Viaticos.Queries.ListaViaticosPorEmpleado;
+using CEA.Application.UseCases.Viaticos.Queries.ViaticosCapturados;
 using CEA.Shared.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CEA.WebAPI.Controllers.Viaticos
@@ -50,6 +52,16 @@ namespace CEA.WebAPI.Controllers.Viaticos
         public async Task<ActionResult<Result<List<ViaticosPorEmpleadoDto>>>> ListaViaticosPorEmpleado(int ejercicio, int empleado)
         {
             return await _mediator.Send(new ListaViatosPorEmpleadoQuery(ejercicio, empleado));
+        }
+
+        // Viáticos del ejercicio que el usuario (claim "userid", TRAMITES_NIVEL 2) capturó para otros empleados.
+        [HttpGet("Capturados/{ejercicio}")]
+        [Authorize]
+        public async Task<ActionResult<Result<List<ViaticoCapturadoDto>>>> Capturados(int ejercicio)
+        {
+            if (!int.TryParse(User.FindFirst("userid")?.Value, out var noEmpUsuario))
+                return Unauthorized();
+            return await _mediator.Send(new ViaticosCapturadosQuery(ejercicio, noEmpUsuario));
         }
 
         [HttpGet("GetAllByEjercicioOficinaNoviat/{ejercicio}/{oficina}/{noviat}")]

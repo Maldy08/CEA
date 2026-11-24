@@ -82,6 +82,8 @@ SELECT COUNT(*) FROM EMPLEADOS E
 
         public Task<bool> EsFirmante(int noEmp) => TieneNivel(noEmp, 3);
 
+        public Task<bool> EsSupervisor(int noEmp) => TieneNivel(noEmp, 2);
+
         // USUARIOS.TRAMITES_NIVEL es un rol exacto: se compara con =, nunca con >=.
         private async Task<bool> TieneNivel(int noEmp, int nivel)
         {

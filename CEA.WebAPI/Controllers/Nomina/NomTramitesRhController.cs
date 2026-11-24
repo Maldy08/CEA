@@ -1,4 +1,4 @@
-using CEA.WebAPI.Filters;
+﻿using CEA.WebAPI.Filters;
 using CEA.Application.DTOs.Nomina;
 using CEA.Application.UseCases.Nomina.TramitesRh;
 using CEA.Shared.Interfaces;
@@ -62,7 +62,7 @@ namespace CEA.WebAPI.Controllers.Nomina
         public async Task<ActionResult<Result<int>>> ModificarVacaciones(int idTramite, ModificarVacacionesRhCommand command)
         {
             if (Usuario() is not int u) return Unauthorized();
-            return await _mediator.Send(command with { IdTramite = idTramite, NoEmpActor = u });
+            return await _mediator.Send(command with { IdTramite = idTramite, NoEmpActor = u, PorEmpleado = false });
         }
 
         // ---- Saldos de vacaciones (punto de partida de F_SALDO_VACACIONES) ----
@@ -102,7 +102,7 @@ namespace CEA.WebAPI.Controllers.Nomina
         public async Task<ActionResult<Result<int>>> ModificarPermisoJustificante(int idTramite, ModificarPermisoJustificanteRhCommand command)
         {
             if (Usuario() is not int u) return Unauthorized();
-            return await _mediator.Send(command with { IdTramite = idTramite, NoEmpActor = u });
+            return await _mediator.Send(command with { IdTramite = idTramite, NoEmpActor = u, PorEmpleado = false });
         }
     }
 }
