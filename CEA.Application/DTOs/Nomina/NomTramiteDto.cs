@@ -18,6 +18,9 @@
         public int? Valida2 { get; set; }
         // Nombre del empleado (beneficiario); solo en las listas del supervisor (Personal / Capturados).
         public string? NombreEmpleado { get; set; }
+        // Nombres de VALIDA_1 (jefe) y VALIDA_2 (director); solo en el detalle (cadena de firmas de la bitácora).
+        public string? NombreValida1 { get; set; }
+        public string? NombreValida2 { get; set; }
         public List<NomTramiteBitacoraDto> Bitacora { get; set; } = new();
     }
 
@@ -26,6 +29,8 @@
         public int IdBitacora { get; set; }
         public DateTime FechaMovimiento { get; set; }
         public int IdEmpleado { get; set; }
+        // Nombre de quien hizo el movimiento (EMPLEADOS); solo en el detalle.
+        public string? NombreEmpleado { get; set; }
         public int IdEstatus { get; set; }
         public string Accion { get; set; } = string.Empty;
         public string? Comentarios { get; set; }

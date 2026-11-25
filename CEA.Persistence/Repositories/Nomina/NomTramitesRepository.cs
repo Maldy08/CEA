@@ -81,6 +81,19 @@ namespace CEA.Persistence.Repositories.Nomina
                     Comentarios = b.Comentarios
                 })
                 .ToListAsync();
+
+            // Nombres de quienes movieron el trámite y de los firmantes (cadena de firmas en la bitácora del front).
+            var ids = tramite.Bitacora.Select(b => b.IdEmpleado)
+                .Concat(new[] { tramite.IdEmpleado, tramite.Valida1 ?? 0, tramite.Valida2 ?? 0 })
+                .Where(id => id > 0).Distinct().ToList();
+            var nombres = await _context.Empleado.AsNoTracking()
+                .Where(e => ids.Contains(e.IdEmpleado))
+                .Select(e => new { e.IdEmpleado, e.NombreCompleto })
+                .ToDictionaryAsync(e => e.IdEmpleado, e => e.NombreCompleto);
+            foreach (var b in tramite.Bitacora) b.NombreEmpleado = nombres.GetValueOrDefault(b.IdEmpleado);
+            tramite.NombreEmpleado ??= nombres.GetValueOrDefault(tramite.IdEmpleado);
+            if (tramite.Valida1 is int v1) tramite.NombreValida1 = nombres.GetValueOrDefault(v1);
+            if (tramite.Valida2 is int v2) tramite.NombreValida2 = nombres.GetValueOrDefault(v2);
             return tramite;
         }
 
